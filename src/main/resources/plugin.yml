@@ -1,0 +1,113 @@
+name: EssLite
+version: '${version}'
+main: dev.esslite.EssLite
+api-version: '26.3'
+description: Comandos basicos tipo Essentials - god, heal, homes y rtp
+
+commands:
+  god:
+    description: Activa o desactiva el modo dios
+    usage: /god
+    permission: esslite.god
+  heal:
+    description: Rellena tu hambre y saturacion
+    usage: /heal
+    permission: esslite.heal
+  sethome:
+    description: Guarda un home en tu posicion
+    usage: /sethome [nombre]
+    permission: esslite.sethome
+  home:
+    description: Te teletransporta a un home
+    usage: /home [nombre]
+    permission: esslite.home
+  homes:
+    description: Abre el menu de tus homes
+    usage: /homes
+    permission: esslite.homes
+  delhome:
+    description: Borra un home
+    usage: /delhome <nombre>
+    permission: esslite.delhome
+  rtp:
+    description: Teletransporte aleatorio a un lugar seguro
+    usage: /rtp
+    permission: esslite.rtp
+  fly:
+    description: Activa o desactiva el vuelo
+    usage: /fly
+    permission: esslite.fly
+  back:
+    description: Vuelve a tu ubicacion anterior o al lugar donde moriste
+    usage: /back
+    permission: esslite.back
+  spawn:
+    description: Te lleva al spawn
+    usage: /spawn
+    permission: esslite.spawn
+  setspawn:
+    description: Define el spawn del mundo principal
+    usage: /setspawn
+    permission: esslite.setspawn
+  warp:
+    description: Va a un warp o lista los warps
+    usage: /warp [nombre]
+    permission: esslite.warp
+  setwarp:
+    description: Crea un warp en tu posicion
+    usage: /setwarp <nombre>
+    aliases: [addwarp]
+    permission: esslite.setwarp
+  delwarp:
+    description: Borra un warp
+    usage: /delwarp <nombre>
+    aliases: [removewarp]
+    permission: esslite.delwarp
+  tools:
+    description: Menu con las mesas de trabajo
+    usage: /tools
+    permission: esslite.tools
+  ender:
+    description: Abre tu cofre de ender
+    usage: /ender
+    permission: esslite.ender
+
+permissions:
+  esslite.god:
+    default: op
+  esslite.heal:
+    default: op
+  esslite.sethome:
+    default: true
+  esslite.home:
+    default: true
+  esslite.homes:
+    default: true
+  esslite.delhome:
+    default: true
+  esslite.rtp:
+    default: true
+  esslite.homes.unlimited:
+    description: Ignora el limite de homes (maximo 54 por el menu)
+    default: op
+  esslite.rtp.bypass:
+    description: Ignora el cooldown de /rtp
+    default: op
+  esslite.fly:
+    default: op
+  esslite.back:
+    default: true
+  esslite.spawn:
+    default: true
+  esslite.setspawn:
+    default: op
+  esslite.warp:
+    default: true
+  esslite.setwarp:
+    default: op
+  esslite.delwarp:
+    default: op
+  esslite.tools:
+    default: true
+  esslite.ender:
+    default: true

@@ -1,0 +1,77 @@
+homes:
+  max: 3              # homes por jugador (esslite.homes.unlimited lo ignora, tope 54)
+  default-name: home  # nombre usado por /sethome y /home sin argumentos
+
+heal:
+  restore-health: false   # true = /heal tambien rellena la vida
+
+rtp:
+  worlds: [world]         # mundos donde funciona /rtp (solo tipo overworld)
+  min-radius: 500
+  max-radius: 5000
+  max-attempts: 15
+  cooldown-seconds: 30
+  center-on-player: false # false = centro en el spawn del mundo
+
+spawn:
+  world: ""               # vacio = mundo principal del servidor
+
+# Mensajes en formato MiniMessage
+messages:
+  prefix: '<dark_gray>[<aqua>EssLite</aqua>]</dark_gray> '
+  only-players: '<red>Solo los jugadores pueden usar este comando.'
+  god-on: '<green>Modo dios <bold>activado</bold>.'
+  god-off: '<yellow>Modo dios <bold>desactivado</bold>.'
+  heal-done: '<green>Tu hambre fue rellenada.'
+  home-set: '<green>Home <yellow><name></yellow> guardado.'
+  home-deleted: '<yellow>Home <name> borrado.'
+  home-teleported: '<green>Teletransportado a <yellow><name></yellow>.'
+  home-not-found: '<red>No existe el home <yellow><name></yellow>.'
+  home-choose: '<red>Tienes varios homes. Usa <yellow>/home \<nombre></yellow> o abre <yellow>/homes</yellow>.'
+  home-world-missing: '<red>El mundo de ese home ya no existe.'
+  no-homes: '<red>No tienes homes. Crea uno con <yellow>/sethome</yellow>.'
+  invalid-name: '<red>Nombre invalido. Usa de 1 a 16 caracteres: letras, numeros, <yellow>_</yellow> o <yellow>-</yellow>.'
+  homes-limit: '<red>Alcanzaste el limite de <yellow><max></yellow> homes. Borra uno con <yellow>/delhome \<nombre></yellow>.'
+  teleport-failed: '<red>No se pudo teletransportar.'
+  rtp-searching: '<gray>Buscando una ubicacion segura...'
+  rtp-success: '<green>Teletransportado a <yellow><x>, <y>, <z></yellow>.'
+  rtp-fail: '<red>No se encontro una ubicacion segura. Intenta de nuevo.'
+  rtp-cooldown: '<red>Espera <yellow><seconds>s</yellow> para volver a usar /rtp.'
+  rtp-busy: '<red>Ya estamos buscando una ubicacion para ti.'
+  rtp-world: '<red>/rtp no esta disponible en este mundo.'
+  menu-title: '<dark_aqua>Tus homes'
+  menu-item-name: '<yellow><name>'
+  menu-lore:
+    - '<gray>Mundo: <white><world>'
+    - '<gray>Coordenadas: <white><x>, <y>, <z>'
+    - ''
+    - '<green>Clic izquierdo: <white>teletransportar'
+    - '<red>Shift + clic derecho: <white>borrar'
+  fly-on: '<green>Vuelo <bold>activado</bold>.'
+  fly-off: '<yellow>Vuelo <bold>desactivado</bold>.'
+  fly-creative: '<red>Tu modo de juego actual ya te permite volar.'
+  back-none: '<red>No tienes una ubicacion anterior guardada.'
+  back-teleported: '<green>Volviste a tu ubicacion anterior.'
+  spawn-teleported: '<green>Teletransportado al spawn.'
+  spawn-set: '<green>Spawn del mundo actualizado.'
+  spawn-wrong-world: '<red>El spawn solo se puede definir en el mundo <yellow><world></yellow>.'
+  warp-set: '<green>Warp <yellow><name></yellow> guardado.'
+  warp-deleted: '<yellow>Warp <name> borrado.'
+  warp-not-found: '<red>No existe el warp <yellow><name></yellow>.'
+  warp-name-required: '<red>Debes indicar un nombre de warp.'
+  warp-teleported: '<green>Teletransportado al warp <yellow><name></yellow>.'
+  warps-none: '<red>No hay warps creados.'
+  warps-header: '<gray>Warps: '
+  warp-hover: '<gray>Clic para ir'
+  no-permission: '<red>No tienes permiso para hacer eso.'
+  tools-title: '<dark_aqua>Mesas de trabajo'
+  tool-lore: '<gray>Clic para abrir'
+  tool-crafting: '<yellow>Mesa de crafteo'
+  tool-anvil: '<yellow>Yunque'
+  tool-smithing: '<yellow>Mesa de herreria'
+  tool-stonecutter: '<yellow>Cortapiedras'
+  tool-loom: '<yellow>Telar'
+  tool-cartography: '<yellow>Mesa de cartografia'
+  tool-grindstone: '<yellow>Piedra de afilar'
+  tool-enchanting: '<yellow>Mesa de encantamientos'
+  tool-ender: '<light_purple>Cofre de ender'
