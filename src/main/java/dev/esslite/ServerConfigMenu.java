@@ -27,8 +27,8 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
     private static final String SPAWN = "§8EssLite • Spawning";
     private static final String MOUNTS = "§8EssLite • Monturas Purpur";
     private static final String MOB_PREFIX = "§8EssLite • Mob: ";
-    private static final List<SpawnCategory> CATS = List.of(SpawnCategory.MONSTER, SpawnCategory.CREATURE, SpawnCategory.AMBIENT,
-            SpawnCategory.WATER_CREATURE, SpawnCategory.WATER_AMBIENT, SpawnCategory.UNDERGROUND_WATER_CREATURE, SpawnCategory.AXOLOTL);
+    private static final List<SpawnCategory> CATS = List.of(SpawnCategory.MONSTER, SpawnCategory.ANIMAL, SpawnCategory.AMBIENT,
+            SpawnCategory.WATER_ANIMAL, SpawnCategory.WATER_AMBIENT, SpawnCategory.WATER_UNDERGROUND_CREATURE, SpawnCategory.AXOLOTL);
     private static final List<String> MOBS = List.of("allay","bat","bee","blaze","bogged","cat","cave_spider","chicken","cod","cow","creeper","dolphin","donkey","drowned","elder_guardian","enderman","endermite","evoker","fox","frog","ghast","giant","glow_squid","goat","guardian","hoglin","horse","husk","illusioner","iron_golem","llama","magma_cube","mooshroom","ocelot","panda","parrot","phantom","pig","piglin","piglin_brute","pillager","polar_bear","pufferfish","rabbit","ravager","salmon","sheep","shulker","silverfish","skeleton","skeleton_horse","slime","snow_golem","spider","squid","stray","strider","tadpole","trader_llama","tropical_fish","turtle","vex","villager","vindicator","wandering_trader","warden","witch","wither","wither_skeleton","wolf","zoglin","zombie","zombie_horse","zombie_villager","zombified_piglin");
     private final Map<UUID,Integer> mountPage = new HashMap<>();
 
@@ -77,9 +77,9 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
     }
 
     private Material icon(SpawnCategory c) { return switch(c) {
-        case MONSTER -> Material.ZOMBIE_HEAD; case CREATURE -> Material.COW_SPAWN_EGG; case AMBIENT -> Material.BAT_SPAWN_EGG;
-        case WATER_CREATURE -> Material.SQUID_SPAWN_EGG; case WATER_AMBIENT -> Material.COD_SPAWN_EGG;
-        case UNDERGROUND_WATER_CREATURE -> Material.GLOW_SQUID_SPAWN_EGG; case AXOLOTL -> Material.AXOLOTL_SPAWN_EGG;
+        case MONSTER -> Material.ZOMBIE_HEAD; case ANIMAL -> Material.COW_SPAWN_EGG; case AMBIENT -> Material.BAT_SPAWN_EGG;
+        case WATER_ANIMAL -> Material.SQUID_SPAWN_EGG; case WATER_AMBIENT -> Material.COD_SPAWN_EGG;
+        case WATER_UNDERGROUND_CREATURE -> Material.GLOW_SQUID_SPAWN_EGG; case AXOLOTL -> Material.AXOLOTL_SPAWN_EGG;
         default -> Material.SPAWNER; };
     }
 
@@ -132,7 +132,7 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
         if(title.startsWith(MOB_PREFIX)){String mob=title.substring(MOB_PREFIX.length());if(s==22){openMounts(p,mountPage.getOrDefault(p.getUniqueId(),0));return;}String key=s==10?"ridable":s==12?"controllable":s==14?"ridable-in-water":s==16?"always-drop-exp":null;if(key!=null)togglePurpur(p,mob,key);}
     }
 
-    @SuppressWarnings("deprecation") @EventHandler public void chat(AsyncPlayerChatEvent e){PendingInput in=pending.remove(e.getPlayer().getUniqueId());if(in==null)return;e.setCancelled(true);String msg=e.getMessage().trim();Player p=e.getPlayer();Bukkit.getScheduler().runTask(plugin,()->{if(msg.equalsIgnoreCase("cancelar")){p.sendMessage("§7Cambio cancelado.");openSpawn(p);return;}try{long v=Long.parseLong(msg);if(v < -1 || v > 1000000)throw new NumberFormatException();SpawnCategory cat=SpawnCategory.valueOf(in.key());if(in.kind().equals("limit")){if(v>10000)throw new NumberFormatException();in.world().setSpawnLimit(cat,(int)v);}else in.world().setTicksPerSpawns(cat,v);p.sendMessage("§6EssLite §8» §aCambio aplicado §7("+pretty(cat.name())+": "+v+")");openSpawn(p);}catch(Exception ex){p.sendMessage("§cValor inválido. Usa un número entre -1 y "+(in.kind().equals("limit")?"10000":"1000000")+".");openSpawn(p);}});}
+    @SuppressWarnings("deprecation") @EventHandler public void chat(AsyncPlayerChatEvent e){PendingInput in=pending.remove(e.getPlayer().getUniqueId());if(in==null)return;e.setCancelled(true);String msg=e.getMessage().trim();Player p=e.getPlayer();Bukkit.getScheduler().runTask(plugin,()->{if(msg.equalsIgnoreCase("cancelar")){p.sendMessage("§7Cambio cancelado.");openSpawn(p);return;}try{long v=Long.parseLong(msg);if(v < -1 || v > 1000000)throw new NumberFormatException();SpawnCategory cat=SpawnCategory.valueOf(in.key());if(in.kind().equals("limit")){if(v>10000)throw new NumberFormatException();in.world().setSpawnLimit(cat,(int)v);}else in.world().setTicksPerSpawns(cat,(int)v);p.sendMessage("§6EssLite §8» §aCambio aplicado §7("+pretty(cat.name())+": "+v+")");openSpawn(p);}catch(Exception ex){p.sendMessage("§cValor inválido. Usa un número entre -1 y "+(in.kind().equals("limit")?"10000":"1000000")+".");openSpawn(p);}});}
 
     private ItemStack item(Material m,String name,String... lore){ItemStack it=new ItemStack(m);ItemMeta meta=it.getItemMeta();meta.setDisplayName(name);meta.setLore(Arrays.asList(lore));it.setItemMeta(meta);return it;}
     private String pretty(String s){String[] a=s.toLowerCase(Locale.ROOT).split("_");StringBuilder b=new StringBuilder();for(String x:a){if(!b.isEmpty())b.append(' ');b.append(Character.toUpperCase(x.charAt(0))).append(x.substring(1));}return b.toString();}
