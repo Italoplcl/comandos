@@ -53,6 +53,14 @@ public final class EssLite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(back, this);
         getServer().getPluginManager().registerEvents(new ToolsMenu.Events(this), this);
         getServer().getPluginManager().registerEvents(new HomesMenu.Events(this, homes), this);
+
+        ServerConfigMenu serverConfig = new ServerConfigMenu(this);
+        PluginCommand serverConfigCommand = getCommand("serverconfig");
+        if (serverConfigCommand != null) {
+            serverConfigCommand.setExecutor(serverConfig);
+            serverConfigCommand.setTabCompleter(serverConfig);
+        }
+        getServer().getPluginManager().registerEvents(serverConfig, this);
     }
 
     @Override

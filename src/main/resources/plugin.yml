@@ -72,6 +72,12 @@ commands:
     usage: /ender
     permission: esslite.ender
 
+  serverconfig:
+    description: Abre el administrador grafico de Paper/Purpur
+    usage: /serverconfig [spawn|mounts]
+    aliases: [scfg, purpurgui]
+    permission: esslite.serverconfig
+
 permissions:
   esslite.god:
     default: op
@@ -111,3 +117,7 @@ permissions:
     default: true
   esslite.ender:
     default: true
+
+  esslite.serverconfig:
+    description: Permite administrar configuraciones Paper/Purpur desde GUI
+    default: op
