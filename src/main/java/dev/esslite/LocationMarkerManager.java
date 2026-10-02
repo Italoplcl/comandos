@@ -2,6 +2,8 @@ package dev.esslite;
 
 import org.bukkit.*;
 import org.bukkit.block.*;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
 import org.bukkit.entity.Player;
