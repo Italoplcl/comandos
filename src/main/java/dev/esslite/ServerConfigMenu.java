@@ -1,6 +1,14 @@
 package dev.esslite;
 
+import io.papermc.paper.dialog.Dialog;
+import io.papermc.paper.registry.data.dialog.ActionButton;
+import io.papermc.paper.registry.data.dialog.DialogBase;
+import io.papermc.paper.registry.data.dialog.action.DialogAction;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
+import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickCallback;
 import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -31,8 +39,8 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
 
     private static final String MAIN = "§8EssLite • Server Config";
     private static final String SPAWN = "§8EssLite • Spawning";
-    private static final String MODULES = "§8EssLite • Modules";
-    private static final String PURPUR = "§8EssLite • Purpur";
+    private static final String MODULES = "§8EssLite • Módulos de EssLite";
+    private static final String PURPUR = "§8EssLite • Configuración de Purpur";
     private static final String GAMEPLAY = "§8EssLite • Purpur Gameplay";
     private static final String BREEDING = "§8EssLite • Purpur Breeding";
     private static final String RAIDS = "§8EssLite • Purpur Raids";
@@ -69,9 +77,9 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
     private void openMain(Player p) {
         Inventory inv = Bukkit.createInventory(null, 27, MAIN);
         inv.setItem(10, item(Material.ZOMBIE_HEAD, "§aSpawning", "§7Límites y frecuencia por mundo", "§eClick para abrir"));
-        inv.setItem(12, item(Material.REPEATER, "§dModules", "§7Activa/desactiva funciones de EssLite", "§eClick para abrir"));
+        inv.setItem(12, item(Material.REPEATER, "§dMódulos de EssLite", "§7Activa/desactiva herramientas administrativas", "§7No cambia por sí solo la configuración de Purpur", "§eClick para abrir"));
         if (platform.isPurpur() && modules.purpurEnabled())
-            inv.setItem(13, item(Material.AMETHYST_SHARD, "§5Purpur", "§aDetectado", "§7Configura funciones exclusivas", "§eClick para abrir"));
+            inv.setItem(13, item(Material.AMETHYST_SHARD, "§5Configuración de Purpur", "§aPurpur detectado", "§7Edita opciones reales de purpur.yml", "§eClick para abrir"));
         else inv.setItem(13, item(Material.GRAY_DYE, "§7Purpur", platform.isPurpur()?"§cMódulo desactivado":"§cNo detectado"));
         inv.setItem(14, item(Material.GRASS_BLOCK, "§bMundo: §f" + world(p).getName(), "§7Click para cambiar de mundo"));
         inv.setItem(16, item(Material.REDSTONE_TORCH, "§cCompatibilidad", "§7Plataforma: §f"+platform.platform(), "§7Cambios Purpur: backup + verificación", "§7Reinicio recomendado tras editar Purpur"));
@@ -87,18 +95,50 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
         inv.setItem(14,moduleItem(Material.OMINOUS_BOTTLE,"Purpur • Raids","modules.server-config.purpur.raids.enabled",true));
         inv.setItem(22,item(Material.ARROW,"§fVolver")); p.openInventory(inv);
     }
-    private ItemStack moduleItem(Material m,String name,String path,boolean def){boolean on=plugin.getConfig().getBoolean(path,def);return item(m,"§e"+name,"§7Estado: "+(on?"§aACTIVADO":"§cDESACTIVADO"),"§eClick para alternar","§8"+path);}
+    private ItemStack moduleItem(Material m,String name,String path,boolean def){boolean on=plugin.getConfig().getBoolean(path,def);return item(m,"§e"+name,"§7Herramienta EssLite: "+(on?"§aACTIVADA":"§cDESACTIVADA"),"§7No revierte valores existentes de Purpur","§eClick para alternar","§8"+path);}
     private void toggleModule(Player p,String path,boolean def){boolean now=plugin.getConfig().getBoolean(path,def);plugin.getConfig().set(path,!now);plugin.saveConfig();p.sendMessage("§6EssLite §8» §fMódulo "+(now?"§cdesactivado":"§aactivado")+"§f: §7"+path);openModules(p);}
 
     private void cycleWorld(Player p) { List<World> worlds=Bukkit.getWorlds(); int i=worlds.indexOf(world(p)); selectedWorld.put(p.getUniqueId(),worlds.get((i+1)%worlds.size())); openMain(p); }
 
     private void openSpawn(Player p) {
         World w=world(p); Inventory inv=Bukkit.createInventory(null,27,SPAWN);
-        for(int i=0;i<CATS.size();i++){SpawnCategory cat=CATS.get(i);int limit=w.getSpawnLimit(cat);long ticks=w.getTicksPerSpawns(cat);inv.setItem(9+i,item(icon(cat),"§e"+pretty(cat.name()),"§fLímite: §a"+limit,"§fTicks/intento: §b"+ticks,"","§eClick izquierdo: cambiar límite","§6Click derecho: cambiar ticks"));}
+        for(int i=0;i<CATS.size();i++){SpawnCategory cat=CATS.get(i);int limit=w.getSpawnLimit(cat);long ticks=w.getTicksPerSpawns(cat);inv.setItem(9+i,item(icon(cat),"§e"+pretty(cat.name()),"§fLímite: §a"+limit,"§fTicks/intento: §b"+ticks,"","§eClick para editar en Dialog"));}
         inv.setItem(22,item(Material.ARROW,"§fVolver"));inv.setItem(26,item(Material.COMPASS,"§b"+w.getName(),"§7Se configura por mundo"));p.openInventory(inv);
     }
     private Material icon(SpawnCategory c){return switch(c){case MONSTER->Material.ZOMBIE_HEAD;case ANIMAL->Material.COW_SPAWN_EGG;case AMBIENT->Material.BAT_SPAWN_EGG;case WATER_ANIMAL->Material.SQUID_SPAWN_EGG;case WATER_AMBIENT->Material.COD_SPAWN_EGG;case WATER_UNDERGROUND_CREATURE->Material.GLOW_SQUID_SPAWN_EGG;case AXOLOTL->Material.AXOLOTL_SPAWN_EGG;default->Material.SPAWNER;};}
-    private void askSpawn(Player p,SpawnCategory cat,boolean ticks){p.closeInventory();pending.put(p.getUniqueId(),new PendingInput(ticks?"ticks":"limit",cat.name(),world(p)));p.sendMessage("§6EssLite §8» §fEscribe el nuevo "+(ticks?"intervalo en ticks":"límite")+" para §e"+pretty(cat.name())+"§f. Escribe §ccancelar§f para salir.");}
+    private void openSpawnDialog(Player p, SpawnCategory cat) {
+        World w = world(p);
+        String limit = String.valueOf(w.getSpawnLimit(cat));
+        String ticks = String.valueOf(w.getTicksPerSpawns(cat));
+        ActionButton save = ActionButton.builder(Component.text("Guardar"))
+                .tooltip(Component.text("Aplicar límite y frecuencia a " + w.getName()))
+                .action(DialogAction.customClick((response, audience) -> {
+                    if (!(audience instanceof Player player)) return;
+                    try {
+                        int newLimit = Integer.parseInt(Objects.requireNonNullElse(response.getText("limit"), limit).trim());
+                        int newTicks = Integer.parseInt(Objects.requireNonNullElse(response.getText("ticks"), ticks).trim());
+                        if (newLimit < -1 || newLimit > 10000 || newTicks < -1 || newTicks > 1000000) throw new NumberFormatException();
+                        w.setSpawnLimit(cat, newLimit);
+                        w.setTicksPerSpawns(cat, newTicks);
+                        player.sendMessage("§6EssLite §8» §aSpawning actualizado §7(" + pretty(cat.name()) + ": límite " + newLimit + ", ticks " + newTicks + ")");
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> openSpawn(player), 1L);
+                    } catch (NumberFormatException ex) {
+                        player.sendMessage("§cValores inválidos. Límite: -1..10000. Ticks: -1..1000000.");
+                        Bukkit.getScheduler().runTaskLater(plugin, () -> openSpawnDialog(player, cat), 1L);
+                    }
+                }, ClickCallback.Options.builder().uses(1).build()))
+                .build();
+        ActionButton cancel = ActionButton.builder(Component.text("Cancelar")).build();
+        Dialog dialog = Dialog.create(builder -> builder.empty()
+                .base(DialogBase.builder(Component.text("Spawning · " + pretty(cat.name())))
+                        .body(List.of(DialogBody.plainMessage(Component.text("Mundo: " + w.getName() + "\n-1 conserva el comportamiento predeterminado cuando la API lo admite."))))
+                        .inputs(List.of(
+                                DialogInput.text("limit", Component.text("Límite de entidades")).initial(limit).maxLength(8).width(220).build(),
+                                DialogInput.text("ticks", Component.text("Ticks entre intentos")).initial(ticks).maxLength(10).width(220).build()
+                        )).build())
+                .type(DialogType.confirmation(save, cancel)));
+        p.showDialog(dialog);
+    }
 
     private File purpurFile(){return new File("purpur.yml");}
     private YamlConfiguration purpur(Player p){File f=purpurFile();if(!f.isFile()){p.sendMessage("§cNo encontré purpur.yml en la raíz del servidor.");return null;}return YamlConfiguration.loadConfiguration(f);}
@@ -115,7 +155,7 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
         inv.setItem(18,item(Material.PAPER,"§aArchivo encontrado","§fpurpur.yml","§7Cambios sobre world-settings.default"));
         inv.setItem(22,item(Material.ARROW,"§fVolver"));p.openInventory(inv);
     }
-    private ItemStack purpurModuleItem(Material m,String name,boolean on){return item(m,(on?"§a":"§7")+name,"§7Módulo: "+(on?"§aACTIVADO":"§cDESACTIVADO"),on?"§eClick para abrir":"§8Actívalo en /serverconfig → Modules");}
+    private ItemStack purpurModuleItem(Material m,String name,boolean on){return item(m,(on?"§a":"§7")+name,"§7Herramienta EssLite: "+(on?"§aACTIVADA":"§cDESACTIVADA"),on?"§eClick para configurar":"§8Actívala en Módulos de EssLite");}
 
     private void openMountsChecked(Player p,int page){if(!purpurReady(p))return;if(!modules.mountsEnabled()){p.sendMessage("§cMounts está desactivado. Actívalo en /serverconfig → Modules.");return;}openMounts(p,page);}
     private void openMounts(Player p,int page){
@@ -129,16 +169,45 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
         mobSource.put(p.getUniqueId(), "mobs");
         YamlConfiguration y=purpur(p);if(y==null)return;List<String> visible=new ArrayList<>();for(String mob:MOBS)if(y.isConfigurationSection("world-settings.default.mobs."+mob))visible.add(mob);int per=45,max=Math.max(0,(visible.size()-1)/per);page=Math.max(0,Math.min(max,page));mountPage.put(p.getUniqueId(),page);Inventory inv=Bukkit.createInventory(null,54,MOB_MANAGER+" §7"+(page+1)+"/"+(max+1));
         int slot=0;for(int idx=page*per;idx<visible.size()&&slot<per;idx++){String mob=visible.get(idx),base="world-settings.default.mobs."+mob;List<String> lore=new ArrayList<>();if(y.contains(base+".ridable"))lore.add("§7Montable: "+(y.getBoolean(base+".ridable")?"§aSí":"§cNo"));if(y.contains(base+".always-drop-exp"))lore.add("§7XP siempre: "+(y.getBoolean(base+".always-drop-exp")?"§aSí":"§cNo"));lore.add("§eClick para configurar");inv.setItem(slot++,item(egg(mob),"§f"+pretty(mob),lore.toArray(String[]::new)));}
-        if(page>0)inv.setItem(45,item(Material.ARROW,"§fPágina anterior"));if(page<max)inv.setItem(53,item(Material.ARROW,"§fPágina siguiente"));inv.setItem(49,item(Material.BARRIER,"§fVolver"));inv.setItem(50,item(Material.COMPASS,"§bConfiguración global","§7Sólo opciones existentes en purpur.yml"));p.openInventory(inv);
+        if(page>0)inv.setItem(45,item(Material.ARROW,"§fPágina anterior"));if(page<max)inv.setItem(53,item(Material.ARROW,"§fPágina siguiente"));inv.setItem(49,item(Material.BARRIER,"§fVolver"));p.openInventory(inv);
     }
     private Material egg(String mob){Material m=Material.matchMaterial(mob.toUpperCase(Locale.ROOT)+"_SPAWN_EGG");return m==null?Material.SPAWNER:m;}
     private void openMob(Player p,String mob){
-        YamlConfiguration y=purpur(p);if(y==null)return;String base="world-settings.default.mobs."+mob;Inventory inv=Bukkit.createInventory(null,27,MOB_PREFIX+mob);int slot=10;
-        slot=addMobToggle(inv,y,base,slot,Material.SADDLE,"Montable","ridable");
-        slot=addMobToggle(inv,y,base,slot,Material.REPEATER,"Controlable WASD","controllable");
-        slot=addMobToggle(inv,y,base,slot,Material.WATER_BUCKET,"Montable en agua","ridable-in-water");
-        slot=addMobToggle(inv,y,base,slot,Material.EXPERIENCE_BOTTLE,"Siempre entrega XP","always-drop-exp");
-        inv.setItem(22,item(Material.ARROW,"§fVolver"));p.openInventory(inv);
+        YamlConfiguration y=purpur(p); if(y==null)return;
+        String base="world-settings.default.mobs."+mob;
+        LinkedHashMap<String,String> options=new LinkedHashMap<>();
+        options.put("ridable","Montable");
+        options.put("controllable","Controlable WASD");
+        options.put("ridable-in-water","Montable en agua");
+        options.put("always-drop-exp","Siempre entrega XP");
+        List<DialogInput> inputs=new ArrayList<>();
+        List<String> existing=new ArrayList<>();
+        for(var entry:options.entrySet()){
+            String optionPath=base+"."+entry.getKey();
+            if(y.contains(optionPath) && y.get(optionPath) instanceof Boolean){
+                existing.add(entry.getKey());
+                inputs.add(DialogInput.bool(entry.getKey(),Component.text(entry.getValue())).initial(y.getBoolean(optionPath)).build());
+            }
+        }
+        if(inputs.isEmpty()){p.sendMessage("§7Este mob no tiene opciones booleanas compatibles expuestas por EssLite.");return;}
+        String permissionInfo = y.contains(base+".ridable") ? "\nPermiso de Purpur para montar: allow.ride."+mob+"\nOP no implica automáticamente este permiso." : "";
+        ActionButton save=ActionButton.builder(Component.text("Guardar"))
+                .tooltip(Component.text("Guardar cambios en purpur.yml"))
+                .action(DialogAction.customClick((response,audience)->{
+                    if(!(audience instanceof Player player))return;
+                    try{
+                        LinkedHashMap<String,Object> changes=new LinkedHashMap<>();
+                        for(String key:existing){Boolean value=response.getBoolean(key);if(value!=null)changes.put(base+"."+key,value);}
+                        writePurpurVerifiedBatch(purpurFile(),changes);
+                        player.sendMessage("§6EssLite §8» §aConfiguración de "+pretty(mob)+" guardada. §7Backup creado; reinicia el servidor.");
+                    }catch(Exception ex){purpurError(player,ex);}
+                },ClickCallback.Options.builder().uses(1).build())).build();
+        Dialog dialog=Dialog.create(builder->builder.empty()
+                .base(DialogBase.builder(Component.text("Purpur · "+pretty(mob)))
+                        .body(List.of(DialogBody.plainMessage(Component.text("Sólo se muestran opciones existentes en tu purpur.yml."+permissionInfo))))
+                        .inputs(inputs).build())
+                .type(DialogType.confirmation(save,ActionButton.builder(Component.text("Cancelar")).build())));
+        p.showDialog(dialog);
     }
     private int addMobToggle(Inventory inv,YamlConfiguration y,String base,int slot,Material mat,String name,String key){if(y.contains(base+"."+key)){inv.setItem(slot,toggleItem(mat,name,y.getBoolean(base+"."+key),key));return slot+2;}return slot;}
     private ItemStack toggleItem(Material mat,String name,boolean value,String key){return item(mat,"§e"+name,"§7Configurado: "+(value?"§aACTIVADO":"§cDESACTIVADO"),"§8"+key,"§eClick para alternar","§7Requiere reiniciar el servidor");}
@@ -171,7 +240,7 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
         if(title.equals(MAIN)){if(s==10)openSpawn(p);else if(s==12)openModules(p);else if(s==13&&platform.isPurpur()&&modules.purpurEnabled())openPurpur(p);else if(s==14)cycleWorld(p);return;}
         if(title.equals(MODULES)){if(s==10)toggleModule(p,"modules.server-config.purpur.mounts.enabled",false);else if(s==11)toggleModule(p,"modules.server-config.purpur.mobs.enabled",true);else if(s==12)toggleModule(p,"modules.server-config.purpur.gameplay.enabled",true);else if(s==13)toggleModule(p,"modules.server-config.purpur.breeding.enabled",true);else if(s==14)toggleModule(p,"modules.server-config.purpur.raids.enabled",true);else if(s==22)openMain(p);return;}
         if(title.equals(PURPUR)){if(s==10&&modules.mountsEnabled())openMounts(p,0);else if(s==11&&modules.mobsEnabled())openMobManager(p,0);else if(s==12&&modules.gameplayEnabled())openGameplay(p);else if(s==13&&modules.breedingEnabled())openBreeding(p);else if(s==14&&modules.raidsEnabled())openRaids(p);else if(s==22)openMain(p);return;}
-        if(title.equals(SPAWN)){if(s>=9&&s<9+CATS.size())askSpawn(p,CATS.get(s-9),e.isRightClick());else if(s==22)openMain(p);return;}
+        if(title.equals(SPAWN)){if(s>=9&&s<9+CATS.size()){p.closeInventory();openSpawnDialog(p,CATS.get(s-9));}else if(s==22)openMain(p);return;}
         if(title.startsWith(MOUNTS)){int page=mountPage.getOrDefault(p.getUniqueId(),0);if(s<45){YamlConfiguration y=YamlConfiguration.loadConfiguration(purpurFile());List<String> visible=new ArrayList<>();for(String mob:MOBS)if(y.contains("world-settings.default.mobs."+mob+".ridable"))visible.add(mob);int idx=page*45+s;if(idx<visible.size())openMob(p,visible.get(idx));}else if(s==45)openMounts(p,page-1);else if(s==53)openMounts(p,page+1);else if(s==49)openPurpur(p);return;}
         if(title.startsWith(MOB_MANAGER)){int page=mountPage.getOrDefault(p.getUniqueId(),0);if(s<45){YamlConfiguration y=YamlConfiguration.loadConfiguration(purpurFile());List<String> visible=new ArrayList<>();for(String mob:MOBS)if(y.isConfigurationSection("world-settings.default.mobs."+mob))visible.add(mob);int idx=page*45+s;if(idx<visible.size())openMob(p,visible.get(idx));}else if(s==45)openMobManager(p,page-1);else if(s==53)openMobManager(p,page+1);else if(s==49)openPurpur(p);return;}
         if(title.startsWith(MOB_PREFIX)){String mob=title.substring(MOB_PREFIX.length());if(s==22){if("mobs".equals(mobSource.get(p.getUniqueId())))openMobManager(p,mountPage.getOrDefault(p.getUniqueId(),0));else openMounts(p,mountPage.getOrDefault(p.getUniqueId(),0));return;}ItemStack clicked=e.getCurrentItem();if(clicked==null||!clicked.hasItemMeta()||clicked.getItemMeta().getLore()==null)return;for(String line:clicked.getItemMeta().getLore())if(line.startsWith("§8")){toggleMobKey(p,mob,line.substring(2));return;}return;}
