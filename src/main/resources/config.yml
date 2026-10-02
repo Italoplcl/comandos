@@ -120,12 +120,18 @@ markers:
       interval-ticks: 20
 
 changelog:
-  version: "1.2.1"
+  version: "1.3.0-test"
   lines:
     - "EssLite ahora usa Dialogs modernos de Minecraft."
     - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."
     - "Base modular para Paper y Purpur."
     - "Corrección de escritura y respaldo de purpur.yml."
+    - "ServerConfig híbrido: GUI para navegar y Dialogs para editar."
+    - "Módulos de EssLite y Configuración de Purpur ahora tienen funciones claramente separadas."
+    - "Spawning y Mob Manager usan Dialogs para editar valores."
+    - "Eliminado el placeholder Configuración global."
+    - "Banners de Warp y Spawn orientados según la mirada."
+    - "Carteles Home escritos en ambas caras y validación real de soporte para nieve/alfombras."
     - "Nuevo menú Modules y módulos Purpur para pruebas."
     - "Banners de Warp y Spawn orientados según la mirada."
     - "Carteles Home escritos en ambas caras."
