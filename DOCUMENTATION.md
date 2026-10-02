@@ -11,48 +11,122 @@ EssLite mantiene separada la información funcional de la presentación. Un Home
 ## Módulos
 `modules.<nombre>.enabled` permite apagar funcionalidades. Las integraciones Purpur se encuentran bajo `modules.server-config.purpur`.
 
+**Módulos de EssLite** y **Configuración de Purpur** no son lo mismo:
+- Módulos activa/desactiva la herramienta administrativa de EssLite.
+- Configuración de Purpur modifica valores reales existentes en `purpur.yml`.
+- Desactivar una herramienta EssLite no revierte valores que ya hayan sido guardados en Purpur.
+
 ## Marcadores
+
 ### Home
-Después de guardar el home, EssLite intenta colocar un cartel en la cara del bloque que mira el jugador. Su contenido es: decoración / nombre del home / jugador / decoración.
+Después de guardar el Home, EssLite intenta colocar un cartel en la cara del bloque que mira el jugador. Su contenido es decoración / nombre del Home / jugador / decoración y se escribe en ambas caras.
+
+Ejemplo:
+1. Mira una superficie válida.
+2. Ejecuta `/sethome mina`.
+3. El Home queda guardado aunque el marcador físico no pueda colocarse.
 
 ### Warp
-`/setwarp <nombre>` abre una GUI con nueve colores de estandarte. Tras seleccionar uno se guarda el Warp y se intenta colocar el banner en el bloque de los pies, únicamente si está libre y existe soporte sólido debajo.
+`/setwarp <nombre>` abre una GUI con nueve colores de estandarte. Tras seleccionar uno se guarda el Warp y se intenta colocar el banner en el bloque de los pies. El banner se orienta según la mirada del jugador.
+
+Ejemplo: `/setwarp mercado`.
 
 ### Spawn
-`/setspawn` actualiza primero el spawn real y después intenta colocar un `LIME_BANNER` en la posición del jugador. Las partículas `HAPPY_VILLAGER` sólo se procesan cuando hay jugadores cerca.
+`/setspawn` actualiza primero el Spawn real y después intenta colocar un `LIME_BANNER` orientado según la mirada del administrador. Las partículas `HAPPY_VILLAGER` sólo se procesan cuando hay jugadores cerca.
 
-### Seguridad
+### Seguridad de marcadores
 Los TileStates creados se marcan con PDC (`location_marker`, `marker_type`, `marker_name`). Romper un marcador cancela sus drops especiales, pero jamás elimina la ubicación funcional.
+
+Antes de colocar un marcador EssLite consulta la validación de soporte de la API. Si nieve, alfombra u otra geometría parcial/especial no puede soportar realmente el cartel o banner, EssLite no modifica el terreno y conserva la ubicación lógica.
 
 ## ServerConfig / Purpur
 Ruta del archivo: `./purpur.yml` (raíz del servidor).
 
 Flujo de escritura:
 1. Verificar que Purpur y el módulo estén habilitados.
-2. Crear backup en `plugins/EssLite/backups/`.
-3. Modificar `world-settings.default.mobs.<mob>.<opción>`.
-4. Guardar.
-5. Releer el archivo y comprobar el valor.
-6. Informar que se requiere reinicio.
+2. Comprobar que la clave que se va a modificar existe.
+3. Crear backup en `plugins/EssLite/backups/`.
+4. Modificar el valor.
+5. Guardar.
+6. Releer el archivo y comprobar el valor.
+7. Informar que se requiere/recomienda reinicio.
 
 No se ejecuta `/purpur reload` automáticamente.
 
-## Dialogs
-La primera pantalla nativa es `/changelog`. Paper ofrece Dialogs desde versiones modernas y EssLite los utilizará progresivamente para sustituir entradas por chat en configuración administrativa.
+### Monturas
+El módulo Mounts es opt-in y viene desactivado por defecto. La interfaz sólo muestra mobs para los que encuentra la opción compatible en el `purpur.yml` real.
+
+Ejemplo Zombie:
+1. `/serverconfig`.
+2. **Módulos de EssLite -> Purpur • Mounts -> ACTIVADO**.
+3. **Configuración de Purpur -> Mounts -> Zombie**.
+4. Activa `Montable` y guarda.
+5. Reinicia el servidor cuando EssLite lo indique.
+6. Concede `allow.ride.zombie` mediante un gestor de permisos compatible.
+
+Los permisos especiales de Purpur, como `allow.ride.<mob>`, no se consideran concedidos automáticamente por ser OP.
+
+### Mob Manager
+Mob Manager configura comportamiento/propiedades de mobs; no controla cuántos aparecen. EssLite sólo muestra las opciones booleanas compatibles que encuentra en la sección real del mob.
+
+No existe un botón de “Configuración global” sin función real. Las opciones visibles deben ejecutar una acción operativa.
+
+## Spawning
+Spawning controla límites y frecuencia por mundo y categoría mediante la API del servidor.
+
+Flujo:
+1. Ejecuta `/serverconfig`.
+2. Selecciona el mundo desde la pantalla principal si corresponde.
+3. Abre **Spawning**.
+4. Selecciona una categoría.
+5. El Dialog muestra límite y ticks entre intentos.
+6. Modifica ambos valores y pulsa **Guardar**.
+
+Ejemplo ambiental: seleccionar **Ambient** modifica la categoría `AMBIENT`. Esto no es un limitador exclusivo de `BAT`; otros mobs de esa categoría pueden verse afectados.
+
+## Interfaz híbrida de ServerConfig (1.3.0-test)
+EssLite usa inventarios para **navegar y seleccionar** y Dialogs nativos para **editar valores o confirmar cambios**.
+
+Esquema:
+```
+/serverconfig
+├── Spawning
+├── Módulos de EssLite
+└── Configuración de Purpur
+    ├── Mounts
+    ├── Mob Manager
+    ├── Gameplay
+    ├── Breeding
+    └── Raids
+```
+
+Los módulos desactivados se muestran como no disponibles en la sección de configuración correspondiente.
+
+## Changelog
+Actualmente `/changelog` abre un Dialog moderno. La ampliación Changelog 2.0 (estado leído por jugador, historial y comportamiento al entrar) permanece planificada y no debe confundirse con funcionalidad ya implementada.
+
+## Anuncios
+El sistema general de anuncios, BossBars con cuenta regresiva y plantillas sigue planificado; no forma parte de 1.3.0-test.
 
 ## Rendimiento y Spark
 Toda mecánica periódica nueva debe revisarse con Spark, comparando cuando sea posible antes/después: MSPT/TPS, CPU, tareas/listeners de EssLite y hotspots. Especial atención a partículas, marcadores, spawning, entidades y ServerConfig.
 
-## Preview Purpur modules (1.2.1 test)
-`/serverconfig` now exposes a Modules screen and, when Purpur is detected, a Purpur section.
+La arquitectura debe evitar tareas periódicas innecesarias. En particular, los efectos del Spawn sólo realizan trabajo visible cuando existen jugadores dentro de la distancia configurada.
 
-Purpur submodules:
-- Mounts (disabled by default / opt-in)
-- Mob Manager
-- Gameplay
-- Breeding
-- Raids
+## Estado de 1.3.0-test
+Implementado en esta versión de prueba:
+- Interfaz híbrida GUI + Dialogs para Spawning y edición compatible de mobs Purpur.
+- Separación visual/funcional entre Módulos de EssLite y Configuración de Purpur.
+- Backups y verificación posterior de escrituras Purpur.
+- Eliminación del placeholder global sin acción.
+- Información del permiso `allow.ride.<mob>` en configuración de monturas.
+- Home en ambas caras.
+- Orientación de banners Warp/Spawn según la mirada.
+- Validación de soporte antes de colocar marcadores.
 
-EssLite edits only keys that are present in the server's real root `purpur.yml`. Before each Purpur write it creates a timestamped backup in `plugins/EssLite/backups/`, saves the requested value, re-reads the physical file, and verifies the result. Purpur changes are shown as requiring a server restart; EssLite does not automatically run `/purpur reload`.
-
-The first Purpur test surface intentionally exposes a conservative subset of settings. Unsupported/missing keys are not invented or written.
+Planificado para versiones posteriores:
+- Registro/limpieza persistente completa de marcadores.
+- Changelog 2.0.
+- Anuncios.
+- Quick Actions.
+- Nuevos módulos Paper y ampliaciones Purpur.
