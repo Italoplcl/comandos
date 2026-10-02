@@ -6,6 +6,7 @@ import org.bukkit.block.sign.Side;
 import org.bukkit.block.sign.SignSide;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Rotatable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,12 +43,16 @@ public final class LocationMarkerManager implements Listener {
         Block place = target.getRelative(face);
         if (!place.isEmpty()) return false;
         Material mat = face == BlockFace.DOWN ? Material.OAK_HANGING_SIGN : (face == BlockFace.UP ? Material.OAK_SIGN : Material.OAK_WALL_SIGN);
-        place.setType(mat, false);
-        if (place.getBlockData() instanceof Directional d && face != BlockFace.UP && face != BlockFace.DOWN) {
-            d.setFacing(face); place.setBlockData(d, false);
-        } else if (place.getBlockData() instanceof Rotatable r) {
-            r.setRotation(cardinal(p.getLocation().getYaw())); place.setBlockData(r, false);
+        BlockData candidate = mat.createBlockData();
+        if (candidate instanceof Directional d && face != BlockFace.UP && face != BlockFace.DOWN) {
+            d.setFacing(face);
+        } else if (candidate instanceof Rotatable r) {
+            r.setRotation(cardinal(p.getLocation().getYaw()));
         }
+        // Pregunta a la propia API si el cartel sobreviviría en esta posición.
+        // Evita carteles flotando sobre nieve, alfombras y geometrías parciales sin mantener listas manuales.
+        if (!candidate.isSupported(place)) return false;
+        place.setBlockData(candidate, false);
         if (!(place.getState() instanceof Sign sign)) { place.setType(Material.AIR, false); return false; }
         String deco = plugin.getConfig().getString("markers.homes.decoration", "--------");
         for (Side signFace : Side.values()) {
@@ -67,11 +72,10 @@ public final class LocationMarkerManager implements Listener {
         if (!plugin.getConfig().getBoolean("markers.warps.enabled", true)) return true;
         Block feet = p.getLocation().getBlock();
         if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
-        feet.setType(bannerMaterial(color), false);
-        if (feet.getBlockData() instanceof Rotatable rotatable) {
-            rotatable.setRotation(cardinal(p.getLocation().getYaw()));
-            feet.setBlockData(rotatable, false);
-        }
+        BlockData candidate = bannerMaterial(color).createBlockData();
+        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()));
+        if (!candidate.isSupported(feet)) return false;
+        feet.setBlockData(candidate, false);
         if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
         mark(banner, "warp", warpName);
         banner.update(true, false);
@@ -82,11 +86,10 @@ public final class LocationMarkerManager implements Listener {
         if (!plugin.getConfig().getBoolean("markers.spawn.enabled", true)) return true;
         Block feet = p.getLocation().getBlock();
         if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
-        feet.setType(Material.LIME_BANNER, false);
-        if (feet.getBlockData() instanceof Rotatable rotatable) {
-            rotatable.setRotation(cardinal(p.getLocation().getYaw()));
-            feet.setBlockData(rotatable, false);
-        }
+        BlockData candidate = Material.LIME_BANNER.createBlockData();
+        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()));
+        if (!candidate.isSupported(feet)) return false;
+        feet.setBlockData(candidate, false);
         if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
         mark(banner, "spawn", p.getWorld().getName());
         banner.update(true, false);
