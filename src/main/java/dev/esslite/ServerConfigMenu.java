@@ -232,6 +232,13 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
     private void togglePurpurPath(Player p,String path,Runnable reopen){File f=purpurFile();if(!f.isFile()){missingPurpur(p);return;}try{YamlConfiguration y=YamlConfiguration.loadConfiguration(f);if(!y.contains(path)||!(y.get(path) instanceof Boolean)){p.sendMessage("§cEsa opción no existe como boolean en tu purpur.yml; no se modificó nada.");return;}boolean wanted=!y.getBoolean(path);writePurpurVerified(f,path,wanted);p.sendMessage("§6EssLite §8» §fGuardado: §e"+path+" §7→ "+(wanted?"§aON":"§cOFF")+" §7(backup creado; reinicia el servidor)");Bukkit.getScheduler().runTaskLater(plugin,reopen,2L);}catch(Exception ex){purpurError(p,ex);}}
     private void toggleMobKey(Player p,String mob,String key){String path="world-settings.default.mobs."+mob+"."+key;togglePurpurPath(p,path,()->openMob(p,mob));}
     private void writePurpurVerified(File f,String path,Object wanted)throws IOException{backup(f);YamlConfiguration y=YamlConfiguration.loadConfiguration(f);y.set(path,wanted);y.save(f);YamlConfiguration verify=YamlConfiguration.loadConfiguration(f);Object saved=verify.get(path);if(saved==null||!String.valueOf(saved).equals(String.valueOf(wanted)))throw new IOException("La verificación posterior al guardado falló para "+path);}
+    private void writePurpurVerifiedBatch(File f,Map<String,Object> changes)throws IOException{
+        if(changes.isEmpty())return;
+        backup(f);YamlConfiguration y=YamlConfiguration.loadConfiguration(f);
+        for(var e:changes.entrySet()){if(!y.contains(e.getKey()))throw new IOException("La opción ya no existe: "+e.getKey());y.set(e.getKey(),e.getValue());}
+        y.save(f);YamlConfiguration verify=YamlConfiguration.loadConfiguration(f);
+        for(var e:changes.entrySet()){Object saved=verify.get(e.getKey());if(saved==null||!String.valueOf(saved).equals(String.valueOf(e.getValue())))throw new IOException("La verificación posterior al guardado falló para "+e.getKey());}
+    }
     private void purpurError(Player p,Exception ex){p.sendMessage("§cNo pude modificar purpur.yml: "+ex.getMessage());plugin.getLogger().warning("Purpur edit error: "+ex);}
     private void backup(File f)throws IOException{Path dir=plugin.getDataFolder().toPath().resolve("backups");Files.createDirectories(dir);String stamp=LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss-SSS"));Files.copy(f.toPath(),dir.resolve("purpur-"+stamp+".yml"),StandardCopyOption.REPLACE_EXISTING);}
 
