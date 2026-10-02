@@ -18,35 +18,36 @@ public final class EssLite extends JavaPlugin {
     private WarpManager warps;
     private FlyListener fly;
     private BackListener back;
+    private ModuleManager modules;
+    private PlatformDetector platform;
+    private LocationMarkerManager markers;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        modules = new ModuleManager(this);
+        platform = new PlatformDetector();
+        getLogger().info("Plataforma detectada: " + platform.platform());
+        markers = new LocationMarkerManager(this);
+        getServer().getPluginManager().registerEvents(markers, this);
 
         homes = new HomeManager(this);
         god = new GodListener();
         Rtp rtp = new Rtp(this);
-        Commands commands = new Commands(this, homes, god, rtp);
+        Commands commands = new Commands(this, homes, god, rtp, markers);
 
-        for (String name : List.of("god", "heal", "sethome", "home", "homes", "delhome", "rtp")) {
-            PluginCommand cmd = getCommand(name);
-            if (cmd != null) {
-                cmd.setExecutor(commands);
-                cmd.setTabCompleter(commands);
-            }
-        }
+        for (String name : List.of("god", "heal", "rtp")) register(name, commands, commands);
+        if (modules.enabled("homes")) for (String name : List.of("sethome", "home", "homes", "delhome")) register(name, commands, commands);
 
         warps = new WarpManager(this);
         fly = new FlyListener();
         back = new BackListener();
-        ExtraCommands extra = new ExtraCommands(this, fly, back, warps);
-        for (String name : List.of("fly", "back", "spawn", "setspawn", "warp", "setwarp", "delwarp", "tools", "ender")) {
-            PluginCommand cmd = getCommand(name);
-            if (cmd != null) {
-                cmd.setExecutor(extra);
-                cmd.setTabCompleter(extra);
-            }
-        }
+        WarpColorMenu warpColors = new WarpColorMenu(this, warps, markers);
+        getServer().getPluginManager().registerEvents(warpColors, this);
+        ExtraCommands extra = new ExtraCommands(this, fly, back, warps, warpColors, markers);
+        for (String name : List.of("fly", "back", "tools", "ender")) register(name, extra, extra);
+        if (modules.enabled("spawn")) for (String name : List.of("spawn", "setspawn")) register(name, extra, extra);
+        if (modules.enabled("warps")) for (String name : List.of("warp", "setwarp", "delwarp")) register(name, extra, extra);
 
         getServer().getPluginManager().registerEvents(god, this);
         getServer().getPluginManager().registerEvents(fly, this);
@@ -54,13 +55,21 @@ public final class EssLite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ToolsMenu.Events(this), this);
         getServer().getPluginManager().registerEvents(new HomesMenu.Events(this, homes), this);
 
-        ServerConfigMenu serverConfig = new ServerConfigMenu(this);
-        PluginCommand serverConfigCommand = getCommand("serverconfig");
-        if (serverConfigCommand != null) {
-            serverConfigCommand.setExecutor(serverConfig);
-            serverConfigCommand.setTabCompleter(serverConfig);
+        if (modules.enabled("changelog")) {
+            PluginCommand changelog = getCommand("changelog");
+            if (changelog != null) changelog.setExecutor(new ChangelogCommand(this));
         }
-        getServer().getPluginManager().registerEvents(serverConfig, this);
+
+        if (modules.enabled("server-config")) {
+            ServerConfigMenu serverConfig = new ServerConfigMenu(this, modules, platform);
+            register("serverconfig", serverConfig, serverConfig);
+            getServer().getPluginManager().registerEvents(serverConfig, this);
+        }
+    }
+
+    private void register(String name, org.bukkit.command.CommandExecutor executor, org.bukkit.command.TabCompleter completer) {
+        PluginCommand cmd = getCommand(name);
+        if (cmd != null) { cmd.setExecutor(executor); cmd.setTabCompleter(completer); }
     }
 
     @Override

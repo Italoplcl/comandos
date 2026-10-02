@@ -27,12 +27,16 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     private final FlyListener fly;
     private final BackListener back;
     private final WarpManager warps;
+    private final WarpColorMenu warpColors;
+    private final LocationMarkerManager markers;
 
-    public ExtraCommands(EssLite plugin, FlyListener fly, BackListener back, WarpManager warps) {
+    public ExtraCommands(EssLite plugin, FlyListener fly, BackListener back, WarpManager warps, WarpColorMenu warpColors, LocationMarkerManager markers) {
         this.plugin = plugin;
         this.fly = fly;
         this.back = back;
         this.warps = warps;
+        this.warpColors = warpColors;
+        this.markers = markers;
     }
 
     @Override
@@ -111,7 +115,9 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
             return;
         }
         w.setSpawnLocation(p.getLocation());
+        boolean markerOk = markers.createSpawnBanner(p);
         p.sendMessage(plugin.msg("spawn-set"));
+        if (!markerOk) p.sendMessage(plugin.msg("marker-no-space"));
     }
 
     private void warp(Player p, String[] args) {
@@ -152,6 +158,10 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
         String name = HomeManager.normalize(args[0]);
         if (name == null) {
             p.sendMessage(plugin.msg("invalid-name"));
+            return;
+        }
+        if (plugin.getConfig().getBoolean("markers.warps.enabled", true) && plugin.getConfig().getBoolean("markers.warps.color-selector", true)) {
+            warpColors.open(p, name);
             return;
         }
         warps.set(name, Home.of(p.getLocation()));

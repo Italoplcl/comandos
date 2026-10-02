@@ -75,3 +75,47 @@ messages:
   tool-grindstone: '<yellow>Piedra de afilar'
   tool-enchanting: '<yellow>Mesa de encantamientos'
   tool-ender: '<light_purple>Cofre de ender'
+  home-marker-failed: '<yellow>Home guardado, pero no pude colocar el cartel en la superficie indicada.'
+  marker-no-space: '<yellow>La ubicación fue guardada, pero no hay espacio seguro para colocar el marcador.'
+
+# Módulos: false significa que EssLite no inicializa/expone esa función cuando sea posible.
+modules:
+  homes:
+    enabled: true
+  warps:
+    enabled: true
+  spawn:
+    enabled: true
+  changelog:
+    enabled: true
+  server-config:
+    enabled: true
+    purpur:
+      enabled: true
+      mounts:
+        enabled: false  # opt-in: no consume lógica de monturas si no la quieres
+
+markers:
+  homes:
+    enabled: true
+    max-distance: 5
+    glowing: true
+    decoration: "--------"
+  warps:
+    enabled: true
+    color-selector: true
+  spawn:
+    enabled: true
+    particles:
+      enabled: true
+      view-distance: 16
+      interval-ticks: 20
+
+changelog:
+  version: "1.2.0"
+  lines:
+    - "EssLite ahora usa Dialogs modernos de Minecraft."
+    - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."
+    - "Base modular para Paper y Purpur."
+    - "Corrección de escritura y respaldo de purpur.yml."
+# Mensajes adicionales 1.2.0 (se leen desde messages.*)

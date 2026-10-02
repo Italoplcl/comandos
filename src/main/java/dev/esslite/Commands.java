@@ -23,12 +23,14 @@ public final class Commands implements CommandExecutor, TabCompleter {
     private final HomeManager homes;
     private final GodListener god;
     private final Rtp rtp;
+    private final LocationMarkerManager markers;
 
-    public Commands(EssLite plugin, HomeManager homes, GodListener god, Rtp rtp) {
+    public Commands(EssLite plugin, HomeManager homes, GodListener god, Rtp rtp, LocationMarkerManager markers) {
         this.plugin = plugin;
         this.homes = homes;
         this.god = god;
         this.rtp = rtp;
+        this.markers = markers;
     }
 
     @Override
@@ -79,7 +81,9 @@ public final class Commands implements CommandExecutor, TabCompleter {
         }
 
         homes.set(id, name, Home.of(p.getLocation()));
+        boolean markerOk = markers.createHomeSign(p, name);
         p.sendMessage(plugin.msg("home-set", Placeholder.unparsed("name", name)));
+        if (!markerOk) p.sendMessage(plugin.msg("home-marker-failed"));
     }
 
     private void home(Player p, String[] args) {

@@ -2,7 +2,7 @@ name: EssLite
 version: '${version}'
 main: dev.esslite.EssLite
 api-version: '26.3'
-description: Comandos basicos tipo Essentials - god, heal, homes y rtp
+description: Essentials ligero y modular para Paper/Purpur
 
 commands:
   god:
@@ -72,6 +72,11 @@ commands:
     usage: /ender
     permission: esslite.ender
 
+  changelog:
+    description: Muestra las novedades del servidor en un Dialog moderno
+    usage: /changelog
+    permission: esslite.changelog
+
   serverconfig:
     description: Abre el administrador grafico de Paper/Purpur
     usage: /serverconfig [spawn|mounts]
@@ -116,6 +121,9 @@ permissions:
   esslite.tools:
     default: true
   esslite.ender:
+    default: true
+
+  esslite.changelog:
     default: true
 
   esslite.serverconfig:
