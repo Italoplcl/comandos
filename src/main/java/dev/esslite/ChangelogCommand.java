@@ -21,8 +21,11 @@ public final class ChangelogCommand implements CommandExecutor {
         if (!(sender instanceof Player p)) { sender.sendMessage(plugin.msg("only-players")); return true; }
         String version = plugin.getConfig().getString("changelog.version", plugin.getPluginMeta().getVersion());
         List<String> lines = plugin.getConfig().getStringList("changelog.lines");
-        Component body = Component.empty();
-        for (String line : lines) body = body.append(Component.text("• " + line + "\n"));
+        Component assembledBody = Component.empty();
+        for (String line : lines) {
+            assembledBody = assembledBody.append(Component.text("• " + line + "\n"));
+        }
+        final Component body = assembledBody;
         Dialog dialog = Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(Component.text("Novedades del servidor · " + version))
                         .body(List.of(DialogBody.plainMessage(body)))
