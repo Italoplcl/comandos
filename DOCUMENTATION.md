@@ -42,3 +42,17 @@ La primera pantalla nativa es `/changelog`. Paper ofrece Dialogs desde versiones
 
 ## Rendimiento y Spark
 Toda mecánica periódica nueva debe revisarse con Spark, comparando cuando sea posible antes/después: MSPT/TPS, CPU, tareas/listeners de EssLite y hotspots. Especial atención a partículas, marcadores, spawning, entidades y ServerConfig.
+
+## Preview Purpur modules (1.2.1 test)
+`/serverconfig` now exposes a Modules screen and, when Purpur is detected, a Purpur section.
+
+Purpur submodules:
+- Mounts (disabled by default / opt-in)
+- Mob Manager
+- Gameplay
+- Breeding
+- Raids
+
+EssLite edits only keys that are present in the server's real root `purpur.yml`. Before each Purpur write it creates a timestamped backup in `plugins/EssLite/backups/`, saves the requested value, re-reads the physical file, and verifies the result. Purpur changes are shown as requiring a server restart; EssLite does not automatically run `/purpur reload`.
+
+The first Purpur test surface intentionally exposes a conservative subset of settings. Unsupported/missing keys are not invented or written.

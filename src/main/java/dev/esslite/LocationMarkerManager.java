@@ -50,12 +50,14 @@ public final class LocationMarkerManager implements Listener {
         }
         if (!(place.getState() instanceof Sign sign)) { place.setType(Material.AIR, false); return false; }
         String deco = plugin.getConfig().getString("markers.homes.decoration", "--------");
-        SignSide side = sign.getSide(Side.FRONT);
-        side.line(0, net.kyori.adventure.text.Component.text(deco));
-        side.line(1, net.kyori.adventure.text.Component.text(homeName));
-        side.line(2, net.kyori.adventure.text.Component.text(p.getName()));
-        side.line(3, net.kyori.adventure.text.Component.text(deco));
-        side.setGlowingText(plugin.getConfig().getBoolean("markers.homes.glowing", true));
+        for (Side signFace : Side.values()) {
+            SignSide side = sign.getSide(signFace);
+            side.line(0, net.kyori.adventure.text.Component.text(deco));
+            side.line(1, net.kyori.adventure.text.Component.text(homeName));
+            side.line(2, net.kyori.adventure.text.Component.text(p.getName()));
+            side.line(3, net.kyori.adventure.text.Component.text(deco));
+            side.setGlowingText(plugin.getConfig().getBoolean("markers.homes.glowing", true));
+        }
         mark(sign, "home", p.getUniqueId() + ":" + homeName);
         sign.update(true, false);
         return true;
@@ -66,6 +68,10 @@ public final class LocationMarkerManager implements Listener {
         Block feet = p.getLocation().getBlock();
         if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
         feet.setType(bannerMaterial(color), false);
+        if (feet.getBlockData() instanceof Rotatable rotatable) {
+            rotatable.setRotation(cardinal(p.getLocation().getYaw()));
+            feet.setBlockData(rotatable, false);
+        }
         if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
         mark(banner, "warp", warpName);
         banner.update(true, false);
@@ -77,6 +83,10 @@ public final class LocationMarkerManager implements Listener {
         Block feet = p.getLocation().getBlock();
         if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
         feet.setType(Material.LIME_BANNER, false);
+        if (feet.getBlockData() instanceof Rotatable rotatable) {
+            rotatable.setRotation(cardinal(p.getLocation().getYaw()));
+            feet.setBlockData(rotatable, false);
+        }
         if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
         mark(banner, "spawn", p.getWorld().getName());
         banner.update(true, false);

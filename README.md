@@ -43,3 +43,6 @@ Consulta `config.yml`. Los módulos nuevos se agrupan bajo `modules:` y las opci
 
 ## Rendimiento
 Los efectos periódicos deben ejecutarse sólo cuando aportan algo. Las partículas del Spawn, por ejemplo, sólo se generan cuando hay jugadores dentro de la distancia configurada.
+
+### Purpur configuration preview
+The current test build adds `/serverconfig -> Modules -> Purpur` with opt-in Mounts plus Mob Manager, Gameplay, Breeding and Raids sections. Purpur writes are backed up and verified against the root `purpur.yml`; restart the server after changing Purpur settings.

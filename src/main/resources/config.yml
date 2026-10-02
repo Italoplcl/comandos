@@ -94,6 +94,14 @@ modules:
       enabled: true
       mounts:
         enabled: false  # opt-in: no consume lógica de monturas si no la quieres
+      mobs:
+        enabled: true
+      gameplay:
+        enabled: true
+      breeding:
+        enabled: true
+      raids:
+        enabled: true
 
 markers:
   homes:
@@ -112,10 +120,13 @@ markers:
       interval-ticks: 20
 
 changelog:
-  version: "1.2.0"
+  version: "1.2.1"
   lines:
     - "EssLite ahora usa Dialogs modernos de Minecraft."
     - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."
     - "Base modular para Paper y Purpur."
     - "Corrección de escritura y respaldo de purpur.yml."
+    - "Nuevo menú Modules y módulos Purpur para pruebas."
+    - "Banners de Warp y Spawn orientados según la mirada."
+    - "Carteles Home escritos en ambas caras."
 # Mensajes adicionales 1.2.0 (se leen desde messages.*)
