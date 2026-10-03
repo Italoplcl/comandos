@@ -77,6 +77,11 @@ public final class Commands implements CommandExecutor, TabCompleter {
         int cap = p.hasPermission("mando.homes.unlimited")
                 ? MENU_CAP
                 : Math.min(plugin.getConfig().getInt("homes.max", 3), MENU_CAP);
+        if (all.containsKey(name) && (args.length < 2 || !args[1].equalsIgnoreCase("confirm"))) {
+            p.sendMessage(plugin.msg("home-overwrite-confirm", Placeholder.unparsed("name", name))
+                    .clickEvent(net.kyori.adventure.text.event.ClickEvent.runCommand("/sethome " + name + " confirm")));
+            return;
+        }
         if (!all.containsKey(name) && all.size() >= cap) {
             p.sendMessage(plugin.msg("homes-limit", Placeholder.unparsed("max", String.valueOf(cap))));
             return;

@@ -32,3 +32,9 @@ GUIs de inventario con holder propio cancelan clicks/drag; comandos sensibles re
 
 ## Prueba final
 Compilar no sustituye prueba real. Validar en Purpur 26.3/Java 25: arranque limpio, AuthMe, proveedores AFK, teletransportes, reinicio, backups, Dialogs y GUI. Ejecutar Spark en servidor real para TPS/MSPT/CPU después de las pruebas funcionales.
+
+
+## Correcciones de validación real
+- `/sethome` nunca reemplaza directamente un nombre existente: exige confirmación explícita mediante `/sethome <nombre> confirm` (el aviso es clicable).
+- Warp congela posición y yaw en el instante de ejecutar `/setwarp`, antes del selector de color; el banner se orienta visualmente según la mirada acordada.
+- Spawn coloca un bloque invisible `LIGHT` nivel 15 sobre el banner o en el primer bloque libre de los cuatro inmediatamente superiores. Al romper el banner administrado, Mando retira la luz asociada.
