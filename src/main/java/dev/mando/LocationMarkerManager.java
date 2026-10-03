@@ -60,23 +60,26 @@ public final class LocationMarkerManager implements Listener {
 
     public boolean removeWarpMarker(String warpName){return removeRegistered("warp",warpName);}
     public void forgetWarpMarker(String warpName){registry.set("warp."+warpName,null);saveRegistry();}
-    private boolean removeRegistered(String type,String name){String path=type+"."+name,wname=registry.getString(path+".world");if(wname==null)return true;World w=Bukkit.getWorld(wname);if(w==null)return false;int x=registry.getInt(path+".x"),y=registry.getInt(path+".y"),z=registry.getInt(path+".z");if(!w.isChunkLoaded(x>>4,z>>4))return false;Block b=w.getBlockAt(x,y,z);if(b.getState() instanceof TileState ts){String expected=registry.getString(path+".marker-id"),actual=ts.getPersistentDataContainer().get(idKey,PersistentDataType.STRING);if(ts.getPersistentDataContainer().has(markerKey,PersistentDataType.BYTE)&&(expected==null||expected.equals(actual)))b.setType(Material.AIR,false);}registry.set(path,null);saveRegistry();return true;}
+    private boolean removeRegistered(String type,String name){String path=type+"."+name,entityId=registry.getString(path+".entity");if(entityId!=null){try{org.bukkit.entity.Entity e=Bukkit.getEntity(UUID.fromString(entityId));if(e!=null&&e.getPersistentDataContainer().has(markerKey,PersistentDataType.BYTE))e.remove();}catch(Exception ignored){}registry.set(path,null);saveRegistry();return true;}String wname=registry.getString(path+".world");if(wname==null)return true;World w=Bukkit.getWorld(wname);if(w==null)return false;int x=registry.getInt(path+".x"),y=registry.getInt(path+".y"),z=registry.getInt(path+".z");if(!w.isChunkLoaded(x>>4,z>>4))return false;Block b=w.getBlockAt(x,y,z);if(b.getState() instanceof TileState ts){String expected=registry.getString(path+".marker-id"),actual=ts.getPersistentDataContainer().get(idKey,PersistentDataType.STRING);if(ts.getPersistentDataContainer().has(markerKey,PersistentDataType.BYTE)&&(expected==null||expected.equals(actual)))b.setType(Material.AIR,false);}registry.set(path,null);saveRegistry();return true;}
 
     public boolean createWarpBanner(Player p, String warpName, DyeColor color) {
         if (!plugin.getConfig().getBoolean("markers.warps.enabled", true)) return true;
-        if(!removeWarpMarker(warpName))return false;
+        removeWarpMarker(warpName);
         Block feet = p.getLocation().getBlock();
-        if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
-        BlockData candidate = bannerMaterial(color).createBlockData();
-        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()+180f));
-        if (!candidate.isSupported(feet)) return false;
-        feet.setBlockData(candidate, false);
-        if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
         String markerId=UUID.randomUUID().toString();
-        mark(banner, "warp", warpName, markerId);
-        banner.update(true, false);
-        record("warp",warpName,feet,markerId);
-        return true;
+        if (feet.isEmpty() && feet.getRelative(BlockFace.DOWN).getType().isSolid()) {
+            BlockData candidate = bannerMaterial(color).createBlockData();
+            if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()+180f));
+            if (candidate.isSupported(feet)) {
+                feet.setBlockData(candidate, false);
+                if (feet.getState() instanceof Banner banner) {
+                    mark(banner, "warp", warpName, markerId);banner.update(true,false);record("warp",warpName,feet,markerId);return true;
+                }
+                feet.setType(Material.AIR,false);
+            }
+        }
+        if(!plugin.getConfig().getBoolean("markers.warps.fallback-text-display",true))return false;
+        Location at=p.getLocation().clone().add(0,2.2,0);TextDisplay td=p.getWorld().spawn(at,TextDisplay.class,t->{t.text(net.kyori.adventure.text.Component.text("Warp · "+warpName));t.setBillboard(org.bukkit.entity.Display.Billboard.CENTER);t.setPersistent(true);t.getPersistentDataContainer().set(markerKey,PersistentDataType.BYTE,(byte)1);t.getPersistentDataContainer().set(typeKey,PersistentDataType.STRING,"warp");t.getPersistentDataContainer().set(nameKey,PersistentDataType.STRING,warpName);t.getPersistentDataContainer().set(idKey,PersistentDataType.STRING,markerId);});String path="warp."+warpName;registry.set(path+".marker-id",markerId);registry.set(path+".entity",td.getUniqueId().toString());registry.set(path+".world",p.getWorld().getName());registry.set(path+".x",td.getLocation().getBlockX());registry.set(path+".y",td.getLocation().getBlockY());registry.set(path+".z",td.getLocation().getBlockZ());saveRegistry();return true;
     }
 
     public boolean createSpawnBanner(Player p) {
