@@ -4,7 +4,7 @@ main: dev.mando.MandoPlugin
 api-version: '26.3'
 description: Administración moderna y modular para servidores Paper y Purpur
 commands:
-  mando: {description: "Panel principal de Mando", usage: "/mando [setup|config|status|reload|stop|backup|cleanup|diagnose|reset|changelog]", permission: mando.admin}
+  mando: {description: "Panel principal de Mando", usage: "/mando [setup|config|status|providers|provider|reload|stop|backup|cleanup|diagnose|reset|changelog]", permission: mando.admin}
   god: {description: "Modo dios", usage: /god, permission: mando.god}
   heal: {description: "Rellena hambre y saturacion", usage: /heal, permission: mando.heal}
   sethome: {description: "Guarda un home", usage: "/sethome [nombre]", permission: mando.sethome}
