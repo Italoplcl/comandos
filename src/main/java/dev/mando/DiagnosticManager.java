@@ -1,0 +1,6 @@
+package dev.mando;
+import org.bukkit.Bukkit;import java.io.*;import java.nio.file.*;import java.time.*;import java.util.zip.*;
+public final class DiagnosticManager{
+ private final MandoPlugin plugin;public DiagnosticManager(MandoPlugin p){plugin=p;}
+ public String create(){try{Path dir=plugin.getDataFolder().toPath().resolve("diagnostics");Files.createDirectories(dir);String n="mando-diagnostic-"+System.currentTimeMillis()+".zip";Path out=dir.resolve(n);String summary="Mando="+plugin.getPluginMeta().getVersion()+"\nMinecraft="+Bukkit.getMinecraftVersion()+"\nPlatform="+plugin.platform().platform()+"\nJava="+System.getProperty("java.version")+"\nIntegrations=\n"+plugin.integrations().summary()+"\nLastBackup="+plugin.backups().lastBackup()+"\n";try(ZipOutputStream z=new ZipOutputStream(Files.newOutputStream(out))){z.putNextEntry(new ZipEntry("summary.txt"));z.write(summary.getBytes(java.nio.charset.StandardCharsets.UTF_8));z.closeEntry();}return n;}catch(Exception e){plugin.getLogger().warning("Diagnóstico: "+e.getMessage());return null;}}
+}
