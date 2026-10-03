@@ -71,8 +71,10 @@ public final class LocationMarkerManager implements Listener {
         if (!candidate.isSupported(feet)) return false;
         feet.setBlockData(candidate, false);
         if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
-        mark(banner, "warp", warpName, UUID.randomUUID().toString());
+        String markerId=UUID.randomUUID().toString();
+        mark(banner, "warp", warpName, markerId);
         banner.update(true, false);
+        record("warp",warpName,feet,markerId);
         return true;
     }
 
@@ -81,7 +83,7 @@ public final class LocationMarkerManager implements Listener {
         Block feet = p.getLocation().getBlock();
         if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
         BlockData candidate = Material.LIME_BANNER.createBlockData();
-        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()));
+        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()+180f));
         if (!candidate.isSupported(feet)) return false;
         feet.setBlockData(candidate, false);
         if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
