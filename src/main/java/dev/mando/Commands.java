@@ -53,7 +53,7 @@ public final class Commands implements CommandExecutor, TabCompleter {
             case "sethome" -> setHome(p, args);
             case "home" -> home(p, args);
             case "homes" -> HomesMenu.open(plugin, homes, p);
-            case "delhome" -> delHome(p, args);
+            case "delhome" -> delHome(p, args);\n            case "renamehome" -> renameHome(p,args);\n            case "restorehome" -> restoreHome(p,args);
             case "rtp" -> rtp.start(p);
             default -> { }
         }
@@ -143,7 +143,7 @@ public final class Commands implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player p) || args.length != 1) return List.of();
         String n = cmd.getName().toLowerCase(Locale.ROOT);
-        if (!n.equals("home") && !n.equals("sethome") && !n.equals("delhome")) return List.of();
+        if (!n.equals("home") && !n.equals("sethome") && !n.equals("delhome") && !n.equals("renamehome")) return List.of();
         String prefix = args[0].toLowerCase(Locale.ROOT);
         return homes.all(p.getUniqueId()).keySet().stream().filter(k -> k.startsWith(prefix)).toList();
     }
