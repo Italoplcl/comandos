@@ -1,12 +1,27 @@
 package dev.mando;
-import org.bukkit.Bukkit;import org.bukkit.plugin.Plugin;import java.util.*;
+import org.bukkit.Bukkit;import org.bukkit.plugin.Plugin;import java.nio.charset.StandardCharsets;import java.security.MessageDigest;import java.util.*;
 public final class IntegrationManager{
- public enum State{ACTIVE,STANDBY,CONFLICT,UNAVAILABLE}
- private final MandoPlugin plugin;private final Map<String,State> states=new LinkedHashMap<>();
+ public enum State{ACTIVE,STANDBY,DISABLED,CONFLICT,UNAVAILABLE}
+ public record Provider(String capability,String selected,State state,String reason){}
+ private final MandoPlugin plugin;private final Map<String,State> states=new LinkedHashMap<>();private final Map<String,Provider> providers=new LinkedHashMap<>();private String fingerprint="";
+ private static final List<String> KNOWN=List.of("Essentials","CMI","HuskHomes","BetterRTP","TAB","ChatControl","LPC","InteractiveChat","DiscordSRV","PlaceholderAPI","LuckPerms","Vault","AuthMe");
  public IntegrationManager(MandoPlugin p){plugin=p;refresh();}
- public void refresh(){states.clear();for(String n:List.of("Essentials","CMI","HuskHomes","BetterRTP","TAB","ChatControl","PlaceholderAPI","LuckPerms","Vault","AuthMe"))states.put(n,present(n)?State.STANDBY:State.UNAVAILABLE);select("homes",List.of("HuskHomes","Essentials","CMI"));select("rtp",List.of("BetterRTP","HuskHomes","Essentials","CMI"));if(present("Vault"))states.put("Vault",State.ACTIVE);if(present("AuthMe"))states.put("AuthMe",State.ACTIVE);if(present("PlaceholderAPI"))states.put("PlaceholderAPI",State.ACTIVE);}
+ public void refresh(){
+  states.clear();providers.clear();for(String n:KNOWN)states.put(n,present(n)?State.STANDBY:State.UNAVAILABLE);
+  capability("homes",List.of("HuskHomes","Essentials","CMI"));capability("warps",List.of("HuskHomes","Essentials","CMI"));capability("spawn",List.of("HuskHomes","Essentials","CMI"));capability("back",List.of("HuskHomes","Essentials","CMI"));capability("rtp",List.of("BetterRTP","HuskHomes","Essentials","CMI"));capability("afk",List.of("Purpur","Essentials","CMI"));
+  for(String n:List.of("Vault","AuthMe","PlaceholderAPI","LuckPerms"))if(present(n))states.put(n,State.ACTIVE);
+  String next=makeFingerprint();if(!fingerprint.isEmpty()&&!fingerprint.equals(next))plugin.getLogger().warning("Cambió el ecosistema de plugins/integraciones. Revisa /mando status antes de cambiar proveedores.");fingerprint=next;
+ }
+ private void capability(String cap,List<String> candidates){
+  String selected=plugin.getConfig().getString("providers."+cap,"Mando");State st;String reason;
+  if(selected.equalsIgnoreCase("Mando")){st=State.ACTIVE;reason="Mando seleccionado";for(String n:candidates)if(present(n)&&states.get(n)==State.STANDBY)states.put(n,State.STANDBY);}
+  else if(selected.equalsIgnoreCase("Purpur")&&cap.equals("afk")&&plugin.platform().platform().toLowerCase(Locale.ROOT).contains("purpur")){st=State.ACTIVE;reason="Purpur seleccionado";}
+  else if(present(selected)){st=State.ACTIVE;reason=selected+" seleccionado";states.put(selected,State.ACTIVE);}
+  else{st=State.CONFLICT;reason="Proveedor seleccionado no está disponible: "+selected;}
+  providers.put(cap,new Provider(cap,selected,st,reason));
+ }
  private boolean present(String n){Plugin p=Bukkit.getPluginManager().getPlugin(n);return p!=null&&p.isEnabled();}
- private void select(String cap,List<String> c){String chosen=plugin.getConfig().getString("providers."+cap,"Mando");if(!chosen.equalsIgnoreCase("Mando")&&present(chosen))states.put(chosen,State.ACTIVE);}
- public State state(String n){return states.getOrDefault(n,State.UNAVAILABLE);}public Map<String,State> states(){return Collections.unmodifiableMap(states);}
- public String summary(){StringBuilder s=new StringBuilder();states.forEach((k,v)->{if(v!=State.UNAVAILABLE)s.append(k).append(": ").append(v).append("\n");});return s.length()==0?"Sin integraciones externas activas":s.toString().trim();}
+ private String makeFingerprint(){StringBuilder b=new StringBuilder();KNOWN.forEach(n->{Plugin p=Bukkit.getPluginManager().getPlugin(n);if(p!=null)b.append(n).append(':').append(p.getPluginMeta().getVersion()).append(':').append(p.isEnabled()).append(';');});providers.forEach((k,v)->b.append(k).append('=').append(v.selected()).append(';'));try{byte[] d=MessageDigest.getInstance("SHA-256").digest(b.toString().getBytes(StandardCharsets.UTF_8));return HexFormat.of().formatHex(d,0,8);}catch(Exception e){return Integer.toHexString(b.toString().hashCode());}}
+ public State state(String n){return states.getOrDefault(n,State.UNAVAILABLE);}public Map<String,State> states(){return Collections.unmodifiableMap(states);}public Map<String,Provider> providers(){return Collections.unmodifiableMap(providers);}public String fingerprint(){return fingerprint;}
+ public String summary(){StringBuilder s=new StringBuilder("Fingerprint: ").append(fingerprint).append("\n");providers.values().forEach(v->s.append(v.capability()).append(": ").append(v.selected()).append(" · ").append(v.state()).append("\n"));states.forEach((k,v)->{if(v!=State.UNAVAILABLE)s.append(k).append(": ").append(v).append("\n");});return s.toString().trim();}
 }
