@@ -102,17 +102,10 @@ public final class Rtp {
                 attempt(p, world, left - 1);
                 return;
             }
-            p.teleportAsync(dest).thenAccept(ok -> {
-                searching.remove(id);
-                if (ok) {
-                    cooldowns.put(id, System.currentTimeMillis());
-                    p.sendMessage(plugin.msg("rtp-success",
-                            Placeholder.unparsed("x", String.valueOf(x)),
-                            Placeholder.unparsed("y", String.valueOf(dest.getBlockY())),
-                            Placeholder.unparsed("z", String.valueOf(z))));
-                } else {
-                    p.sendMessage(plugin.msg("teleport-failed"));
-                }
+            searching.remove(id);
+            plugin.teleports().teleport(p,dest,"mando.rtp.bypass",()->{
+                cooldowns.put(id,System.currentTimeMillis());
+                p.sendMessage(plugin.msg("rtp-success",Placeholder.unparsed("x",String.valueOf(x)),Placeholder.unparsed("y",String.valueOf(dest.getBlockY())),Placeholder.unparsed("z",String.valueOf(z))));
             });
         }).exceptionally(ex -> {
             searching.remove(id);
