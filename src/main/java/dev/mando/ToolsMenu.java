@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -38,7 +38,7 @@ public final class ToolsMenu implements InventoryHolder {
 
     private final Inventory inventory;
 
-    private ToolsMenu(EssLite plugin) {
+    private ToolsMenu(MandoPlugin plugin) {
         this.inventory = Bukkit.createInventory(this, 9, plugin.text("tools-title"));
         for (Tool t : Tool.values()) {
             ItemStack item = new ItemStack(t.icon);
@@ -55,11 +55,11 @@ public final class ToolsMenu implements InventoryHolder {
         return inventory;
     }
 
-    public static void open(EssLite plugin, Player p) {
+    public static void open(MandoPlugin plugin, Player p) {
         p.openInventory(new ToolsMenu(plugin).inventory);
     }
 
-    private static void openTool(EssLite plugin, Player p, Tool t) {
+    private static void openTool(MandoPlugin plugin, Player p, Tool t) {
         switch (t) {
             case CRAFTING -> p.openWorkbench(null, true);
             case ANVIL -> p.openAnvil(null, true);
@@ -71,16 +71,16 @@ public final class ToolsMenu implements InventoryHolder {
             // Solo cuenta los libreros que haya alrededor de tu posicion.
             case ENCHANTING -> p.openEnchanting(p.getLocation(), true);
             case ENDER -> {
-                if (p.hasPermission("esslite.ender")) p.openInventory(p.getEnderChest());
+                if (p.hasPermission("mando.ender")) p.openInventory(p.getEnderChest());
                 else p.sendMessage(plugin.msg("no-permission"));
             }
         }
     }
 
     public static final class Events implements Listener {
-        private final EssLite plugin;
+        private final MandoPlugin plugin;
 
-        public Events(EssLite plugin) {
+        public Events(MandoPlugin plugin) {
             this.plugin = plugin;
         }
 

@@ -1,5 +1,5 @@
 homes:
-  max: 3              # homes por jugador (esslite.homes.unlimited lo ignora, tope 54)
+  max: 3              # homes por jugador (mando.homes.unlimited lo ignora, tope 54)
   default-name: home  # nombre usado por /sethome y /home sin argumentos
 
 heal:

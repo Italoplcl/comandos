@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class EssLite extends JavaPlugin {
+public final class MandoPlugin extends JavaPlugin {
 
     private static final MiniMessage MM = MiniMessage.miniMessage();
 

@@ -1,6 +1,6 @@
-package dev.esslite;
+package dev.mando;
 
-import dev.esslite.HomeManager.Home;
+import dev.mando.HomeManager.Home;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -17,12 +17,12 @@ import java.util.TreeMap;
 
 public final class WarpManager {
 
-    private final EssLite plugin;
+    private final MandoPlugin plugin;
     private final File file;
     private final Object ioLock = new Object();
     private final Map<String, Home> warps = new TreeMap<>();
 
-    public WarpManager(EssLite plugin) {
+    public WarpManager(MandoPlugin plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "warps.yml");
         load();

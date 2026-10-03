@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import org.bukkit.*;
 import org.bukkit.block.*;
@@ -18,12 +18,12 @@ import java.util.Locale;
 
 /** Marcadores cosméticos. Nunca son la fuente de verdad de homes/warps/spawn. */
 public final class LocationMarkerManager implements Listener {
-    private final EssLite plugin;
+    private final MandoPlugin plugin;
     private final NamespacedKey markerKey;
     private final NamespacedKey typeKey;
     private final NamespacedKey nameKey;
 
-    public LocationMarkerManager(EssLite plugin) {
+    public LocationMarkerManager(MandoPlugin plugin) {
         this.plugin = plugin;
         markerKey = new NamespacedKey(plugin, "location_marker");
         typeKey = new NamespacedKey(plugin, "marker_type");

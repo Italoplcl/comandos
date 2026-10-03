@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.ActionButton;
@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class ServerConfigMenu implements Listener, CommandExecutor, TabCompleter {
-    private final EssLite plugin;
+    private final MandoPlugin plugin;
     private final ModuleManager modules;
     private final PlatformDetector platform;
     private final Map<UUID, World> selectedWorld = new HashMap<>();
@@ -54,7 +54,7 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
 
     record PendingInput(String kind, String key, World world) {}
 
-    public ServerConfigMenu(EssLite plugin, ModuleManager modules, PlatformDetector platform) {
+    public ServerConfigMenu(MandoPlugin plugin, ModuleManager modules, PlatformDetector platform) {
         this.plugin = plugin; this.modules = modules; this.platform = platform;
     }
 

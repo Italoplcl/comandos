@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.HeightMap;
@@ -27,11 +27,11 @@ public final class Rtp {
             Material.POINTED_DRIPSTONE, Material.WITHER_ROSE,
             Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE);
 
-    private final EssLite plugin;
+    private final MandoPlugin plugin;
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final Set<UUID> searching = new HashSet<>();
 
-    public Rtp(EssLite plugin) {
+    public Rtp(MandoPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -52,7 +52,7 @@ public final class Rtp {
 
         int cd = cfg.getInt("rtp.cooldown-seconds", 30);
         Long last = cooldowns.get(id);
-        if (cd > 0 && last != null && !p.hasPermission("esslite.rtp.bypass")) {
+        if (cd > 0 && last != null && !p.hasPermission("mando.rtp.bypass")) {
             long left = cd - (System.currentTimeMillis() - last) / 1000L;
             if (left > 0) {
                 p.sendMessage(plugin.msg("rtp-cooldown", Placeholder.unparsed("seconds", String.valueOf(left))));

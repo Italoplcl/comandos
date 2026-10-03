@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -26,7 +26,7 @@ public final class HomesMenu implements InventoryHolder {
     private final Inventory inventory;
     private final List<String> names = new ArrayList<>();
 
-    private HomesMenu(EssLite plugin, Map<String, HomeManager.Home> homes) {
+    private HomesMenu(MandoPlugin plugin, Map<String, HomeManager.Home> homes) {
         int rows = Math.max(1, Math.min(6, (homes.size() + 8) / 9));
         int size = rows * 9;
         this.inventory = Bukkit.createInventory(this, size, plugin.text("menu-title"));
@@ -70,7 +70,7 @@ public final class HomesMenu implements InventoryHolder {
         return inventory;
     }
 
-    public static void open(EssLite plugin, HomeManager homes, Player p) {
+    public static void open(MandoPlugin plugin, HomeManager homes, Player p) {
         Map<String, HomeManager.Home> all = homes.all(p.getUniqueId());
         if (all.isEmpty()) {
             p.sendMessage(plugin.msg("no-homes"));
@@ -80,10 +80,10 @@ public final class HomesMenu implements InventoryHolder {
     }
 
     public static final class Events implements Listener {
-        private final EssLite plugin;
+        private final MandoPlugin plugin;
         private final HomeManager homes;
 
-        public Events(EssLite plugin, HomeManager homes) {
+        public Events(MandoPlugin plugin, HomeManager homes) {
             this.plugin = plugin;
             this.homes = homes;
         }

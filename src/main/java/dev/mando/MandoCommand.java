@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.*;
 import io.papermc.paper.registry.data.dialog.action.DialogAction;
@@ -11,7 +11,7 @@ import org.bukkit.command.*;
 import org.bukkit.entity.Player;
 import java.util.List;
 public final class MandoCommand implements CommandExecutor, TabCompleter {
- private final EssLite plugin; public MandoCommand(EssLite plugin){this.plugin=plugin;}
+ private final MandoPlugin plugin; public MandoCommand(MandoPlugin plugin){this.plugin=plugin;}
  @Override public boolean onCommand(CommandSender s,Command c,String l,String[] a){
   if(!(s instanceof Player p)){s.sendMessage("Mando: abre /serverconfig dentro del juego.");return true;}
   if(a.length>0){if(a[0].equalsIgnoreCase("config")){p.performCommand("serverconfig");return true;}if(a[0].equalsIgnoreCase("changelog")){p.performCommand("changelog");return true;}if(a[0].equalsIgnoreCase("setup")){showSetup(p,false);return true;}}

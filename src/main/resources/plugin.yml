@@ -1,6 +1,6 @@
 name: Mando
 version: '${version}'
-main: dev.esslite.EssLite
+main: dev.mando.Mando
 api-version: '26.3'
 description: Administración moderna y modular para servidores Paper y Purpur
 commands:

@@ -1,6 +1,6 @@
-# EssLite
+# Mando
 
-EssLite es un plugin ligero y modular de comandos y administración visual para servidores Minecraft modernos basados en Paper/Purpur.
+Mando es un plugin ligero y modular de comandos y administración visual para servidores Minecraft modernos basados en Paper/Purpur.
 
 ## Versión 1.3.0-test
 
@@ -19,16 +19,16 @@ Esta versión continúa desde la 1.2.1 y prueba la interfaz híbrida de administ
 - Warp: `/setwarp nombre` abre un selector de 9 colores; el estandarte se orienta según la mirada del jugador.
 - Spawn: estandarte verde lima orientado según la mirada del administrador y partículas `HAPPY_VILLAGER` cuando hay jugadores cerca.
 - Los marcadores son cosméticos: romperlos no elimina la ubicación.
-- EssLite no reemplaza bloques para colocar marcadores. Antes de colocar uno valida si la API considera que el bloque puede soportarlo; si no, conserva la ubicación y muestra una advertencia.
+- Mando no reemplaza bloques para colocar marcadores. Antes de colocar uno valida si la API considera que el bloque puede soportarlo; si no, conserva la ubicación y muestra una advertencia.
 
 ### Paper / Purpur
-EssLite detecta la plataforma. Las funciones generales están pensadas para Paper y Purpur. Las funciones exclusivas de Purpur se aíslan como módulos opcionales.
+Mando detecta la plataforma. Las funciones generales están pensadas para Paper y Purpur. Las funciones exclusivas de Purpur se aíslan como módulos opcionales.
 
-El módulo de monturas Purpur viene desactivado por defecto. Al activarlo, EssLite modifica el `purpur.yml` real de la raíz del servidor, crea un backup en `plugins/EssLite/backups`, relee el archivo para verificar el cambio y solicita reiniciar el servidor. No ejecuta `/purpur reload` automáticamente.
+El módulo de monturas Purpur viene desactivado por defecto. Al activarlo, Mando modifica el `purpur.yml` real de la raíz del servidor, crea un backup en `plugins/Mando/backups`, relee el archivo para verificar el cambio y solicita reiniciar el servidor. No ejecuta `/purpur reload` automáticamente.
 
-**Módulos de EssLite** controla qué herramientas administrativas de EssLite están disponibles. Desactivar una herramienta no revierte valores ya guardados en Purpur.
+**Módulos de Mando** controla qué herramientas administrativas de Mando están disponibles. Desactivar una herramienta no revierte valores ya guardados en Purpur.
 
-**Configuración de Purpur** modifica únicamente opciones reales que EssLite encuentra en el `purpur.yml` del servidor. No inventa claves inexistentes.
+**Configuración de Purpur** modifica únicamente opciones reales que Mando encuentra en el `purpur.yml` del servidor. No inventa claves inexistentes.
 
 ### Interfaz híbrida
 - GUI/inventarios: navegación y selección.
@@ -38,7 +38,7 @@ El módulo de monturas Purpur viene desactivado por defecto. Al activarlo, EssLi
 
 Ejemplo: para reducir la categoría ambiental, abre `/serverconfig`, entra a **Spawning**, selecciona **Ambient** y cambia límite/ticks. Esto afecta la categoría AMBIENT, no exclusivamente a los murciélagos.
 
-Ejemplo Purpur: activa **Mounts** en **Módulos de EssLite**, abre **Configuración de Purpur -> Mounts -> Zombie**, activa la opción y reinicia cuando EssLite lo indique. Para montar un zombie Purpur requiere el permiso `allow.ride.zombie`; ser OP no concede automáticamente los permisos especiales de Purpur.
+Ejemplo Purpur: activa **Mounts** en **Módulos de Mando**, abre **Configuración de Purpur -> Mounts -> Zombie**, activa la opción y reinicia cuando Mando lo indique. Para montar un zombie Purpur requiere el permiso `allow.ride.zombie`; ser OP no concede automáticamente los permisos especiales de Purpur.
 
 ## Configuración modular
 Consulta `config.yml`. Los módulos se agrupan bajo `modules:` y las opciones visuales bajo `markers:`.

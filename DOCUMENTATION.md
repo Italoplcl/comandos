@@ -1,7 +1,7 @@
-# EssLite — Documentación técnica
+# Mando — Documentación técnica
 
 ## Filosofía
-EssLite mantiene separada la información funcional de la presentación. Un Home, Warp o Spawn nunca depende de su cartel, estandarte, partícula o futura etiqueta visual.
+Mando mantiene separada la información funcional de la presentación. Un Home, Warp o Spawn nunca depende de su cartel, estandarte, partícula o futura etiqueta visual.
 
 ## Plataformas
 - Paper: plataforma base prevista.
@@ -11,15 +11,15 @@ EssLite mantiene separada la información funcional de la presentación. Un Home
 ## Módulos
 `modules.<nombre>.enabled` permite apagar funcionalidades. Las integraciones Purpur se encuentran bajo `modules.server-config.purpur`.
 
-**Módulos de EssLite** y **Configuración de Purpur** no son lo mismo:
-- Módulos activa/desactiva la herramienta administrativa de EssLite.
+**Módulos de Mando** y **Configuración de Purpur** no son lo mismo:
+- Módulos activa/desactiva la herramienta administrativa de Mando.
 - Configuración de Purpur modifica valores reales existentes en `purpur.yml`.
-- Desactivar una herramienta EssLite no revierte valores que ya hayan sido guardados en Purpur.
+- Desactivar una herramienta Mando no revierte valores que ya hayan sido guardados en Purpur.
 
 ## Marcadores
 
 ### Home
-Después de guardar el Home, EssLite intenta colocar un cartel en la cara del bloque que mira el jugador. Su contenido es decoración / nombre del Home / jugador / decoración y se escribe en ambas caras.
+Después de guardar el Home, Mando intenta colocar un cartel en la cara del bloque que mira el jugador. Su contenido es decoración / nombre del Home / jugador / decoración y se escribe en ambas caras.
 
 Ejemplo:
 1. Mira una superficie válida.
@@ -37,7 +37,7 @@ Ejemplo: `/setwarp mercado`.
 ### Seguridad de marcadores
 Los TileStates creados se marcan con PDC (`location_marker`, `marker_type`, `marker_name`). Romper un marcador cancela sus drops especiales, pero jamás elimina la ubicación funcional.
 
-Antes de colocar un marcador EssLite consulta la validación de soporte de la API. Si nieve, alfombra u otra geometría parcial/especial no puede soportar realmente el cartel o banner, EssLite no modifica el terreno y conserva la ubicación lógica.
+Antes de colocar un marcador Mando consulta la validación de soporte de la API. Si nieve, alfombra u otra geometría parcial/especial no puede soportar realmente el cartel o banner, Mando no modifica el terreno y conserva la ubicación lógica.
 
 ## ServerConfig / Purpur
 Ruta del archivo: `./purpur.yml` (raíz del servidor).
@@ -45,7 +45,7 @@ Ruta del archivo: `./purpur.yml` (raíz del servidor).
 Flujo de escritura:
 1. Verificar que Purpur y el módulo estén habilitados.
 2. Comprobar que la clave que se va a modificar existe.
-3. Crear backup en `plugins/EssLite/backups/`.
+3. Crear backup en `plugins/Mando/backups/`.
 4. Modificar el valor.
 5. Guardar.
 6. Releer el archivo y comprobar el valor.
@@ -58,16 +58,16 @@ El módulo Mounts es opt-in y viene desactivado por defecto. La interfaz sólo m
 
 Ejemplo Zombie:
 1. `/serverconfig`.
-2. **Módulos de EssLite -> Purpur • Mounts -> ACTIVADO**.
+2. **Módulos de Mando -> Purpur • Mounts -> ACTIVADO**.
 3. **Configuración de Purpur -> Mounts -> Zombie**.
 4. Activa `Montable` y guarda.
-5. Reinicia el servidor cuando EssLite lo indique.
+5. Reinicia el servidor cuando Mando lo indique.
 6. Concede `allow.ride.zombie` mediante un gestor de permisos compatible.
 
 Los permisos especiales de Purpur, como `allow.ride.<mob>`, no se consideran concedidos automáticamente por ser OP.
 
 ### Mob Manager
-Mob Manager configura comportamiento/propiedades de mobs; no controla cuántos aparecen. EssLite sólo muestra las opciones booleanas compatibles que encuentra en la sección real del mob.
+Mob Manager configura comportamiento/propiedades de mobs; no controla cuántos aparecen. Mando sólo muestra las opciones booleanas compatibles que encuentra en la sección real del mob.
 
 No existe un botón de “Configuración global” sin función real. Las opciones visibles deben ejecutar una acción operativa.
 
@@ -85,13 +85,13 @@ Flujo:
 Ejemplo ambiental: seleccionar **Ambient** modifica la categoría `AMBIENT`. Esto no es un limitador exclusivo de `BAT`; otros mobs de esa categoría pueden verse afectados.
 
 ## Interfaz híbrida de ServerConfig (1.3.0-test)
-EssLite usa inventarios para **navegar y seleccionar** y Dialogs nativos para **editar valores o confirmar cambios**.
+Mando usa inventarios para **navegar y seleccionar** y Dialogs nativos para **editar valores o confirmar cambios**.
 
 Esquema:
 ```
 /serverconfig
 ├── Spawning
-├── Módulos de EssLite
+├── Módulos de Mando
 └── Configuración de Purpur
     ├── Mounts
     ├── Mob Manager
@@ -109,14 +109,14 @@ Actualmente `/changelog` abre un Dialog moderno. La ampliación Changelog 2.0 (e
 El sistema general de anuncios, BossBars con cuenta regresiva y plantillas sigue planificado; no forma parte de 1.3.0-test.
 
 ## Rendimiento y Spark
-Toda mecánica periódica nueva debe revisarse con Spark, comparando cuando sea posible antes/después: MSPT/TPS, CPU, tareas/listeners de EssLite y hotspots. Especial atención a partículas, marcadores, spawning, entidades y ServerConfig.
+Toda mecánica periódica nueva debe revisarse con Spark, comparando cuando sea posible antes/después: MSPT/TPS, CPU, tareas/listeners de Mando y hotspots. Especial atención a partículas, marcadores, spawning, entidades y ServerConfig.
 
 La arquitectura debe evitar tareas periódicas innecesarias. En particular, los efectos del Spawn sólo realizan trabajo visible cuando existen jugadores dentro de la distancia configurada.
 
 ## Estado de 1.3.0-test
 Implementado en esta versión de prueba:
 - Interfaz híbrida GUI + Dialogs para Spawning y edición compatible de mobs Purpur.
-- Separación visual/funcional entre Módulos de EssLite y Configuración de Purpur.
+- Separación visual/funcional entre Módulos de Mando y Configuración de Purpur.
 - Backups y verificación posterior de escrituras Purpur.
 - Eliminación del placeholder global sin acción.
 - Información del permiso `allow.ride.<mob>` en configuración de monturas.

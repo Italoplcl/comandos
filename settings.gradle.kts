@@ -1,1 +1,1 @@
-rootProject.name = "EssLite"
+rootProject.name = "Mando"
