@@ -19,7 +19,7 @@ public final class MandoCommand implements CommandExecutor, TabCompleter {
    if(a[0].equalsIgnoreCase("changelog")){p.performCommand("changelog");return true;}
    if(a[0].equalsIgnoreCase("setup")){showSetup(p,false);return true;}
    if(a[0].equalsIgnoreCase("status")){showStatus(p);return true;}
-   if(a[0].equalsIgnoreCase("cleanup")&&a.length>1&&a[1].equalsIgnoreCase("markers")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}int n=plugin.markers().cleanupRegistered();p.sendMessage("§aRegistro de marcadores limpiado: "+n+" entradas inválidas.");return true;}\n   if(a[0].equalsIgnoreCase("backup")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}String f=plugin.backups().createManual();p.sendMessage(Component.text(f==null?"No se pudo crear el backup.":"Backup creado: "+f));return true;}
+   if(a[0].equalsIgnoreCase("cleanup")&&a.length>1&&a[1].equalsIgnoreCase("markers")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}int n=plugin.markers().cleanupRegistered();p.sendMessage("§aRegistro de marcadores limpiado: "+n+" entradas inválidas.");return true;}\n   if(a[0].equalsIgnoreCase("diagnose")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}String d=plugin.diagnostics().create();p.sendMessage(d==null?"§cNo se pudo crear diagnóstico.":"§aDiagnóstico creado: "+d);return true;}\n   if(a[0].equalsIgnoreCase("backup")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}String f=plugin.backups().createManual();p.sendMessage(Component.text(f==null?"No se pudo crear el backup.":"Backup creado: "+f));return true;}
   }
   showMain(p);return true;
  }
@@ -42,5 +42,5 @@ public final class MandoCommand implements CommandExecutor, TabCompleter {
   p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Bienvenido a Mando")).body(List.of(DialogBody.plainMessage(Component.text(intro+"\n\nDetectado: "+Bukkit.getName()+" "+Bukkit.getMinecraftVersion()+"\n\nServerConfig separa las funciones de Mando de las opciones nativas de Purpur. Abrir este asistente no cambia opciones por sí solo.")))).build()).type(DialogType.confirmation(now,later))));
  }
  private ActionButton button(String t,String tip,java.util.function.Consumer<Player> action){return ActionButton.builder(Component.text(t)).tooltip(Component.text(tip)).action(DialogAction.customClick((r,a)->{if(a instanceof Player p)action.accept(p);},ClickCallback.Options.builder().uses(1).build())).build();}
- @Override public List<String> onTabComplete(CommandSender s,Command c,String a,String[] x){return x.length==1?List.of("setup","config","status","backup","cleanup","changelog"):List.of();}
+ @Override public List<String> onTabComplete(CommandSender s,Command c,String a,String[] x){return x.length==1?List.of("setup","config","status","backup","cleanup","diagnose","changelog"):List.of();}
 }
