@@ -24,7 +24,7 @@ public final class MandoPlugin extends JavaPlugin {
   MandoCommand mando=new MandoCommand(this);new UpdateChecker(this).checkAsync();register("mando",mando,mando);getServer().getPluginManager().registerEvents(new MandoJoinListener(this,mando),this);
   markers=new LocationMarkerManager(this);getServer().getPluginManager().registerEvents(markers,this);
   homes=new HomeManager(this);god=new GodListener();Rtp rtp=new Rtp(this);Commands commands=new Commands(this,homes,god,rtp,markers);
-  for(String name:List.of("god","heal","rtp"))register(name,commands,commands);
+  for(String name:List.of("god","heal","rtp"))register(name,commands,commands);AdminTeleportCommands adminTp=new AdminTeleportCommands(this);for(String name:List.of("tp","tphere","tppos"))register(name,adminTp,adminTp);
   SocialCommands social=new SocialCommands(this,tpa,mail,homes,playerData,deaths,audit);for(String name:List.of("tpa","tpahere","tpaccept","tpdeny","tpcancel","tptoggle","mail","profile"))register(name,social,social);register("afk",afk,null);
   if(modules.enabled("homes"))for(String name:List.of("sethome","home","homes","delhome","renamehome","restorehome"))register(name,commands,commands);
   warps=new WarpManager(this);fly=new FlyListener();back=new BackListener(this);WarpColorMenu warpColors=new WarpColorMenu(this,warps,markers);getServer().getPluginManager().registerEvents(warpColors,this);
