@@ -1,0 +1,3 @@
+package dev.mando;
+import java.io.*;import java.nio.file.*;import java.time.*;import java.time.format.DateTimeFormatter;
+public final class AuditLogger{private final MandoPlugin plugin;private final Path file;public AuditLogger(MandoPlugin p){plugin=p;file=p.getDataFolder().toPath().resolve("logs/admin-actions.log");}public synchronized void log(String actor,String target,String action,String context){try{Files.createDirectories(file.getParent());Files.writeString(file,DateTimeFormatter.ISO_INSTANT.format(Instant.now())+" actor="+actor+" target="+target+" action="+action+(context==null?"":" "+context)+System.lineSeparator(),StandardOpenOption.CREATE,StandardOpenOption.APPEND);}catch(IOException e){plugin.getLogger().warning("Audit log: "+e.getMessage());}}}
