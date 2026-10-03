@@ -45,7 +45,7 @@ public final class LocationMarkerManager implements Listener {
     }
 
     public boolean removeHomeMarker(Player p, String homeName) {
-        String key=p.getUniqueId()+":"+homeName,path="home."+key;String worldName=registry.getString(path+".world");
+        String key=p.getUniqueId()+":"+homeName,path="home."+key;String entityId=registry.getString(path+".entity");if(entityId!=null){try{org.bukkit.entity.Entity e=Bukkit.getEntity(UUID.fromString(entityId));if(e!=null&&e.getPersistentDataContainer().has(markerKey,PersistentDataType.BYTE))e.remove();}catch(Exception ignored){}registry.set(path,null);saveRegistry();return true;}String worldName=registry.getString(path+".world");
         if(worldName==null)return true;World w=Bukkit.getWorld(worldName);if(w==null)return false;
         int x=registry.getInt(path+".x"),y=registry.getInt(path+".y"),z=registry.getInt(path+".z");
         if(!w.isChunkLoaded(x>>4,z>>4))return false;
