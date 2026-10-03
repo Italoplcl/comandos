@@ -84,6 +84,30 @@ commands:
     usage: /ender
     permission: esslite.ender
 
+  profile:
+    description: Abre tu perfil o administra un perfil offline
+    usage: /profile [jugador]
+    permission: esslite.profile
+  mail:
+    description: Mailbox persistente
+    usage: /mail [send|read|delete|block]
+    permission: esslite.mail
+  tpa:
+    description: Solicita teletransporte a otro jugador
+    usage: /tpa <jugador>
+    permission: esslite.tpa
+  tpaccept:
+    description: Acepta una solicitud TPA
+    permission: esslite.tpa
+  tpdeny:
+    description: Rechaza una solicitud TPA
+    permission: esslite.tpa
+  tpatoggle:
+    description: Activa o desactiva solicitudes TPA
+    permission: esslite.tpa
+  profiletp:
+    description: Teletransporte administrativo a datos de perfil
+    permission: esslite.profile.admin
   changelog:
     description: Muestra las novedades del servidor en un Dialog moderno
     usage: /changelog
@@ -139,6 +163,14 @@ permissions:
   esslite.ender:
     default: true
 
+  esslite.profile:
+    default: true
+  esslite.profile.admin:
+    default: op
+  esslite.mail:
+    default: true
+  esslite.tpa:
+    default: true
   esslite.changelog:
     default: true
 

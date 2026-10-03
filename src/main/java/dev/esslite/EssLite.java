@@ -21,6 +21,8 @@ public final class EssLite extends JavaPlugin {
     private ModuleManager modules;
     private PlatformDetector platform;
     private LocationMarkerManager markers;
+    private MailManager mail;
+    private DeathHistory deaths;
 
     @Override
     public void onEnable() {
@@ -32,6 +34,10 @@ public final class EssLite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(markers, this);
 
         homes = new HomeManager(this);
+        mail = new MailManager(this);
+        deaths = new DeathHistory(this);
+        TpaManager tpa = new TpaManager(this);
+        getServer().getPluginManager().registerEvents(deaths, this);
         god = new GodListener();
         Rtp rtp = new Rtp(this);
         Commands commands = new Commands(this, homes, god, rtp, markers);
@@ -54,6 +60,11 @@ public final class EssLite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(back, this);
         getServer().getPluginManager().registerEvents(new ToolsMenu.Events(this), this);
         getServer().getPluginManager().registerEvents(new HomesMenu.Events(this, homes), this);
+        ProfileCommand profile = new ProfileCommand(this, homes, mail, tpa, deaths);
+        if (modules.enabled("profile")) register("profile", profile, profile);
+        if (modules.enabled("mail")) register("mail", profile, profile);
+        if (modules.enabled("tpa")) for (String name : List.of("tpa","tpaccept","tpdeny","tpatoggle")) register(name, profile, profile);
+        PluginCommand profileTp = getCommand("profiletp"); if (profileTp != null) profileTp.setExecutor(new ProfileTpCommand(this, homes, deaths));
 
         if (modules.enabled("changelog")) {
             PluginCommand changelog = getCommand("changelog");
@@ -78,6 +89,8 @@ public final class EssLite extends JavaPlugin {
         if (fly != null) fly.disableAll();
         if (homes != null) homes.saveNow();
         if (warps != null) warps.saveNow();
+        if (mail != null) mail.save();
+        if (deaths != null) deaths.save();
     }
 
     /** Mensaje sin prefijo. */

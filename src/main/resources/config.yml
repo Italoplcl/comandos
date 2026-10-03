@@ -83,6 +83,23 @@ messages:
   home-restore-none: '<red>No hay una copia recuperable de <yellow><name></yellow>.'
   home-marker-failed: '<yellow>Home guardado, pero no pude colocar el cartel en la superficie indicada.'
   marker-no-space: '<yellow>La ubicación fue guardada, pero no hay espacio seguro para colocar el marcador.'
+  mail-sent: '<green>Correo enviado.'
+  mail-blocked: '<red>Ese jugador te ha bloqueado.'
+  mail-none: '<red>No se encontró ese correo.'
+  mail-deleted: '<yellow>Correo eliminado.'
+  mail-block-on: '<yellow>Remitente bloqueado.'
+  mail-block-off: '<green>Remitente desbloqueado.'
+  mail-usage: '<yellow>Uso: /mail o /mail send <jugador> <mensaje>.'
+  tpa-usage: '<yellow>Uso: /tpa <jugador>.'
+  player-not-found: '<red>Jugador no encontrado.'
+  tpa-disabled-target: '<red>Ese jugador no acepta solicitudes TPA.'
+  tpa-sent: '<green>Solicitud TPA enviada.'
+  tpa-received: '<yellow>Recibiste una solicitud TPA. Usa /tpaccept o /tpdeny.'
+  tpa-none: '<red>No tienes una solicitud TPA válida.'
+  tpa-accepted: '<green>Solicitud TPA aceptada.'
+  tpa-denied: '<yellow>Solicitud TPA rechazada.'
+  tpa-on: '<green>Solicitudes TPA activadas.'
+  tpa-off: '<yellow>Solicitudes TPA desactivadas.'
 
 # Módulos: false significa que EssLite no inicializa/expone esa función cuando sea posible.
 modules:
@@ -93,6 +110,12 @@ modules:
   spawn:
     enabled: true
   changelog:
+    enabled: true
+  profile:
+    enabled: true
+  mail:
+    enabled: true
+  tpa:
     enabled: true
   server-config:
     enabled: true
@@ -108,6 +131,12 @@ modules:
         enabled: true
       raids:
         enabled: true
+
+profile:
+  deaths-kept: 10
+
+tpa:
+  timeout-seconds: 60
 
 markers:
   homes:
