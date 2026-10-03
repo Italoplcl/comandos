@@ -25,11 +25,16 @@ public final class Mando extends JavaPlugin {
     private DeathHistory deaths;
     private PlayerStorage storage;
     private PlayerIdentityService identities;
+    private IntegrationManager integrations;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         modules = new ModuleManager(this);
+        integrations = new IntegrationManager(this);
+        getServer().getPluginManager().registerEvents(integrations, this);
+        getServer().getPluginManager().registerEvents(new AuthMeGate(integrations), this);
+        getServer().getScheduler().runTaskTimer(this, integrations::tick, 20L, 20L);
         platform = new PlatformDetector();
         getLogger().info("Plataforma detectada: " + platform.platform());
         storage = new PlayerStorage(this);
@@ -76,7 +81,7 @@ public final class Mando extends JavaPlugin {
         if (modules.enabled("tpa")) for (String name : List.of("tpa","tpaccept","tpdeny","tpatoggle")) register(name, profile, profile);
         PluginCommand profileTp = getCommand("profiletp"); if (profileTp != null) profileTp.setExecutor(new ProfileTpCommand(this, homes, deaths, teleports));
 
-        MandoAdminCommand mandoAdmin = new MandoAdminCommand(this, storage, identities);
+        MandoAdminCommand mandoAdmin = new MandoAdminCommand(this, storage, identities, integrations);
         register("mando", mandoAdmin, mandoAdmin);
 
         if (modules.enabled("changelog")) {

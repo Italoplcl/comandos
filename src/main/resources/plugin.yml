@@ -3,6 +3,7 @@ version: '${version}'
 main: dev.mando.Mando
 api-version: '26.3'
 description: Mando modular para Paper/Purpur
+softdepend: [AuthMe, Essentials, CMI, Vault, TAB]
 
 commands:
   mando:
