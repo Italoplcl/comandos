@@ -173,3 +173,9 @@ announcements:
   interval-seconds: 300
   bossbar-seconds: 10
   messages: []
+
+shutdown:
+  schedule:
+    enabled: false
+    time: "04:00"
+    warning-minutes: 30
