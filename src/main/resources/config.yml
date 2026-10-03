@@ -1,22 +1,18 @@
 homes:
-  max: 3              # homes por jugador (mando.homes.unlimited lo ignora, tope 54)
-  default-name: home  # nombre usado por /sethome y /home sin argumentos\n  deleted-history: 5\n  deleted-history: 5
-
+  max: 3
+  default-name: home
+  deleted-history: 5
 heal:
-  restore-health: false   # true = /heal tambien rellena la vida
-
+  restore-health: false
 rtp:
-  worlds: [world]         # mundos donde funciona /rtp (solo tipo overworld)
+  worlds: [world]
   min-radius: 500
   max-radius: 5000
   max-attempts: 15
   cooldown-seconds: 30
-  center-on-player: false # false = centro en el spawn del mundo
-
+  center-on-player: false
 spawn:
-  world: ""               # vacio = mundo principal del servidor
-
-# Mensajes en formato MiniMessage
+  world: ""
 messages:
   prefix: '<dark_gray>[<aqua>Mando</aqua>]</dark_gray> '
   only-players: '<red>Solo los jugadores pueden usar este comando.'
@@ -27,15 +23,15 @@ messages:
   home-deleted: '<yellow>Home <name> borrado.'
   home-teleported: '<green>Teletransportado a <yellow><name></yellow>.'
   home-not-found: '<red>No existe el home <yellow><name></yellow>.'
-  home-choose: '<red>Tienes varios homes. Usa <yellow>/home \<nombre></yellow> o abre <yellow>/homes</yellow>.'
+  home-choose: '<red>Elige un home con /home <nombre> o /homes.'
   home-world-missing: '<red>El mundo de ese home ya no existe.'
-  no-homes: '<red>No tienes homes. Crea uno con <yellow>/sethome</yellow>.'
-  invalid-name: '<red>Nombre invalido. Usa de 1 a 16 caracteres: letras, numeros, <yellow>_</yellow> o <yellow>-</yellow>.'
-  homes-limit: '<red>Alcanzaste el limite de <yellow><max></yellow> homes. Borra uno con <yellow>/delhome \<nombre></yellow>.'
+  no-homes: '<red>No tienes homes.'
+  invalid-name: '<red>Nombre invalido. Usa letras, numeros, _ o -.'
+  homes-limit: '<red>Alcanzaste el limite de <yellow><max></yellow> homes.'
   teleport-failed: '<red>No se pudo teletransportar.'
   rtp-searching: '<gray>Buscando una ubicacion segura...'
   rtp-success: '<green>Teletransportado a <yellow><x>, <y>, <z></yellow>.'
-  rtp-fail: '<red>No se encontro una ubicacion segura. Intenta de nuevo.'
+  rtp-fail: '<red>No se encontro una ubicacion segura.'
   rtp-cooldown: '<red>Espera <yellow><seconds>s</yellow> para volver a usar /rtp.'
   rtp-busy: '<red>Ya estamos buscando una ubicacion para ti.'
   rtp-world: '<red>/rtp no esta disponible en este mundo.'
@@ -54,7 +50,7 @@ messages:
   back-teleported: '<green>Volviste a tu ubicacion anterior.'
   spawn-teleported: '<green>Teletransportado al spawn.'
   spawn-set: '<green>Spawn del mundo actualizado.'
-  spawn-wrong-world: '<red>El spawn solo se puede definir en el mundo <yellow><world></yellow>.'
+  spawn-wrong-world: '<red>El spawn solo se puede definir en <yellow><world></yellow>.'
   warp-set: '<green>Warp <yellow><name></yellow> guardado.'
   warp-deleted: '<yellow>Warp <name> borrado.'
   warp-not-found: '<red>No existe el warp <yellow><name></yellow>.'
@@ -75,34 +71,22 @@ messages:
   tool-grindstone: '<yellow>Piedra de afilar'
   tool-enchanting: '<yellow>Mesa de encantamientos'
   tool-ender: '<light_purple>Cofre de ender'
-  home-marker-failed: '<yellow>Home guardado, pero no pude colocar el cartel en la superficie indicada.'
-  marker-no-space: '<yellow>La ubicación fue guardada, pero no hay espacio seguro para colocar el marcador.'
-
-# Módulos: false significa que Mando no inicializa/expone esa función cuando sea posible.
+  home-marker-failed: '<yellow>Home guardado, pero no pude colocar su marcador.'
+  marker-no-space: '<yellow>Ubicacion guardada, pero no hay espacio seguro para el marcador.'
 modules:
-  homes:
-    enabled: true
-  warps:
-    enabled: true
-  spawn:
-    enabled: true
-  changelog:
-    enabled: true
+  homes: {enabled: true}
+  warps: {enabled: true}
+  spawn: {enabled: true}
+  changelog: {enabled: true}
   server-config:
     enabled: true
     purpur:
       enabled: true
-      mounts:
-        enabled: false  # opt-in: no consume lógica de monturas si no la quieres
-      mobs:
-        enabled: true
-      gameplay:
-        enabled: true
-      breeding:
-        enabled: true
-      raids:
-        enabled: true
-
+      mounts: {enabled: false}
+      mobs: {enabled: true}
+      gameplay: {enabled: true}
+      breeding: {enabled: true}
+      raids: {enabled: true}
 markers:
   homes:
     enabled: true
@@ -119,25 +103,22 @@ markers:
       enabled: true
       view-distance: 16
       interval-ticks: 20
-
 setup:
   show-to-op: true
   completed: false
-
 changelog:
   version: "1.7.0-test"
-  date: "2026-10-02"
+  date: "2026-10-03"
   lines:
-    - "Profile interactivo con correo y Homes."
-    - "Mail con bandeja, lectura y borrado."
-    - "TPA persistente y teletransporte común."
-    - "Homes con rename, ubicación anterior e historial eliminado."
+    - "Profile interactivo con acceso a correo y Homes."
+    - "Mail con bandeja, lectura, borrado e inspeccion administrativa auditada."
+    - "TPA persistente con expiracion, anti-spam y teletransporte comun."
+    - "Homes con historial de eliminados y restauracion."
     - "Back persistente e historial de muertes."
     - "AFK Purpur-first, AuthMe opcional y Vault de solo lectura."
     - "Registro persistente de marcadores."
     - "Idiomas externos ES/EN."
-    - "Backups, auditoría y diagnóstico."
-
+    - "Backups programados, shutdown, auditoria y diagnostico."
 updates:
   enabled: true
   channel: STABLE
@@ -171,8 +152,6 @@ backups:
     scheduled: 7
     shutdown: 3
 join-notifications:
-  mail:
-    enabled: true
-  changelog:
-    enabled: true
+  mail: {enabled: true}
+  changelog: {enabled: true}
 language: es
