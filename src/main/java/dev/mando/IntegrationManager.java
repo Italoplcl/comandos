@@ -15,7 +15,7 @@ public final class IntegrationManager{
  private void capability(String cap,List<String> candidates){
   String selected=plugin.getConfig().getString("providers."+cap,"Mando");State st;String reason;
   if(selected.equalsIgnoreCase("Mando")){st=State.ACTIVE;reason="Mando seleccionado";for(String n:candidates)if(present(n)&&states.get(n)==State.STANDBY)states.put(n,State.STANDBY);}
-  else if(selected.equalsIgnoreCase("Purpur")&&cap.equals("afk")&&plugin.platform().platform().toLowerCase(Locale.ROOT).contains("purpur")){st=State.ACTIVE;reason="Purpur seleccionado";}
+  else if(selected.equalsIgnoreCase("Purpur")&&cap.equals("afk")&&plugin.platform().isPurpur()){st=State.ACTIVE;reason="Purpur seleccionado";}
   else if(present(selected)){st=State.ACTIVE;reason=selected+" seleccionado";states.put(selected,State.ACTIVE);}
   else{st=State.CONFLICT;reason="Proveedor seleccionado no está disponible: "+selected;}
   providers.put(cap,new Provider(cap,selected,st,reason));
