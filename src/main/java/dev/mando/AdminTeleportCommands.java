@@ -1,0 +1,10 @@
+package dev.mando;
+import org.bukkit.*;import org.bukkit.command.*;import org.bukkit.entity.Player;import java.util.*;
+public final class AdminTeleportCommands implements CommandExecutor,TabCompleter{
+ private final MandoPlugin plugin;public AdminTeleportCommands(MandoPlugin p){plugin=p;}
+ public boolean onCommand(CommandSender s,Command c,String l,String[] a){if(!(s instanceof Player p))return true;String n=c.getName().toLowerCase();
+  if(n.equals("tphere")){if(a.length<1)return false;Player x=Bukkit.getPlayerExact(a[0]);if(x==null){p.sendMessage("§cJugador offline.");return true;}x.teleportAsync(p.getLocation());return true;}
+  if(n.equals("tppos")){if(a.length<3)return false;try{double x=Double.parseDouble(a[0]),y=Double.parseDouble(a[1]),z=Double.parseDouble(a[2]);World w=a.length>3?Bukkit.getWorld(a[3]):p.getWorld();if(w==null){p.sendMessage("§cMundo inexistente.");return true;}p.teleportAsync(new Location(w,x,y,z,p.getYaw(),p.getPitch()));}catch(Exception e){p.sendMessage("§cCoordenadas inválidas.");}return true;}
+  if(n.equals("tp")){if(a.length==1){Player t=Bukkit.getPlayerExact(a[0]);if(t!=null)p.teleportAsync(t.getLocation());else p.sendMessage("§cJugador offline.");return true;}if(a.length>=2){Player from=Bukkit.getPlayerExact(a[0]),to=Bukkit.getPlayerExact(a[1]);if(from==null||to==null){p.sendMessage("§cJugador offline.");return true;}from.teleportAsync(to.getLocation());return true;}}return false;}
+ public List<String> onTabComplete(CommandSender s,Command c,String l,String[] a){if(a.length>2)return List.of();String q=a[a.length-1].toLowerCase();return Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(x->x.toLowerCase().startsWith(q)).toList();}
+}
