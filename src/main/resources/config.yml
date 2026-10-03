@@ -1,6 +1,6 @@
 homes:
   max: 3              # homes por jugador (mando.homes.unlimited lo ignora, tope 54)
-  default-name: home  # nombre usado por /sethome y /home sin argumentos\n  deleted-history: 5
+  default-name: home  # nombre usado por /sethome y /home sin argumentos\n  deleted-history: 5\n  deleted-history: 5
 
 heal:
   restore-health: false   # true = /heal tambien rellena la vida
@@ -125,20 +125,54 @@ setup:
   completed: false
 
 changelog:
-  version: "1.5.0-test"
+  version: "1.7.0-test"
+  date: "2026-10-02"
   lines:
-    - "Mando ahora usa Dialogs modernos de Minecraft."
-    - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."
-    - "Base modular para Paper y Purpur."
-    - "Corrección de escritura y respaldo de purpur.yml."
-    - "ServerConfig híbrido: GUI para navegar y Dialogs para editar."
-    - "Módulos de Mando y Configuración de Purpur ahora tienen funciones claramente separadas."
-    - "Spawning y Mob Manager usan Dialogs para editar valores."
-    - "Eliminado el placeholder Configuración global."
-    - "Banners de Warp y Spawn orientados según la mirada."
-    - "Carteles Home escritos en ambas caras y validación real de soporte para nieve/alfombras."
-    - "Nuevo menú Modules y módulos Purpur para pruebas."
-    - "Banners de Warp y Spawn orientados según la mirada."
-    - "Carteles Home escritos en ambas caras."
-# Mensajes adicionales 1.2.0 (se leen desde messages.*)
-\nupdates:\n  enabled: true\n\nteleport:\n  warmup: 3\n  cancel-on-move: true\n  cancel-on-damage: true\n  cooldown: 5\n\ntpa:\n  expire-seconds: 30\n\nmail:\n  max-messages: 50\n  max-length: 500\n  cooldown-seconds: 10\n\ndeaths:\n  history-size: 5\n\nproviders:\n  homes: Mando\n  warps: Mando\n  spawn: Mando\n  back: Mando\n  rtp: Mando\n  afk: Purpur\n\nbackups:\n  scheduled:\n    enabled: true\n    interval-minutes: 360\n  shutdown:\n    enabled: true\n  rotation:\n    scheduled: 7\n    shutdown: 3\n\njoin-notifications:\n  mail:\n    enabled: true\n  changelog:\n    enabled: true\n
+    - "Profile interactivo con correo y Homes."
+    - "Mail con bandeja, lectura y borrado."
+    - "TPA persistente y teletransporte común."
+    - "Homes con rename, ubicación anterior e historial eliminado."
+    - "Back persistente e historial de muertes."
+    - "AFK Purpur-first, AuthMe opcional y Vault de solo lectura."
+    - "Registro persistente de marcadores."
+    - "Idiomas externos ES/EN."
+    - "Backups, auditoría y diagnóstico."
+
+updates:
+  enabled: true
+  channel: STABLE
+teleport:
+  warmup: 3
+  cancel-on-move: true
+  cancel-on-damage: true
+  cooldown: 5
+tpa:
+  expire-seconds: 30
+mail:
+  max-messages: 50
+  max-length: 500
+  cooldown-seconds: 10
+deaths:
+  history-size: 5
+providers:
+  homes: Mando
+  warps: Mando
+  spawn: Mando
+  back: Mando
+  rtp: Mando
+  afk: Purpur
+backups:
+  scheduled:
+    enabled: true
+    interval-minutes: 360
+  shutdown:
+    enabled: true
+  rotation:
+    scheduled: 7
+    shutdown: 3
+join-notifications:
+  mail:
+    enabled: true
+  changelog:
+    enabled: true
+language: es
