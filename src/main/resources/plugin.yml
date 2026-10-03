@@ -35,7 +35,7 @@ commands:
   tp: {description: "TP administrativo", usage: "/tp <jugador> [destino]", permission: mando.tp}
   tphere: {description: "Trae un jugador", usage: "/tphere <jugador>", permission: mando.tphere}
   tppos: {description: "TP a coordenadas", usage: "/tppos <x> <y> <z> [mundo]", permission: mando.tppos}
-  changelog: {description: "Novedades de Mando", usage: /changelog, permission: mando.changelog}
+  announce: {description: "Anuncios de servidor", usage: "/announce <chat|actionbar|title|subtitle|bossbar|stop> [mensaje]", permission: mando.announce}\n  changelog: {description: "Novedades de Mando", usage: /changelog, permission: mando.changelog}
   serverconfig: {description: "Administrador grafico Paper/Purpur", usage: "/serverconfig", aliases: [scfg, purpurgui], permission: mando.serverconfig}
 permissions:
   mando.admin: {default: op}
@@ -70,7 +70,7 @@ permissions:
   mando.profile.others: {default: op}
   mando.afk: {default: true}
   mando.teleport.bypass-warmup: {default: op}
-  mando.changelog: {default: true}
+  mando.announce: {default: op}\n  mando.changelog: {default: true}
   mando.serverconfig: {default: op}
   mando.tp: {default: op}
   mando.tphere: {default: op}
