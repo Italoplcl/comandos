@@ -16,10 +16,10 @@ public final class MandoPlugin extends JavaPlugin {
 
  @Override public void onEnable(){
   saveDefaultConfig();
-  languages=new LanguageManager(this); modules=new ModuleManager(this); backups=new BackupManager(this); shutdown=new ShutdownManager(this); setupProtection=new SetupProtectionListener(this);
+  languages=new LanguageManager(this); platform=new PlatformDetector(); modules=new ModuleManager(this); backups=new BackupManager(this); shutdown=new ShutdownManager(this); setupProtection=new SetupProtectionListener(this);
   playerData=new PlayerDataManager(this); spawn=new SpawnManager(this); teleports=new TeleportManager(this); announcements=new AnnouncementManager(this); deaths=new DeathManager(this); integrations=new IntegrationManager(this); audit=new AuditLogger(this); diagnostics=new DiagnosticManager(this); authGuard=new AuthGuardListener(this); afk=new AfkManager(this); mail=new MailManager(this); tpa=new TpaManager(this,playerData,teleports);
   getServer().getPluginManager().registerEvents(setupProtection,this); getServer().getPluginManager().registerEvents(teleports,this); getServer().getPluginManager().registerEvents(deaths,this); getServer().getPluginManager().registerEvents(new SpawnListener(this),this); getServer().getPluginManager().registerEvents(authGuard,this); getServer().getPluginManager().registerEvents(new PlayerSessionListener(this,playerData,mail,authGuard),this); getServer().getPluginManager().registerEvents(tpa,this);
-  platform=new PlatformDetector(); boolean firstSetup=!getConfig().getBoolean("setup.completed",false);
+  boolean firstSetup=!getConfig().getBoolean("setup.completed",false);
   getLogger().info("Mando "+getPluginMeta().getVersion()+" iniciando en "+platform.platform()); getLogger().info("Minecraft "+getServer().getMinecraftVersion()+" | Java "+System.getProperty("java.version")); if(firstSetup)getLogger().warning("Primera configuración pendiente. Entra como OP para abrir el asistente de Mando."); else getLogger().info("Configuración inicial: completada.");
   MandoCommand mando=new MandoCommand(this); new UpdateChecker(this).checkAsync(); register("mando",mando,mando); register("announce",announcements,announcements); getServer().getPluginManager().registerEvents(new MandoJoinListener(this,mando),this);
   markers=new LocationMarkerManager(this); getServer().getPluginManager().registerEvents(markers,this);
