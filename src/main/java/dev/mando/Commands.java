@@ -53,7 +53,9 @@ public final class Commands implements CommandExecutor, TabCompleter {
             case "sethome" -> setHome(p, args);
             case "home" -> home(p, args);
             case "homes" -> HomesMenu.open(plugin, homes, p);
-            case "delhome" -> delHome(p, args);\n            case "renamehome" -> renameHome(p,args);\n            case "restorehome" -> restoreHome(p,args);
+            case "delhome" -> delHome(p, args);
+            case "renamehome" -> renameHome(p,args);
+            case "restorehome" -> restoreHome(p,args);
             case "rtp" -> rtp.start(p);
             default -> { }
         }
