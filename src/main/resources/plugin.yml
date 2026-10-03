@@ -1,6 +1,6 @@
 name: Mando
 version: '${version}'
-main: dev.esslite.EssLite
+main: dev.mando.Mando
 api-version: '26.3'
 description: Mando modular para Paper/Purpur
 
@@ -8,176 +8,176 @@ commands:
   god:
     description: Activa o desactiva el modo dios
     usage: /god
-    permission: esslite.god
+    permission: mando.god
   heal:
     description: Rellena tu hambre y saturacion
     usage: /heal
-    permission: esslite.heal
+    permission: mando.heal
   sethome:
     description: Guarda un home en tu posicion
     usage: /sethome [nombre]
-    permission: esslite.sethome
+    permission: mando.sethome
   home:
     description: Te teletransporta a un home
     usage: /home [nombre]
-    permission: esslite.home
+    permission: mando.home
   homes:
     description: Abre el menu de tus homes
     usage: /homes
-    permission: esslite.homes
+    permission: mando.homes
   delhome:
     description: Borra un home
     usage: /delhome <nombre>
-    permission: esslite.delhome
+    permission: mando.delhome
   edithome:
     description: Edita propiedades de un home
     usage: /edithome <nombre> icon <material>
-    permission: esslite.edithome
+    permission: mando.edithome
   restorehome:
     description: Recupera un home borrado o su posicion anterior
     usage: /restorehome <nombre> <deleted|previous>
-    permission: esslite.restorehome
+    permission: mando.restorehome
   rtp:
     description: Teletransporte aleatorio a un lugar seguro
     usage: /rtp
-    permission: esslite.rtp
+    permission: mando.rtp
   fly:
     description: Activa o desactiva el vuelo
     usage: /fly
-    permission: esslite.fly
+    permission: mando.fly
   back:
     description: Vuelve a tu ubicacion anterior o al lugar donde moriste
     usage: /back
-    permission: esslite.back
+    permission: mando.back
   spawn:
     description: Te lleva al spawn
     usage: /spawn
-    permission: esslite.spawn
+    permission: mando.spawn
   setspawn:
     description: Define el spawn del mundo principal
     usage: /setspawn
-    permission: esslite.setspawn
+    permission: mando.setspawn
   warp:
     description: Va a un warp o lista los warps
     usage: /warp [nombre]
-    permission: esslite.warp
+    permission: mando.warp
   warps:
     description: Lista los warps disponibles
     usage: /warps
-    permission: esslite.warp
+    permission: mando.warp
   setwarp:
     description: Crea un warp en tu posicion
     usage: /setwarp <nombre>
     aliases: [addwarp]
-    permission: esslite.setwarp
+    permission: mando.setwarp
   delwarp:
     description: Borra un warp
     usage: /delwarp <nombre>
     aliases: [removewarp]
-    permission: esslite.delwarp
+    permission: mando.delwarp
   tools:
     description: Menu con las mesas de trabajo
     usage: /tools
-    permission: esslite.tools
+    permission: mando.tools
   ender:
     description: Abre tu cofre de ender
     usage: /ender
-    permission: esslite.ender
+    permission: mando.ender
 
   profile:
     description: Abre tu perfil o administra un perfil offline
     usage: /profile [jugador]
-    permission: esslite.profile
+    permission: mando.profile
   mail:
     description: Mailbox persistente
     usage: /mail [send|read|delete|block]
-    permission: esslite.mail
+    permission: mando.mail
   tpa:
     description: Solicita teletransporte a otro jugador
     usage: /tpa <jugador>
-    permission: esslite.tpa
+    permission: mando.tpa
   tpaccept:
     description: Acepta una solicitud TPA
-    permission: esslite.tpa
+    permission: mando.tpa
   tpdeny:
     description: Rechaza una solicitud TPA
-    permission: esslite.tpa
+    permission: mando.tpa
   tpatoggle:
     description: Activa o desactiva solicitudes TPA
-    permission: esslite.tpa
+    permission: mando.tpa
   profiletp:
     description: Teletransporte administrativo a datos de perfil
-    permission: esslite.profile.admin
+    permission: mando.profile.admin
   changelog:
     description: Muestra las novedades del servidor en un Dialog moderno
     usage: /changelog
-    permission: esslite.changelog
+    permission: mando.changelog
 
   serverconfig:
     description: Abre el administrador grafico de Paper/Purpur
     usage: /serverconfig [spawn|mounts]
     aliases: [scfg, purpurgui]
-    permission: esslite.serverconfig
+    permission: mando.serverconfig
 
 permissions:
-  esslite.god:
+  mando.god:
     default: op
-  esslite.heal:
+  mando.heal:
     default: op
-  esslite.sethome:
+  mando.sethome:
     default: true
-  esslite.home:
+  mando.home:
     default: true
-  esslite.homes:
+  mando.homes:
     default: true
-  esslite.delhome:
+  mando.delhome:
     default: true
-  esslite.edithome:
+  mando.edithome:
     default: true
-  esslite.restorehome:
+  mando.restorehome:
     default: true
-  esslite.rtp:
+  mando.rtp:
     default: true
-  esslite.homes.unlimited:
+  mando.homes.unlimited:
     description: Ignora el limite de homes (maximo 54 por el menu)
     default: op
-  esslite.rtp.bypass:
+  mando.rtp.bypass:
     description: Ignora el cooldown de /rtp
     default: op
-  esslite.fly:
+  mando.fly:
     default: op
-  esslite.back:
+  mando.back:
     default: true
-  esslite.spawn:
+  mando.spawn:
     default: true
-  esslite.setspawn:
+  mando.setspawn:
     default: op
-  esslite.warp:
+  mando.warp:
     default: true
-  esslite.setwarp:
+  mando.setwarp:
     default: op
-  esslite.delwarp:
+  mando.delwarp:
     default: op
-  esslite.tools:
+  mando.tools:
     default: true
-  esslite.ender:
+  mando.ender:
     default: true
 
-  esslite.profile:
+  mando.profile:
     default: true
-  esslite.profile.admin:
+  mando.profile.admin:
     default: op
-  esslite.teleport.bypass-warmup:
+  mando.teleport.bypass-warmup:
     default: op
-  esslite.teleport.bypass-cooldown:
+  mando.teleport.bypass-cooldown:
     default: op
-  esslite.mail:
+  mando.mail:
     default: true
-  esslite.tpa:
+  mando.tpa:
     default: true
-  esslite.changelog:
+  mando.changelog:
     default: true
 
-  esslite.serverconfig:
+  mando.serverconfig:
     description: Permite administrar configuraciones Paper/Purpur desde GUI
     default: op

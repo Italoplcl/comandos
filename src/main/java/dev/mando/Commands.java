@@ -1,6 +1,6 @@
-package dev.esslite;
+package dev.mando;
 
-import dev.esslite.HomeManager.Home;
+import dev.mando.HomeManager.Home;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
@@ -19,13 +19,13 @@ public final class Commands implements CommandExecutor, TabCompleter {
 
     private static final int MENU_CAP = 54;
 
-    private final EssLite plugin;
+    private final Mando plugin;
     private final HomeManager homes;
     private final GodListener god;
     private final Rtp rtp;
     private final LocationMarkerManager markers;
 
-    public Commands(EssLite plugin, HomeManager homes, GodListener god, Rtp rtp, LocationMarkerManager markers) {
+    public Commands(Mando plugin, HomeManager homes, GodListener god, Rtp rtp, LocationMarkerManager markers) {
         this.plugin = plugin;
         this.homes = homes;
         this.god = god;
@@ -74,7 +74,7 @@ public final class Commands implements CommandExecutor, TabCompleter {
 
         UUID id = p.getUniqueId();
         Map<String, Home> all = homes.all(id);
-        int cap = p.hasPermission("esslite.homes.unlimited")
+        int cap = p.hasPermission("mando.homes.unlimited")
                 ? MENU_CAP
                 : Math.min(plugin.getConfig().getInt("homes.max", 3), MENU_CAP);
         if (!all.containsKey(name) && all.size() >= cap) {

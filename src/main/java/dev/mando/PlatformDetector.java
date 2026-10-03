@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 public final class PlatformDetector {
     public enum Platform { PAPER, PURPUR, UNKNOWN }

@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -12,8 +12,8 @@ import java.util.*;
 
 public final class MailManager {
     public record Mail(String id, UUID from, String fromName, long sentAt, String body, boolean read) {}
-    private final EssLite plugin; private final File file; private final Map<UUID,List<Mail>> boxes=new HashMap<>(); private final Map<UUID,Set<UUID>> blocks=new HashMap<>();
-    public MailManager(EssLite plugin){this.plugin=plugin;file=new File(plugin.getDataFolder(),"mail.yml");load();}
+    private final Mando plugin; private final File file; private final Map<UUID,List<Mail>> boxes=new HashMap<>(); private final Map<UUID,Set<UUID>> blocks=new HashMap<>();
+    public MailManager(Mando plugin){this.plugin=plugin;file=new File(plugin.getDataFolder(),"mail.yml");load();}
     public synchronized String send(UUID from,String fromName,UUID to,String body){if(blocks.getOrDefault(to,Set.of()).contains(from))return "blocked";String id=Long.toString(System.currentTimeMillis(),36)+"-"+Integer.toString(new Random().nextInt(46656),36);boxes.computeIfAbsent(to,k->new ArrayList<>()).add(new Mail(id,from,fromName,System.currentTimeMillis(),body,false));save();return id;}
     public List<Mail> inbox(UUID id){return List.copyOf(boxes.getOrDefault(id,List.of()));}
     public Mail get(UUID owner,String id){return boxes.getOrDefault(owner,List.of()).stream().filter(m->m.id().equals(id)).findFirst().orElse(null);}

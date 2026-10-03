@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
@@ -19,9 +19,9 @@ import java.util.Locale;
 
 /** Marcadores cosmeticos. Nunca son la fuente de verdad de homes/warps/spawn. */
 public final class LocationMarkerManager implements Listener {
-    private final EssLite plugin;
+    private final Mando plugin;
     private final NamespacedKey markerKey,typeKey,nameKey;
-    public LocationMarkerManager(EssLite plugin){
+    public LocationMarkerManager(Mando plugin){
         this.plugin=plugin; markerKey=new NamespacedKey(plugin,"location_marker"); typeKey=new NamespacedKey(plugin,"marker_type"); nameKey=new NamespacedKey(plugin,"marker_name");
         if(plugin.getConfig().getBoolean("markers.spawn.particles.enabled",true)){
             long interval=Math.max(10L,plugin.getConfig().getLong("markers.spawn.particles.interval-ticks",20L));

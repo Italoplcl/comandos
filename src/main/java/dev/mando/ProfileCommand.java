@@ -1,6 +1,6 @@
-package dev.esslite;
+package dev.mando;
 
-import dev.esslite.MailManager.Mail;
+import dev.mando.MailManager.Mail;
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.DialogBase;
 import io.papermc.paper.registry.data.dialog.body.DialogBody;
@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public final class ProfileCommand implements CommandExecutor,TabCompleter {
- private final EssLite plugin;private final HomeManager homes;private final MailManager mail;private final TpaManager tpa;private final DeathHistory deaths;private final TeleportService teleports;
- public ProfileCommand(EssLite p,HomeManager h,MailManager m,TpaManager t,DeathHistory d,TeleportService ts){plugin=p;homes=h;mail=m;tpa=t;deaths=d;teleports=ts;}
+ private final Mando plugin;private final HomeManager homes;private final MailManager mail;private final TpaManager tpa;private final DeathHistory deaths;private final TeleportService teleports;
+ public ProfileCommand(Mando p,HomeManager h,MailManager m,TpaManager t,DeathHistory d,TeleportService ts){plugin=p;homes=h;mail=m;tpa=t;deaths=d;teleports=ts;}
  @Override public boolean onCommand(CommandSender s,Command c,String l,String[] a){
   if(!(s instanceof Player p)){s.sendMessage(plugin.msg("only-players"));return true;}
   switch(c.getName().toLowerCase(Locale.ROOT)){
@@ -29,7 +29,7 @@ public final class ProfileCommand implements CommandExecutor,TabCompleter {
   } return true;
  }
  private void profile(Player p,String[] a){
-  if(a.length>0&&p.hasPermission("esslite.profile.admin")){OfflinePlayer target=Bukkit.getOfflinePlayer(a[0]);showAdmin(p,target);return;}
+  if(a.length>0&&p.hasPermission("mando.profile.admin")){OfflinePlayer target=Bukkit.getOfflinePlayer(a[0]);showAdmin(p,target);return;}
   Component body=Component.text("Homes: "+homes.all(p.getUniqueId()).size()+"\nMail sin leer: "+mail.unread(p.getUniqueId())+"\nTPA: "+(tpa.enabled(p.getUniqueId())?"ON":"OFF")+"\n\n")
    .append(Component.text("[Homes]").clickEvent(ClickEvent.runCommand("/homes"))).append(Component.text("  "))
    .append(Component.text("[Mail]").clickEvent(ClickEvent.runCommand("/mail"))).append(Component.text("  "))

@@ -1,6 +1,6 @@
-package dev.esslite;
+package dev.mando;
 
-import dev.esslite.HomeManager.Home;
+import dev.mando.HomeManager.Home;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -23,7 +23,7 @@ import java.util.Locale;
 /** /fly, /back, /spawn, /setspawn, /warp, /setwarp, /delwarp, /tools, /ender */
 public final class ExtraCommands implements CommandExecutor, TabCompleter {
 
-    private final EssLite plugin;
+    private final Mando plugin;
     private final FlyListener fly;
     private final BackListener back;
     private final WarpManager warps;
@@ -31,7 +31,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     private final LocationMarkerManager markers;
     private final TeleportService teleports;
 
-    public ExtraCommands(EssLite plugin, FlyListener fly, BackListener back, WarpManager warps, WarpColorMenu warpColors, LocationMarkerManager markers, TeleportService teleports) {
+    public ExtraCommands(Mando plugin, FlyListener fly, BackListener back, WarpManager warps, WarpColorMenu warpColors, LocationMarkerManager markers, TeleportService teleports) {
         this.plugin = plugin;
         this.fly = fly;
         this.back = back;

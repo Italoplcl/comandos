@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;

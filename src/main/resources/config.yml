@@ -1,5 +1,5 @@
 homes:
-  max: 3              # homes por jugador (esslite.homes.unlimited lo ignora, tope 54)
+  max: 3              # homes por jugador (mando.homes.unlimited lo ignora, tope 54)
   default-name: home  # nombre usado por /sethome y /home sin argumentos
 
 heal:
@@ -107,7 +107,7 @@ messages:
   teleport-unsafe: '<red>El destino no es seguro.'
   admin-tp-done: '<green>Teletransporte administrativo completado.'
 
-# Módulos: false significa que EssLite no inicializa/expone esa función cuando sea posible.
+# Módulos: false significa que Mando no inicializa/expone esa función cuando sea posible.
 modules:
   homes:
     enabled: true
@@ -187,7 +187,7 @@ markers:
 changelog:
   version: "1.2.1"
   lines:
-    - "EssLite ahora usa Dialogs modernos de Minecraft."
+    - "Mando ahora usa Dialogs modernos de Minecraft."
     - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."
     - "Base modular para Paper y Purpur."
     - "Corrección de escritura y respaldo de purpur.yml."

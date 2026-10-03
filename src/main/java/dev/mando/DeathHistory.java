@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,8 +12,8 @@ import java.util.*;
 
 public final class DeathHistory implements Listener {
  public record Death(long time,String world,double x,double y,double z){}
- private final EssLite plugin;private final File file;private final Map<UUID,List<Death>> data=new HashMap<>();
- public DeathHistory(EssLite p){plugin=p;file=new File(p.getDataFolder(),"deaths.yml");load();}
+ private final Mando plugin;private final File file;private final Map<UUID,List<Death>> data=new HashMap<>();
+ public DeathHistory(Mando p){plugin=p;file=new File(p.getDataFolder(),"deaths.yml");load();}
  @EventHandler public void death(PlayerDeathEvent e){Location l=e.getPlayer().getLocation();List<Death>d=data.computeIfAbsent(e.getPlayer().getUniqueId(),k->new ArrayList<>());d.add(0,new Death(System.currentTimeMillis(),l.getWorld().getName(),l.getX(),l.getY(),l.getZ()));while(d.size()>plugin.getConfig().getInt("profile.deaths-kept",10))d.remove(d.size()-1);save();}
  public List<Death> all(UUID id){return List.copyOf(data.getOrDefault(id,List.of()));}
  public Location location(Death d){var w=Bukkit.getWorld(d.world());return w==null?null:new Location(w,d.x(),d.y(),d.z());}

@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import io.papermc.paper.dialog.Dialog;
 import io.papermc.paper.registry.data.dialog.DialogBase;
@@ -14,8 +14,8 @@ import java.util.List;
 
 /** Primera integración visual con los Dialogs nativos modernos de Paper. */
 public final class ChangelogCommand implements CommandExecutor {
-    private final EssLite plugin;
-    public ChangelogCommand(EssLite plugin) { this.plugin = plugin; }
+    private final Mando plugin;
+    public ChangelogCommand(Mando plugin) { this.plugin = plugin; }
 
     @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player p)) { sender.sendMessage(plugin.msg("only-players")); return true; }

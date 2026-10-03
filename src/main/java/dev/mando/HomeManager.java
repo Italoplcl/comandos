@@ -1,4 +1,4 @@
-package dev.esslite;
+package dev.mando;
 
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
@@ -39,7 +39,7 @@ public final class HomeManager {
 
     private static final Pattern VALID = Pattern.compile("[a-z0-9_-]{1,16}");
 
-    private final EssLite plugin;
+    private final Mando plugin;
     private final File file;
     private final Object ioLock = new Object();
     private TeleportService teleports;
@@ -47,7 +47,7 @@ public final class HomeManager {
     private final Map<UUID, Map<String, Home>> deleted = new HashMap<>();
     private final Map<UUID, Map<String, Home>> previous = new HashMap<>();
 
-    public HomeManager(EssLite plugin) {
+    public HomeManager(Mando plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), "homes.yml");
         load();
