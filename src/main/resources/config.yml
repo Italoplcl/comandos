@@ -156,6 +156,10 @@ providers:
   homes: Mando
   warps: Mando
   spawn: Mando
+  global-spawn: Mando
+  first-join-spawn: Mando
+  respawn: Mando
+  spawn-command: Mando
   back: Mando
   rtp: Mando
   afk: Purpur
