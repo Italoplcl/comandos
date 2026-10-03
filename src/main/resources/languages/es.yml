@@ -1,0 +1,10 @@
+messages:
+  prefix: '<dark_gray>[<aqua>Mando</aqua>]</dark_gray> '
+  only-players: '<red>Solo los jugadores pueden usar este comando.'
+  no-permission: '<red>No tienes permiso para hacer eso.'
+  teleport-failed: '<red>No se pudo teletransportar.'
+  home-set: '<green>Home <yellow><name></yellow> guardado.'
+  home-deleted: '<yellow>Home <name> borrado.'
+  home-teleported: '<green>Teletransportado a <yellow><name></yellow>.'
+  home-not-found: '<red>No existe el home <yellow><name></yellow>.'
+  home-world-missing: '<red>El mundo de ese home ya no existe.'
