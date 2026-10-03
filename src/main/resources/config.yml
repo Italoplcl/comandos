@@ -107,6 +107,7 @@ markers:
   homes:
     enabled: true
     max-distance: 5
+    cleanup-radius: 6
     glowing: true
     decoration: "--------"
   warps:
@@ -124,7 +125,7 @@ setup:
   completed: false
 
 changelog:
-  version: "1.4.0-test"
+  version: "1.5.0-test"
   lines:
     - "Mando ahora usa Dialogs modernos de Minecraft."
     - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."
