@@ -6,14 +6,11 @@ import io.papermc.paper.registry.data.dialog.body.DialogBody;
 import io.papermc.paper.registry.data.dialog.type.DialogType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickCallback;
-import org.bukkit.Bukkit;
-import org.bukkit.command.*;
-import org.bukkit.entity.Player;
-import java.util.List;
-public final class MandoCommand implements CommandExecutor, TabCompleter {
- private final MandoPlugin plugin; public MandoCommand(MandoPlugin plugin){this.plugin=plugin;}
- @Override public boolean onCommand(CommandSender s,Command c,String l,String[] a){
-  if(!(s instanceof Player p)){s.sendMessage("Mando: abre /serverconfig dentro del juego.");return true;}
+import org.bukkit.Bukkit;import org.bukkit.command.*;import org.bukkit.entity.Player;import java.util.List;
+public final class MandoCommand implements CommandExecutor,TabCompleter{
+ private final MandoPlugin plugin;public MandoCommand(MandoPlugin p){plugin=p;}
+ public boolean onCommand(CommandSender s,Command c,String l,String[] a){
+  if(!(s instanceof Player p)){s.sendMessage("Mando: usa los comandos administrativos dentro del juego.");return true;}
   if(a.length>0){
    if(a[0].equalsIgnoreCase("config")){p.performCommand("serverconfig");return true;}
    if(a[0].equalsIgnoreCase("changelog")){p.performCommand("changelog");return true;}
@@ -21,45 +18,13 @@ public final class MandoCommand implements CommandExecutor, TabCompleter {
    if(a[0].equalsIgnoreCase("status")){showStatus(p);return true;}
    if(a[0].equalsIgnoreCase("cleanup")&&a.length>1&&a[1].equalsIgnoreCase("markers")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}int n=plugin.markers().cleanupRegistered();p.sendMessage("§aRegistro de marcadores limpiado: "+n+" entradas inválidas.");return true;}
    if(a[0].equalsIgnoreCase("diagnose")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}String d=plugin.diagnostics().create();p.sendMessage(d==null?"§cNo se pudo crear diagnóstico.":"§aDiagnóstico creado: "+d);return true;}
-   if(a[0].equalsIgnoreCase("backup")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}String f=plugin.backups().createManual();p.sendMessage(Component.text(f==null?"No se pudo crear el backup.":"Backup creado: "+f));return true;}
-  }
-  showMain(p);return true;
+   if(a[0].equalsIgnoreCase("backup")){if(!p.isOp()){p.sendMessage(plugin.msg("no-permission"));return true;}String name=plugin.backups().createManual();p.sendMessage(Component.text(name==null?"No se pudo crear el backup.":"Backup creado: "+name));return true;}
+  }showMain(p);return true;
  }
- private void showStatus(Player p){
-  String body="Mando "+plugin.getPluginMeta().getVersion()+"
-Plataforma: "+plugin.platform().platform()+"
-Minecraft: "+Bukkit.getMinecraftVersion()+"
-Storage: YAML
-Setup: "+(plugin.getConfig().getBoolean("setup.completed",false)?"completado":"pendiente")+"
-Homes: "+state("homes")+" · Warps: "+state("warps")+" · Spawn: "+state("spawn")+"
-Último backup: "+plugin.backups().lastBackup()+"
-
-Integraciones:
-"+plugin.integrations().summary();
-  p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Mando · Estado")).body(List.of(DialogBody.plainMessage(Component.text(body)))).build()).type(DialogType.notice())));
- }
+ private void showStatus(Player p){String body="Mando "+plugin.getPluginMeta().getVersion()+"\nPlataforma: "+plugin.platform().platform()+"\nMinecraft: "+Bukkit.getMinecraftVersion()+"\nStorage: YAML\nSetup: "+(plugin.getConfig().getBoolean("setup.completed",false)?"completado":"pendiente")+"\nHomes: "+state("homes")+" · Warps: "+state("warps")+" · Spawn: "+state("spawn")+"\nÚltimo backup: "+plugin.backups().lastBackup()+"\n\nIntegraciones:\n"+plugin.integrations().summary();p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Mando · Estado")).body(List.of(DialogBody.plainMessage(Component.text(body)))).build()).type(DialogType.notice())));}
  private String state(String m){return plugin.getConfig().getBoolean("modules."+m+".enabled",true)?"activo":"desactivado";}
-
- public void showMain(Player p){
-  ActionButton config=button("Configurar servidor","Abrir ServerConfig",pl->pl.performCommand("serverconfig"));
-  ActionButton news=button("Estado","Ver estado de Mando",pl->pl.performCommand("mando status"));
-  p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Mando · Administración del servidor")).body(List.of(DialogBody.plainMessage(Component.text("Servidor: "+Bukkit.getName()+" "+Bukkit.getMinecraftVersion()+"
-
-Mando centraliza configuración y herramientas administrativas. En Purpur, prioriza las funciones nativas en vez de recrearlas.
-
-Build de prueba "+plugin.getPluginMeta().getVersion()+".")))).build()).type(DialogType.confirmation(config,news))));
- }
- public void showSetup(Player p,boolean first){
-  plugin.setupProtection().begin(p);
-  ActionButton now=button("Configurar ahora","Abrir configuración inicial",pl->{plugin.getConfig().set("setup.completed",true);plugin.saveConfig();plugin.setupProtection().end(pl);pl.performCommand("serverconfig");});
-  ActionButton later=button("Más tarde","Cerrar por ahora",pl->plugin.setupProtection().end(pl));
-  String intro=first?"Mando está instalado. Antes de usarlo, revisemos la configuración principal.":"Asistente inicial de Mando.";
-  p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Bienvenido a Mando")).body(List.of(DialogBody.plainMessage(Component.text(intro+"
-
-Detectado: "+Bukkit.getName()+" "+Bukkit.getMinecraftVersion()+"
-
-ServerConfig separa las funciones de Mando de las opciones nativas de Purpur. Abrir este asistente no cambia opciones por sí solo.")))).build()).type(DialogType.confirmation(now,later))));
- }
+ public void showMain(Player p){ActionButton config=button("Configurar servidor","Abrir ServerConfig",pl->pl.performCommand("serverconfig"));ActionButton status=button("Estado","Ver estado de Mando",pl->pl.performCommand("mando status"));String body="Servidor: "+Bukkit.getName()+" "+Bukkit.getMinecraftVersion()+"\n\nMando centraliza configuración, ubicaciones, comunicación e integraciones.\n\nBuild de prueba "+plugin.getPluginMeta().getVersion()+".";p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Mando · Administración")).body(List.of(DialogBody.plainMessage(Component.text(body)))).build()).type(DialogType.confirmation(config,status))));}
+ public void showSetup(Player p,boolean first){plugin.setupProtection().begin(p);ActionButton now=button("Aplicar y configurar","Guardar base recomendada y abrir ServerConfig",pl->{plugin.getConfig().set("setup.completed",true);plugin.saveConfig();plugin.setupProtection().end(pl);pl.performCommand("serverconfig");});ActionButton later=button("Más tarde","Cerrar por ahora",pl->plugin.setupProtection().end(pl));String intro=(first?"Primera configuración de Mando.":"Asistente de Mando.")+"\n\nDetectado: "+Bukkit.getName()+" "+Bukkit.getMinecraftVersion()+"\n\nLa configuración recomendada mantiene Homes, Warps, Spawn, Mail y TPA activos y permite ajustar Purpur desde ServerConfig.";p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Bienvenido a Mando")).body(List.of(DialogBody.plainMessage(Component.text(intro)))).build()).type(DialogType.confirmation(now,later))));}
  private ActionButton button(String t,String tip,java.util.function.Consumer<Player> action){return ActionButton.builder(Component.text(t)).tooltip(Component.text(tip)).action(DialogAction.customClick((r,a)->{if(a instanceof Player p)action.accept(p);},ClickCallback.Options.builder().uses(1).build())).build();}
- @Override public List<String> onTabComplete(CommandSender s,Command c,String a,String[] x){return x.length==1?List.of("setup","config","status","backup","cleanup","diagnose","changelog"):List.of();}
+ public List<String> onTabComplete(CommandSender s,Command c,String a,String[] x){return x.length==1?List.of("setup","config","status","backup","cleanup","diagnose","changelog"):List.of();}
 }
