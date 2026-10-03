@@ -10,7 +10,7 @@ commands:
   sethome: {description: "Guarda un home", usage: "/sethome [nombre]", permission: mando.sethome}
   home: {description: "Teletransporte a home", usage: "/home [nombre]", permission: mando.home}
   homes: {description: "Menu de homes", usage: /homes, permission: mando.homes}
-  delhome: {description: "Borra un home", usage: "/delhome <nombre>", permission: mando.delhome}
+  delhome: {description: "Borra un home", usage: "/delhome <nombre>", permission: mando.delhome}\n  renamehome: {description: "Renombra un home", usage: "/renamehome <actual> <nuevo>", permission: mando.sethome}\n  restorehome: {description: "Restaura un home eliminado", usage: "/restorehome <id> <nombre>", permission: mando.homes.restore}
   rtp: {description: "Teletransporte aleatorio", usage: /rtp, permission: mando.rtp}
   fly: {description: "Vuelo", usage: /fly, permission: mando.fly}
   back: {description: "Ubicacion anterior", usage: /back, permission: mando.back}
@@ -28,7 +28,7 @@ commands:
   tpcancel: {description: "Cancela TPA", usage: /tpcancel, permission: mando.tpa}
   tptoggle: {description: "Toggle TPA", usage: /tptoggle, permission: mando.tpa}
   mail: {description: "Correo offline", usage: "/mail <jugador> <mensaje>", permission: mando.mail}
-  profile: {description: "Perfil", usage: "/profile [jugador]", permission: mando.profile}
+  profile: {description: "Perfil", usage: "/profile [jugador]", permission: mando.profile}\n  afk: {description: "Alterna estado AFK", usage: /afk, permission: mando.afk}
   changelog: {description: "Novedades de Mando", usage: /changelog, permission: mando.changelog}
   serverconfig: {description: "Administrador grafico Paper/Purpur", usage: "/serverconfig [spawn|modules|purpur|mounts]", aliases: [scfg, purpurgui], permission: mando.serverconfig}
 permissions:
@@ -40,7 +40,7 @@ permissions:
   mando.homes: {default: true}
   mando.delhome: {default: true}
   mando.rtp: {default: true}
-  mando.homes.unlimited: {default: op}
+  mando.homes.1: {default: true}\n  mando.homes.3: {default: true}\n  mando.homes.5: {default: op}\n  mando.homes.10: {default: op}\n  mando.homes.unlimited: {default: op}\n  mando.homes.restore: {default: op}
   mando.rtp.bypass: {default: op}
   mando.fly: {default: op}
   mando.back: {default: true}
@@ -54,6 +54,6 @@ permissions:
   mando.tpa: {default: true}
   mando.mail: {default: true}
   mando.profile: {default: true}
-  mando.profile.others: {default: op}
+  mando.profile.others: {default: op}\n  mando.mail.inspect: {default: op}\n  mando.afk: {default: true}\n  mando.tpa.bypass: {default: op}\n  mando.teleport.bypass-warmup: {default: op}
   mando.changelog: {default: true}
   mando.serverconfig: {default: op}
