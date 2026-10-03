@@ -27,8 +27,8 @@ public final class EssLite extends JavaPlugin {
         saveDefaultConfig();
         modules = new ModuleManager(this);
         platform = new PlatformDetector();
-        getLogger().info("Plataforma detectada: " + platform.platform());
-        markers = new LocationMarkerManager(this);
+        getLogger().info("Mando 1.4.0-test iniciando en " + platform.platform());
+        MandoCommand mando = new MandoCommand(this);\n        register("mando", mando, mando);\n        getServer().getPluginManager().registerEvents(new MandoJoinListener(this, mando), this);\n        markers = new LocationMarkerManager(this);
         getServer().getPluginManager().registerEvents(markers, this);
 
         homes = new HomeManager(this);

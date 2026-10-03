@@ -1,131 +1,47 @@
-name: EssLite
+name: Mando
 version: '${version}'
 main: dev.esslite.EssLite
 api-version: '26.3'
-description: Essentials ligero y modular para Paper/Purpur
-
+description: Administración moderna y modular para servidores Paper y Purpur
 commands:
-  god:
-    description: Activa o desactiva el modo dios
-    usage: /god
-    permission: esslite.god
-  heal:
-    description: Rellena tu hambre y saturacion
-    usage: /heal
-    permission: esslite.heal
-  sethome:
-    description: Guarda un home en tu posicion
-    usage: /sethome [nombre]
-    permission: esslite.sethome
-  home:
-    description: Te teletransporta a un home
-    usage: /home [nombre]
-    permission: esslite.home
-  homes:
-    description: Abre el menu de tus homes
-    usage: /homes
-    permission: esslite.homes
-  delhome:
-    description: Borra un home
-    usage: /delhome <nombre>
-    permission: esslite.delhome
-  rtp:
-    description: Teletransporte aleatorio a un lugar seguro
-    usage: /rtp
-    permission: esslite.rtp
-  fly:
-    description: Activa o desactiva el vuelo
-    usage: /fly
-    permission: esslite.fly
-  back:
-    description: Vuelve a tu ubicacion anterior o al lugar donde moriste
-    usage: /back
-    permission: esslite.back
-  spawn:
-    description: Te lleva al spawn
-    usage: /spawn
-    permission: esslite.spawn
-  setspawn:
-    description: Define el spawn del mundo principal
-    usage: /setspawn
-    permission: esslite.setspawn
-  warp:
-    description: Va a un warp o lista los warps
-    usage: /warp [nombre]
-    permission: esslite.warp
-  setwarp:
-    description: Crea un warp en tu posicion
-    usage: /setwarp <nombre>
-    aliases: [addwarp]
-    permission: esslite.setwarp
-  delwarp:
-    description: Borra un warp
-    usage: /delwarp <nombre>
-    aliases: [removewarp]
-    permission: esslite.delwarp
-  tools:
-    description: Menu con las mesas de trabajo
-    usage: /tools
-    permission: esslite.tools
-  ender:
-    description: Abre tu cofre de ender
-    usage: /ender
-    permission: esslite.ender
-
-  changelog:
-    description: Muestra las novedades del servidor en un Dialog moderno
-    usage: /changelog
-    permission: esslite.changelog
-
-  serverconfig:
-    description: Abre el administrador grafico de Paper/Purpur
-    usage: /serverconfig [spawn|mounts]
-    aliases: [scfg, purpurgui]
-    permission: esslite.serverconfig
-
+  mando: {description: "Panel principal de Mando", usage: "/mando [setup|config|changelog]", permission: mando.admin}
+  god: {description: "Modo dios", usage: /god, permission: mando.god}
+  heal: {description: "Rellena hambre y saturacion", usage: /heal, permission: mando.heal}
+  sethome: {description: "Guarda un home", usage: "/sethome [nombre]", permission: mando.sethome}
+  home: {description: "Teletransporte a home", usage: "/home [nombre]", permission: mando.home}
+  homes: {description: "Menu de homes", usage: /homes, permission: mando.homes}
+  delhome: {description: "Borra un home", usage: "/delhome <nombre>", permission: mando.delhome}
+  rtp: {description: "Teletransporte aleatorio", usage: /rtp, permission: mando.rtp}
+  fly: {description: "Vuelo", usage: /fly, permission: mando.fly}
+  back: {description: "Ubicacion anterior", usage: /back, permission: mando.back}
+  spawn: {description: "Ir al spawn", usage: /spawn, permission: mando.spawn}
+  setspawn: {description: "Define spawn", usage: /setspawn, permission: mando.setspawn}
+  warp: {description: "Ir a warp", usage: "/warp [nombre]", permission: mando.warp}
+  setwarp: {description: "Crea warp", usage: "/setwarp <nombre>", aliases: [addwarp], permission: mando.setwarp}
+  delwarp: {description: "Borra warp", usage: "/delwarp <nombre>", aliases: [removewarp], permission: mando.delwarp}
+  tools: {description: "Mesas de trabajo", usage: /tools, permission: mando.tools}
+  ender: {description: "Cofre de ender", usage: /ender, permission: mando.ender}
+  changelog: {description: "Novedades de Mando", usage: /changelog, permission: mando.changelog}
+  serverconfig: {description: "Administrador grafico Paper/Purpur", usage: "/serverconfig [spawn|modules|purpur|mounts]", aliases: [scfg, purpurgui], permission: mando.serverconfig}
 permissions:
-  esslite.god:
-    default: op
-  esslite.heal:
-    default: op
-  esslite.sethome:
-    default: true
-  esslite.home:
-    default: true
-  esslite.homes:
-    default: true
-  esslite.delhome:
-    default: true
-  esslite.rtp:
-    default: true
-  esslite.homes.unlimited:
-    description: Ignora el limite de homes (maximo 54 por el menu)
-    default: op
-  esslite.rtp.bypass:
-    description: Ignora el cooldown de /rtp
-    default: op
-  esslite.fly:
-    default: op
-  esslite.back:
-    default: true
-  esslite.spawn:
-    default: true
-  esslite.setspawn:
-    default: op
-  esslite.warp:
-    default: true
-  esslite.setwarp:
-    default: op
-  esslite.delwarp:
-    default: op
-  esslite.tools:
-    default: true
-  esslite.ender:
-    default: true
-
-  esslite.changelog:
-    default: true
-
-  esslite.serverconfig:
-    description: Permite administrar configuraciones Paper/Purpur desde GUI
-    default: op
+  mando.admin: {default: op}
+  mando.god: {default: op}
+  mando.heal: {default: op}
+  mando.sethome: {default: true}
+  mando.home: {default: true}
+  mando.homes: {default: true}
+  mando.delhome: {default: true}
+  mando.rtp: {default: true}
+  mando.homes.unlimited: {default: op}
+  mando.rtp.bypass: {default: op}
+  mando.fly: {default: op}
+  mando.back: {default: true}
+  mando.spawn: {default: true}
+  mando.setspawn: {default: op}
+  mando.warp: {default: true}
+  mando.setwarp: {default: op}
+  mando.delwarp: {default: op}
+  mando.tools: {default: true}
+  mando.ender: {default: true}
+  mando.changelog: {default: true}
+  mando.serverconfig: {default: op}

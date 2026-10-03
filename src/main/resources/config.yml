@@ -18,7 +18,7 @@ spawn:
 
 # Mensajes en formato MiniMessage
 messages:
-  prefix: '<dark_gray>[<aqua>EssLite</aqua>]</dark_gray> '
+  prefix: '<dark_gray>[<aqua>Mando</aqua>]</dark_gray> '
   only-players: '<red>Solo los jugadores pueden usar este comando.'
   god-on: '<green>Modo dios <bold>activado</bold>.'
   god-off: '<yellow>Modo dios <bold>desactivado</bold>.'
@@ -78,7 +78,7 @@ messages:
   home-marker-failed: '<yellow>Home guardado, pero no pude colocar el cartel en la superficie indicada.'
   marker-no-space: '<yellow>La ubicación fue guardada, pero no hay espacio seguro para colocar el marcador.'
 
-# Módulos: false significa que EssLite no inicializa/expone esa función cuando sea posible.
+# Módulos: false significa que Mando no inicializa/expone esa función cuando sea posible.
 modules:
   homes:
     enabled: true
@@ -119,15 +119,19 @@ markers:
       view-distance: 16
       interval-ticks: 20
 
+setup:
+  show-to-op: true
+  completed: false
+
 changelog:
-  version: "1.3.0-test"
+  version: "1.4.0-test"
   lines:
-    - "EssLite ahora usa Dialogs modernos de Minecraft."
+    - "Mando ahora usa Dialogs modernos de Minecraft."
     - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."
     - "Base modular para Paper y Purpur."
     - "Corrección de escritura y respaldo de purpur.yml."
     - "ServerConfig híbrido: GUI para navegar y Dialogs para editar."
-    - "Módulos de EssLite y Configuración de Purpur ahora tienen funciones claramente separadas."
+    - "Módulos de Mando y Configuración de Purpur ahora tienen funciones claramente separadas."
     - "Spawning y Mob Manager usan Dialogs para editar valores."
     - "Eliminado el placeholder Configuración global."
     - "Banners de Warp y Spawn orientados según la mirada."

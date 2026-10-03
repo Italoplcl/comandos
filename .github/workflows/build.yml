@@ -19,5 +19,5 @@ jobs:
       - run: gradle build --no-daemon
       - uses: actions/upload-artifact@v6
         with:
-          name: ComandosSG
+          name: Mando-test
           path: build/libs/*.jar
