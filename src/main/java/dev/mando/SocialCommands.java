@@ -7,7 +7,7 @@ public final class SocialCommands implements CommandExecutor,TabCompleter{
   if(n.equals("tptoggle")){p.sendMessage("§6Mando §8» "+(tpa.toggle(p)?"§aTPA activado":"§cTPA desactivado"));return true;}
   if(n.equals("tpaccept")){p.sendMessage(tpa.accept(p));return true;}if(n.equals("tpdeny")){p.sendMessage(tpa.deny(p));return true;}if(n.equals("tpcancel")){p.sendMessage(tpa.cancel(p));return true;}
   if(n.equals("tpa")||n.equals("tpahere")){if(a.length<1){p.sendMessage("§c/"+n+" <jugador>");return true;}Player to=Bukkit.getPlayerExact(a[0]);p.sendMessage(to==null?"§cJugador offline.":tpa.request(p,to,n.equals("tpahere")));return true;}
-  if(n.equals("mail"))return mailCommand(p,a);
+  if(n.equals("mail")){if(!plugin.getConfig().getBoolean("mail.enabled",true)){p.sendMessage("§cMail está desactivado.");return true;}return mailCommand(p,a);}
   if(n.equals("profile")){
    if(a.length==0){openProfile(p,p.getUniqueId(),false);return true;}
    UUID id=resolveKnown(a[0]);if(id==null){p.sendMessage("§cJugador desconocido.");return true;}
