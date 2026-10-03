@@ -24,7 +24,7 @@ public final class MandoPlugin extends JavaPlugin {
     private BackupManager backups;
     private SetupProtectionListener setupProtection;
     private TpaManager tpa;
-    private MailManager mail;
+    private MailManager mail;\n    private PlayerDataManager playerData;\n    private TeleportManager teleports;\n    private DeathManager deaths;\n    private IntegrationManager integrations;\n    private AuditLogger audit;\n    private AuthGuardListener authGuard;\n    private AfkManager afk;
 
     @Override
     public void onEnable() {
@@ -55,8 +55,8 @@ public final class MandoPlugin extends JavaPlugin {
         Commands commands = new Commands(this, homes, god, rtp, markers);
 
         for (String name : List.of("god", "heal", "rtp")) register(name, commands, commands);
-        SocialCommands social=new SocialCommands(this,tpa,mail,homes);
-        for(String name:List.of("tpa","tpahere","tpaccept","tpdeny","tpcancel","tptoggle","mail","profile")) register(name,social,social);
+        SocialCommands social=new SocialCommands(this,tpa,mail,homes,playerData,deaths,audit);
+        for(String name:List.of("tpa","tpahere","tpaccept","tpdeny","tpcancel","tptoggle","mail","profile")) register(name,social,social);\n        register("afk", afk, null);\n        backups.startSchedule();
         if (modules.enabled("homes")) for (String name : List.of("sethome", "home", "homes", "delhome")) register(name, commands, commands);
 
         warps = new WarpManager(this);
@@ -90,7 +90,7 @@ public final class MandoPlugin extends JavaPlugin {
     public BackupManager backups(){ return backups; }
     public SetupProtectionListener setupProtection(){ return setupProtection; }
     public ModuleManager modules(){ return modules; }
-    public PlatformDetector platform(){ return platform; }
+    public PlatformDetector platform(){ return platform; }\n    public IntegrationManager integrations(){ return integrations; }\n    public PlayerDataManager playerData(){ return playerData; }\n    public DeathManager deaths(){ return deaths; }\n    public TeleportManager teleports(){ return teleports; }
 
     private void register(String name, org.bukkit.command.CommandExecutor executor, org.bukkit.command.TabCompleter completer) {
         PluginCommand cmd = getCommand(name);
@@ -103,7 +103,7 @@ public final class MandoPlugin extends JavaPlugin {
         if (fly != null) fly.disableAll();
         if (homes != null) homes.saveNow();
         if (warps != null) warps.saveNow();
-        if(mail!=null)mail.saveNow();
+        if(mail!=null)mail.saveNow();\n        if(deaths!=null)deaths.save();\n        if(backups!=null && getConfig().getBoolean("backups.shutdown.enabled",true)) backups.createShutdown();
     }
 
     /** Mensaje sin prefijo. */
