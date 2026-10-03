@@ -161,3 +161,4 @@ join-notifications:
   mail: {enabled: true}
   changelog: {enabled: true}
 language: es
+\nannouncements:\n  enabled: false\n  interval-seconds: 300\n  bossbar-seconds: 10\n  messages: []\n
