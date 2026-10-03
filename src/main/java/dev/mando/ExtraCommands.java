@@ -93,12 +93,12 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
         Location finalTarget=target;plugin.teleports().teleport(p,finalTarget,"mando.teleport.bypass-warmup",()->{back.markUsed(p.getUniqueId());p.sendMessage(plugin.msg("back-teleported"));});
     }
 
-    private void spawn(Player p) {if(!plugin.integrations().isMandoProvider("spawn")){p.sendMessage(Component.text("Mando » Spawn pertenece al proveedor configurado."));return;}
+    private void spawn(Player p) {if(!plugin.integrations().isMandoProvider("spawn-command")){p.sendMessage(Component.text("Mando » Spawn pertenece al proveedor configurado."));return;}
         Location dest = plugin.spawn().effective(p);
         tp(p, dest, "spawn-teleported");
     }
 
-    private void setSpawn(Player p) {if(!plugin.integrations().isMandoProvider("spawn")){p.sendMessage(Component.text("Mando » Spawn pertenece al proveedor configurado."));return;}
+    private void setSpawn(Player p) {if(!plugin.integrations().isMandoProvider("global-spawn")){p.sendMessage(Component.text("Mando » Spawn pertenece al proveedor configurado."));return;}
         Location here=p.getLocation().clone();
         if(!plugin.spawn().set(here)){p.sendMessage(plugin.msg("teleport-failed"));return;}
         boolean markerOk = markers.createSpawnBanner(p);
