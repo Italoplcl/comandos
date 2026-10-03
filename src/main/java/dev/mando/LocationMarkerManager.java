@@ -43,12 +43,16 @@ public final class LocationMarkerManager implements Listener {
         }
     }
 
-    public void removeHomeMarker(Player p, String homeName) {
-        String key=p.getUniqueId()+":"+homeName; int radius=Math.max(2,plugin.getConfig().getInt("markers.homes.cleanup-radius",6)); Location center=p.getLocation();
-        for(int x=-radius;x<=radius;x++)for(int y=-2;y<=2;y++)for(int z=-radius;z<=radius;z++){Block b=center.clone().add(x,y,z).getBlock();if(!(b.getState() instanceof TileState state))continue;PersistentDataContainer pdc=state.getPersistentDataContainer();if(pdc.has(markerKey,PersistentDataType.BYTE)&&"home".equals(pdc.get(typeKey,PersistentDataType.STRING))&&key.equals(pdc.get(nameKey,PersistentDataType.STRING)))b.setType(Material.AIR,false);}
+    public boolean removeHomeMarker(Player p, String homeName) {
+        String key=p.getUniqueId()+":"+homeName,path="home."+key;String worldName=registry.getString(path+".world");
+        if(worldName==null)return true;World w=Bukkit.getWorld(worldName);if(w==null)return false;
+        int x=registry.getInt(path+".x"),y=registry.getInt(path+".y"),z=registry.getInt(path+".z");
+        if(!w.isChunkLoaded(x>>4,z>>4))return false;
+        Block b=w.getBlockAt(x,y,z);if(b.getState() instanceof TileState state){PersistentDataContainer pdc=state.getPersistentDataContainer();String type=pdc.get(typeKey,PersistentDataType.STRING),name=pdc.get(nameKey,PersistentDataType.STRING);if(pdc.has(markerKey,PersistentDataType.BYTE)&&"home".equals(type)&&key.equals(name))b.setType(Material.AIR,false);}
+        registry.set(path,null);saveRegistry();return true;
     }
     public boolean createHomeSign(Player p,String homeName){
-        if(!plugin.getConfig().getBoolean("markers.homes.enabled",true))return true;removeHomeMarker(p,homeName);Block origin=p.getLocation().getBlock();String key=p.getUniqueId()+":"+homeName;
+        if(!plugin.getConfig().getBoolean("markers.homes.enabled",true))return true;if(!removeHomeMarker(p,homeName))return false;Block origin=p.getLocation().getBlock();String key=p.getUniqueId()+":"+homeName;
         for(int r=1;r<=2;r++)for(int dy=0;dy<=2;dy++)for(BlockFace wall:new BlockFace[]{BlockFace.NORTH,BlockFace.EAST,BlockFace.SOUTH,BlockFace.WEST}){Block solid=origin.getRelative(wall,r).getRelative(BlockFace.UP,dy);if(!solid.getType().isSolid())continue;Block place=solid.getRelative(wall.getOppositeFace());if(!place.isEmpty())continue;BlockData candidate=Material.OAK_WALL_SIGN.createBlockData();if(candidate instanceof Directional d)d.setFacing(wall.getOppositeFace());if(!candidate.isSupported(place))continue;place.setBlockData(candidate,false);if(!(place.getState() instanceof Sign sign)){place.setType(Material.AIR,false);continue;}String deco=plugin.getConfig().getString("markers.homes.decoration","--------");for(Side signFace:Side.values()){SignSide side=sign.getSide(signFace);side.line(0,net.kyori.adventure.text.Component.text(deco));side.line(1,net.kyori.adventure.text.Component.text(homeName));side.line(2,net.kyori.adventure.text.Component.text(p.getName()));side.line(3,net.kyori.adventure.text.Component.text(deco));side.setGlowingText(plugin.getConfig().getBoolean("markers.homes.glowing",true));}mark(sign,"home",key);sign.update(true,false);record("home",key,place);return true;}return false;
     }
 
@@ -57,7 +61,7 @@ public final class LocationMarkerManager implements Listener {
         Block feet = p.getLocation().getBlock();
         if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
         BlockData candidate = bannerMaterial(color).createBlockData();
-        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()));
+        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()+180f));
         if (!candidate.isSupported(feet)) return false;
         feet.setBlockData(candidate, false);
         if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
