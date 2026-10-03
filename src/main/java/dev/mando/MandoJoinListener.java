@@ -10,7 +10,7 @@ public final class MandoJoinListener implements Listener{
  private void waitAuthenticated(Player p,int attempt){
   Bukkit.getScheduler().runTaskLater(plugin,()->{
    if(!p.isOnline()||plugin.getConfig().getBoolean("setup.completed",false))return;
-   if(plugin.authGuard().authenticated(p)){if(shown.add(p.getUniqueId()))mando.showSetup(p,true);return;}
+   if(plugin.authGuard().authenticated(p)){if(plugin.integrations().changedSinceLastStart())p.sendMessage("§6Mando §8» §eCambió el ecosistema de plugins desde el último inicio. Revisa §f/mando status §eantes de cambiar proveedores.");if(shown.add(p.getUniqueId()))mando.showSetup(p,true);return;}
    if(attempt<30)waitAuthenticated(p,attempt+1);
   },attempt==0?40L:20L);
  }
