@@ -14,20 +14,20 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Locale;
+import java.util.Locale;\nimport java.util.UUID;\nimport java.io.*;\nimport org.bukkit.configuration.file.YamlConfiguration;
 
 /** Marcadores cosméticos. Nunca son la fuente de verdad de homes/warps/spawn. */
 public final class LocationMarkerManager implements Listener {
     private final MandoPlugin plugin;
     private final NamespacedKey markerKey;
     private final NamespacedKey typeKey;
-    private final NamespacedKey nameKey;
+    private final NamespacedKey nameKey;\n    private final NamespacedKey idKey;\n    private final File registryFile;\n    private final YamlConfiguration registry;
 
     public LocationMarkerManager(MandoPlugin plugin) {
         this.plugin = plugin;
         markerKey = new NamespacedKey(plugin, "location_marker");
         typeKey = new NamespacedKey(plugin, "marker_type");
-        nameKey = new NamespacedKey(plugin, "marker_name");
+        nameKey = new NamespacedKey(plugin, "marker_name");\n        idKey = new NamespacedKey(plugin, "marker_id");\n        registryFile=new File(plugin.getDataFolder(),"markers.yml");\n        registry=YamlConfiguration.loadConfiguration(registryFile);
         if (plugin.getConfig().getBoolean("markers.spawn.particles.enabled", true)) {
             long interval = Math.max(10L, plugin.getConfig().getLong("markers.spawn.particles.interval-ticks", 20L));
             Bukkit.getScheduler().runTaskTimer(plugin, this::spawnParticles, interval, interval);
@@ -40,7 +40,7 @@ public final class LocationMarkerManager implements Listener {
     }
     public boolean createHomeSign(Player p,String homeName){
         if(!plugin.getConfig().getBoolean("markers.homes.enabled",true))return true;removeHomeMarker(p,homeName);Block origin=p.getLocation().getBlock();String key=p.getUniqueId()+":"+homeName;
-        for(int r=1;r<=2;r++)for(int dy=0;dy<=2;dy++)for(BlockFace wall:new BlockFace[]{BlockFace.NORTH,BlockFace.EAST,BlockFace.SOUTH,BlockFace.WEST}){Block solid=origin.getRelative(wall,r).getRelative(BlockFace.UP,dy);if(!solid.getType().isSolid())continue;Block place=solid.getRelative(wall.getOppositeFace());if(!place.isEmpty())continue;BlockData candidate=Material.OAK_WALL_SIGN.createBlockData();if(candidate instanceof Directional d)d.setFacing(wall.getOppositeFace());if(!candidate.isSupported(place))continue;place.setBlockData(candidate,false);if(!(place.getState() instanceof Sign sign)){place.setType(Material.AIR,false);continue;}String deco=plugin.getConfig().getString("markers.homes.decoration","--------");for(Side signFace:Side.values()){SignSide side=sign.getSide(signFace);side.line(0,net.kyori.adventure.text.Component.text(deco));side.line(1,net.kyori.adventure.text.Component.text(homeName));side.line(2,net.kyori.adventure.text.Component.text(p.getName()));side.line(3,net.kyori.adventure.text.Component.text(deco));side.setGlowingText(plugin.getConfig().getBoolean("markers.homes.glowing",true));}mark(sign,"home",key);sign.update(true,false);return true;}return false;
+        for(int r=1;r<=2;r++)for(int dy=0;dy<=2;dy++)for(BlockFace wall:new BlockFace[]{BlockFace.NORTH,BlockFace.EAST,BlockFace.SOUTH,BlockFace.WEST}){Block solid=origin.getRelative(wall,r).getRelative(BlockFace.UP,dy);if(!solid.getType().isSolid())continue;Block place=solid.getRelative(wall.getOppositeFace());if(!place.isEmpty())continue;BlockData candidate=Material.OAK_WALL_SIGN.createBlockData();if(candidate instanceof Directional d)d.setFacing(wall.getOppositeFace());if(!candidate.isSupported(place))continue;place.setBlockData(candidate,false);if(!(place.getState() instanceof Sign sign)){place.setType(Material.AIR,false);continue;}String deco=plugin.getConfig().getString("markers.homes.decoration","--------");for(Side signFace:Side.values()){SignSide side=sign.getSide(signFace);side.line(0,net.kyori.adventure.text.Component.text(deco));side.line(1,net.kyori.adventure.text.Component.text(homeName));side.line(2,net.kyori.adventure.text.Component.text(p.getName()));side.line(3,net.kyori.adventure.text.Component.text(deco));side.setGlowingText(plugin.getConfig().getBoolean("markers.homes.glowing",true));}mark(sign,"home",key);sign.update(true,false);record("home",key,place);return true;}return false;
     }
 
     public boolean createWarpBanner(Player p, String warpName, DyeColor color) {
@@ -80,17 +80,17 @@ public final class LocationMarkerManager implements Listener {
         PersistentDataContainer pdc = state.getPersistentDataContainer();
         pdc.set(markerKey, PersistentDataType.BYTE, (byte)1);
         pdc.set(typeKey, PersistentDataType.STRING, type);
-        pdc.set(nameKey, PersistentDataType.STRING, name);
+        pdc.set(nameKey, PersistentDataType.STRING, name);\n        pdc.set(idKey, PersistentDataType.STRING, UUID.randomUUID().toString());
     }
 
     @EventHandler public void onBreak(BlockBreakEvent e) {
         if (!(e.getBlock().getState() instanceof TileState state)) return;
         if (!state.getPersistentDataContainer().has(markerKey, PersistentDataType.BYTE)) return;
         // El marcador es cosmético: romperlo jamás elimina la ubicación real.
-        e.setDropItems(false);
+        e.setDropItems(false);\n        String type=state.getPersistentDataContainer().get(typeKey,PersistentDataType.STRING),name=state.getPersistentDataContainer().get(nameKey,PersistentDataType.STRING);if(type!=null&&name!=null){registry.set(type+"."+name,null);saveRegistry();}
     }
 
-    private void spawnParticles() {
+    private void record(String type,String name,Block b){String p=type+"."+name;registry.set(p+".world",b.getWorld().getName());registry.set(p+".x",b.getX());registry.set(p+".y",b.getY());registry.set(p+".z",b.getZ());registry.set(p+".updated",java.time.Instant.now().toString());saveRegistry();}\n    private synchronized void saveRegistry(){try{registryFile.getParentFile().mkdirs();registry.save(registryFile);}catch(IOException e){plugin.getLogger().warning("Marker registry: "+e.getMessage());}}\n    public int cleanupRegistered(){int removed=0;for(String type:new java.util.ArrayList<>(registry.getKeys(false))){var sec=registry.getConfigurationSection(type);if(sec==null)continue;for(String name:new java.util.ArrayList<>(sec.getKeys(false))){String p=type+"."+name,wname=registry.getString(p+".world");World w=Bukkit.getWorld(wname);if(w==null)continue;Block b=w.getBlockAt(registry.getInt(p+".x"),registry.getInt(p+".y"),registry.getInt(p+".z"));if(!(b.getState() instanceof TileState ts)||!ts.getPersistentDataContainer().has(markerKey,PersistentDataType.BYTE)){registry.set(p,null);removed++;}}}saveRegistry();return removed;}\n\n    private void spawnParticles() {
         String worldName = plugin.getConfig().getString("markers.spawn.location.world", "");
         if (worldName == null || worldName.isBlank()) return;
         World w = Bukkit.getWorld(worldName); if (w == null) return;
