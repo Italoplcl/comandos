@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "dev.mando"
-version = "1.5.0-test"
+version = "1.7.0-test"
 
 repositories {
     mavenCentral()
