@@ -1,0 +1,8 @@
+package dev.mando;
+import org.bukkit.Bukkit;import org.bukkit.entity.Player;import org.bukkit.event.*;import org.bukkit.event.player.PlayerJoinEvent;
+public final class PlayerSessionListener implements Listener{
+ private final MandoPlugin plugin;private final PlayerDataManager players;private final MailManager mail;private final AuthGuardListener auth;
+ public PlayerSessionListener(MandoPlugin p,PlayerDataManager d,MailManager m,AuthGuardListener a){plugin=p;players=d;mail=m;auth=a;}
+ @EventHandler public void join(PlayerJoinEvent e){Player p=e.getPlayer();players.touch(p);Bukkit.getScheduler().runTaskLater(plugin,()->notifyPlayer(p,0),40L);}
+ private void notifyPlayer(Player p,int tries){if(!p.isOnline())return;if(!auth.authenticated(p)){if(tries<30)Bukkit.getScheduler().runTaskLater(plugin,()->notifyPlayer(p,tries+1),20L);return;}if(plugin.getConfig().getBoolean("join-notifications.mail.enabled",true)){int n=mail.unread(p.getUniqueId());if(n>0)p.sendMessage("§6Mando §8» §eTienes "+n+" correo"+(n==1?"":"s")+" sin leer. §f/mail inbox");}String v=plugin.getPluginMeta().getVersion();if(plugin.getConfig().getBoolean("join-notifications.changelog.enabled",true)&&!v.equals(players.lastReadVersion(p.getUniqueId())))p.sendMessage("§6Mando §8» §bHay novedades de Mando "+v+". §f/changelog");}
+}
