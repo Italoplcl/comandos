@@ -1,10 +1,10 @@
 name: Mando
 version: '${version}'
-main: dev.mando.Mando
+main: dev.mando.MandoPlugin
 api-version: '26.3'
 description: Administración moderna y modular para servidores Paper y Purpur
 commands:
-  mando: {description: "Panel principal de Mando", usage: "/mando [setup|config|changelog]", permission: mando.admin}
+  mando: {description: "Panel principal de Mando", usage: "/mando [setup|config|status|backup|changelog]", permission: mando.admin}
   god: {description: "Modo dios", usage: /god, permission: mando.god}
   heal: {description: "Rellena hambre y saturacion", usage: /heal, permission: mando.heal}
   sethome: {description: "Guarda un home", usage: "/sethome [nombre]", permission: mando.sethome}
@@ -21,6 +21,14 @@ commands:
   delwarp: {description: "Borra warp", usage: "/delwarp <nombre>", aliases: [removewarp], permission: mando.delwarp}
   tools: {description: "Mesas de trabajo", usage: /tools, permission: mando.tools}
   ender: {description: "Cofre de ender", usage: /ender, permission: mando.ender}
+  tpa: {description: "Solicita TP", usage: "/tpa <jugador>", permission: mando.tpa}
+  tpahere: {description: "Solicita TP hacia ti", usage: "/tpahere <jugador>", permission: mando.tpa}
+  tpaccept: {description: "Acepta TPA", usage: /tpaccept, permission: mando.tpa}
+  tpdeny: {description: "Rechaza TPA", usage: /tpdeny, permission: mando.tpa}
+  tpcancel: {description: "Cancela TPA", usage: /tpcancel, permission: mando.tpa}
+  tptoggle: {description: "Toggle TPA", usage: /tptoggle, permission: mando.tpa}
+  mail: {description: "Correo offline", usage: "/mail <jugador> <mensaje>", permission: mando.mail}
+  profile: {description: "Perfil", usage: "/profile [jugador]", permission: mando.profile}
   changelog: {description: "Novedades de Mando", usage: /changelog, permission: mando.changelog}
   serverconfig: {description: "Administrador grafico Paper/Purpur", usage: "/serverconfig [spawn|modules|purpur|mounts]", aliases: [scfg, purpurgui], permission: mando.serverconfig}
 permissions:
@@ -43,5 +51,9 @@ permissions:
   mando.delwarp: {default: op}
   mando.tools: {default: true}
   mando.ender: {default: true}
+  mando.tpa: {default: true}
+  mando.mail: {default: true}
+  mando.profile: {default: true}
+  mando.profile.others: {default: op}
   mando.changelog: {default: true}
   mando.serverconfig: {default: op}

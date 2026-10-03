@@ -23,6 +23,8 @@ public final class MandoPlugin extends JavaPlugin {
     private LocationMarkerManager markers;
     private BackupManager backups;
     private SetupProtectionListener setupProtection;
+    private TpaManager tpa;
+    private MailManager mail;
 
     @Override
     public void onEnable() {
@@ -30,7 +32,10 @@ public final class MandoPlugin extends JavaPlugin {
         modules = new ModuleManager(this);
         backups = new BackupManager(this);
         setupProtection = new SetupProtectionListener(this);
+        tpa = new TpaManager(this);
+        mail = new MailManager(this);
         getServer().getPluginManager().registerEvents(setupProtection, this);
+        getServer().getPluginManager().registerEvents(tpa, this);
         platform = new PlatformDetector();
         boolean firstSetup=!getConfig().getBoolean("setup.completed",false);
         getLogger().info("Mando "+getPluginMeta().getVersion()+" iniciando en "+platform.platform());
@@ -50,6 +55,8 @@ public final class MandoPlugin extends JavaPlugin {
         Commands commands = new Commands(this, homes, god, rtp, markers);
 
         for (String name : List.of("god", "heal", "rtp")) register(name, commands, commands);
+        SocialCommands social=new SocialCommands(this,tpa,mail,homes);
+        for(String name:List.of("tpa","tpahere","tpaccept","tpdeny","tpcancel","tptoggle","mail","profile")) register(name,social,social);
         if (modules.enabled("homes")) for (String name : List.of("sethome", "home", "homes", "delhome")) register(name, commands, commands);
 
         warps = new WarpManager(this);
@@ -96,6 +103,7 @@ public final class MandoPlugin extends JavaPlugin {
         if (fly != null) fly.disableAll();
         if (homes != null) homes.saveNow();
         if (warps != null) warps.saveNow();
+        if(mail!=null)mail.saveNow();
     }
 
     /** Mensaje sin prefijo. */
