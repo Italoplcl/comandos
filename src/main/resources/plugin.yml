@@ -28,7 +28,7 @@ commands:
   tpcancel: {description: "Cancela TPA", usage: /tpcancel, permission: mando.tpa}
   tptoggle: {description: "Toggle TPA", usage: /tptoggle, permission: mando.tpa}
   mail: {description: "Correo offline", usage: "/mail <jugador> <mensaje>", permission: mando.mail}
-  profile: {description: "Perfil", usage: "/profile [jugador]", permission: mando.profile}\n  afk: {description: "Alterna estado AFK", usage: /afk, permission: mando.afk}
+  profile: {description: "Perfil", usage: "/profile [jugador]", permission: mando.profile}\n  afk: {description: "Alterna estado AFK", usage: /afk, permission: mando.afk}\n  tp: {description: "TP administrativo", usage: "/tp <jugador> [destino]", permission: mando.tp}\n  tphere: {description: "Trae un jugador", usage: "/tphere <jugador>", permission: mando.tphere}\n  tppos: {description: "TP a coordenadas", usage: "/tppos <x> <y> <z> [mundo]", permission: mando.tppos}
   changelog: {description: "Novedades de Mando", usage: /changelog, permission: mando.changelog}
   serverconfig: {description: "Administrador grafico Paper/Purpur", usage: "/serverconfig [spawn|modules|purpur|mounts]", aliases: [scfg, purpurgui], permission: mando.serverconfig}
 permissions:
@@ -56,4 +56,4 @@ permissions:
   mando.profile: {default: true}
   mando.profile.others: {default: op}\n  mando.mail.inspect: {default: op}\n  mando.afk: {default: true}\n  mando.tpa.bypass: {default: op}\n  mando.teleport.bypass-warmup: {default: op}
   mando.changelog: {default: true}
-  mando.serverconfig: {default: op}
+  mando.serverconfig: {default: op}\n  mando.tp: {default: op}\n  mando.tphere: {default: op}\n  mando.tppos: {default: op}
