@@ -90,7 +90,7 @@ public final class MandoPlugin extends JavaPlugin {
     public BackupManager backups(){ return backups; }
     public SetupProtectionListener setupProtection(){ return setupProtection; }
     public ModuleManager modules(){ return modules; }
-    public PlatformDetector platform(){ return platform; }\n    public IntegrationManager integrations(){ return integrations; }\n    public PlayerDataManager playerData(){ return playerData; }\n    public DeathManager deaths(){ return deaths; }\n    public TeleportManager teleports(){ return teleports; }
+    public PlatformDetector platform(){ return platform; }\n    public IntegrationManager integrations(){ return integrations; }\n    public PlayerDataManager playerData(){ return playerData; }\n    public DeathManager deaths(){ return deaths; }\n    public TeleportManager teleports(){ return teleports; }\n    public LocationMarkerManager markers(){ return markers; }
 
     private void register(String name, org.bukkit.command.CommandExecutor executor, org.bukkit.command.TabCompleter completer) {
         PluginCommand cmd = getCommand(name);
