@@ -21,6 +21,7 @@ public final class WarpManager {
     private final File file;
     private final Object ioLock = new Object();
     private final Map<String, Home> warps = new TreeMap<>();
+    private final Map<String,String> icons=new TreeMap<>();
 
     public WarpManager(MandoPlugin plugin) {
         this.plugin = plugin;
@@ -43,6 +44,7 @@ public final class WarpManager {
 
     public boolean remove(String name) {
         if (warps.remove(name) == null) return false;
+        icons.remove(name);
         saveAsync();
         return true;
     }
@@ -69,6 +71,7 @@ public final class WarpManager {
             yml.set(base + "z", v.z());
             yml.set(base + "yaw", v.yaw());
             yml.set(base + "pitch", v.pitch());
+            yml.set(base + "icon", icon(e.getKey()));
         }
         return yml.saveToString();
     }
