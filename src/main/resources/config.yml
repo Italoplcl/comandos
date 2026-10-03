@@ -101,8 +101,13 @@ markers:
   warps:
     enabled: true
     color-selector: true
+    fallback-text-display: true
   spawn:
     enabled: true
+    fallback-text-display: true
+    light:
+      enabled: false
+      level: 15
     particles:
       enabled: true
       view-distance: 16
