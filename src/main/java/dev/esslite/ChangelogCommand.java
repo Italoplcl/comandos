@@ -1,37 +1,3 @@
 package dev.esslite;
-
-import io.papermc.paper.dialog.Dialog;
-import io.papermc.paper.registry.data.dialog.DialogBase;
-import io.papermc.paper.registry.data.dialog.body.DialogBody;
-import io.papermc.paper.registry.data.dialog.type.DialogType;
-import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.List;
-
-/** Primera integración visual con los Dialogs nativos modernos de Paper. */
-public final class ChangelogCommand implements CommandExecutor {
-    private final EssLite plugin;
-    public ChangelogCommand(EssLite plugin) { this.plugin = plugin; }
-
-    @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player p)) { sender.sendMessage(plugin.msg("only-players")); return true; }
-        String version = plugin.getConfig().getString("changelog.version", plugin.getPluginMeta().getVersion());
-        List<String> lines = plugin.getConfig().getStringList("changelog.lines");
-        Component assembledBody = Component.empty();
-        for (String line : lines) {
-            assembledBody = assembledBody.append(Component.text("• " + line + "\n"));
-        }
-        final Component body = assembledBody;
-        Dialog dialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text("Novedades del servidor · " + version))
-                        .body(List.of(DialogBody.plainMessage(body)))
-                        .build())
-                .type(DialogType.notice()));
-        p.showDialog(dialog);
-        return true;
-    }
-}
+import io.papermc.paper.dialog.Dialog;import io.papermc.paper.registry.data.dialog.DialogBase;import io.papermc.paper.registry.data.dialog.body.DialogBody;import io.papermc.paper.registry.data.dialog.type.DialogType;import net.kyori.adventure.text.Component;import org.bukkit.command.*;import org.bukkit.entity.Player;import java.util.List;
+public final class ChangelogCommand implements CommandExecutor{private final EssLite plugin;public ChangelogCommand(EssLite p){plugin=p;}public boolean onCommand(CommandSender s,Command c,String l,String[] a){if(!(s instanceof Player p)){s.sendMessage(plugin.msg("only-players"));return true;}String body="3 oct 2026 · Mando 1.5.0-test\n\nIMPLEMENTADO\n✓ Primera configuración indicada en consola\n✓ Confirmación antes de mover un Home\n✓ Home vuelve mirando al horizonte\n✓ Marcador Home independiente de la mirada\n✓ Reemplazo del marcador al actualizar\n✓ Changelog por fecha y estado\n\nEN PRUEBAS\n• ServerConfig + Dialogs Purpur\n• Homes, Warps y Spawn\n\nPLANIFICADO · NO IMPLEMENTADO\n• Profile, Mail, TPA y proveedores externos\n• Back/deaths rediseñado, backups y diagnóstico\n• Setup multipaso completo e integraciones";p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Novedades de Mando")).body(List.of(DialogBody.plainMessage(Component.text(body)))).build()).type(DialogType.notice())));return true;}}
