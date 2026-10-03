@@ -176,6 +176,7 @@ announcements:
   enabled: false
   interval-seconds: 300
   bossbar-seconds: 10
+  bossbar-finish-command: ""
   messages: []
 
 shutdown:
