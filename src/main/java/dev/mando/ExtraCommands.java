@@ -160,7 +160,8 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
             return;
         }
         String name = HomeManager.normalize(args[0]);
-        if (name != null && warps.get(name)!=null && markers.removeWarpMarker(name) && warps.remove(name)) {
+        if (name != null && warps.get(name)!=null && warps.remove(name)) {
+            if(!markers.removeWarpMarker(name)) markers.forgetWarpMarker(name);
             p.sendMessage(plugin.msg("warp-deleted", Placeholder.unparsed("name", name)));
         } else {
             p.sendMessage(plugin.msg("warp-not-found", Placeholder.unparsed("name", args[0])));
