@@ -167,6 +167,10 @@ permissions:
     default: true
   esslite.profile.admin:
     default: op
+  esslite.teleport.bypass-warmup:
+    default: op
+  esslite.teleport.bypass-cooldown:
+    default: op
   esslite.mail:
     default: true
   esslite.tpa:

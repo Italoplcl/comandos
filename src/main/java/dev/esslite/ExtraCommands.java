@@ -29,14 +29,16 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     private final WarpManager warps;
     private final WarpColorMenu warpColors;
     private final LocationMarkerManager markers;
+    private final TeleportService teleports;
 
-    public ExtraCommands(EssLite plugin, FlyListener fly, BackListener back, WarpManager warps, WarpColorMenu warpColors, LocationMarkerManager markers) {
+    public ExtraCommands(EssLite plugin, FlyListener fly, BackListener back, WarpManager warps, WarpColorMenu warpColors, LocationMarkerManager markers, TeleportService teleports) {
         this.plugin = plugin;
         this.fly = fly;
         this.back = back;
         this.warps = warps;
         this.warpColors = warpColors;
         this.markers = markers;
+        this.teleports = teleports;
     }
 
     @Override
@@ -64,8 +66,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     // ---------- helpers ----------
 
     private void tp(Player p, Location loc, String okKey, TagResolver... resolvers) {
-        p.teleportAsync(loc).thenAccept(ok ->
-                p.sendMessage(plugin.msg(ok ? okKey : "teleport-failed", resolvers)));
+        teleports.teleport(p, () -> loc, TeleportService.Kind.STORED, "stored", () -> p.sendMessage(plugin.msg(okKey, resolvers)));
     }
 
     private World spawnWorld() {
@@ -90,15 +91,8 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
             p.sendMessage(plugin.msg("back-none"));
             return;
         }
-        Location here = p.getLocation().clone();
-        p.teleportAsync(target).thenAccept(ok -> {
-            if (ok) {
-                back.set(p.getUniqueId(), here); // asi /back vuelve a alternar entre ambos puntos
-                p.sendMessage(plugin.msg("back-teleported"));
-            } else {
-                p.sendMessage(plugin.msg("teleport-failed"));
-            }
-        });
+        teleports.teleport(p, () -> back.get(p.getUniqueId()), TeleportService.Kind.STORED, "back",
+                () -> p.sendMessage(plugin.msg("back-teleported")));
     }
 
     private void spawn(Player p) {

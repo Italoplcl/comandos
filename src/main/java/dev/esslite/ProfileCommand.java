@@ -15,15 +15,15 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public final class ProfileCommand implements CommandExecutor,TabCompleter {
- private final EssLite plugin;private final HomeManager homes;private final MailManager mail;private final TpaManager tpa;private final DeathHistory deaths;
- public ProfileCommand(EssLite p,HomeManager h,MailManager m,TpaManager t,DeathHistory d){plugin=p;homes=h;mail=m;tpa=t;deaths=d;}
+ private final EssLite plugin;private final HomeManager homes;private final MailManager mail;private final TpaManager tpa;private final DeathHistory deaths;private final TeleportService teleports;
+ public ProfileCommand(EssLite p,HomeManager h,MailManager m,TpaManager t,DeathHistory d,TeleportService ts){plugin=p;homes=h;mail=m;tpa=t;deaths=d;teleports=ts;}
  @Override public boolean onCommand(CommandSender s,Command c,String l,String[] a){
   if(!(s instanceof Player p)){s.sendMessage(plugin.msg("only-players"));return true;}
   switch(c.getName().toLowerCase(Locale.ROOT)){
    case "profile"->profile(p,a);
    case "mail"->mail(p,a);
    case "tpa"->request(p,a);
-   case "tpaccept"->{Player from=tpa.accept(p);if(from==null){p.sendMessage(plugin.msg("tpa-none"));return true;}from.teleportAsync(p.getLocation());p.sendMessage(plugin.msg("tpa-accepted"));from.sendMessage(plugin.msg("tpa-accepted"));}
+   case "tpaccept"->{Player from=tpa.accept(p);if(from==null){p.sendMessage(plugin.msg("tpa-none"));return true;}UUID target=p.getUniqueId();teleports.teleport(from,()->{Player live=Bukkit.getPlayer(target);return live==null?null:live.getLocation();},TeleportService.Kind.PLAYER,"tpa",()->{p.sendMessage(plugin.msg("tpa-accepted"));from.sendMessage(plugin.msg("tpa-accepted"));});}
    case "tpdeny"->{p.sendMessage(plugin.msg(tpa.deny(p)?"tpa-denied":"tpa-none"));}
    case "tpatoggle"->{p.sendMessage(plugin.msg(tpa.toggle(p.getUniqueId())?"tpa-on":"tpa-off"));}
   } return true;

@@ -100,6 +100,12 @@ messages:
   tpa-denied: '<yellow>Solicitud TPA rechazada.'
   tpa-on: '<green>Solicitudes TPA activadas.'
   tpa-off: '<yellow>Solicitudes TPA desactivadas.'
+  teleport-warmup: '<yellow>Teletransporte en <seconds>s. No te muevas ni recibas daño.'
+  teleport-cancelled: '<red>Teletransporte cancelado.'
+  teleport-cooldown: '<red>Espera <seconds>s para volver a teletransportarte.'
+  teleport-invalid: '<red>El destino ya no está disponible.'
+  teleport-unsafe: '<red>El destino no es seguro.'
+  admin-tp-done: '<green>Teletransporte administrativo completado.'
 
 # Módulos: false significa que EssLite no inicializa/expone esa función cuando sea posible.
 modules:
@@ -131,6 +137,30 @@ modules:
         enabled: true
       raids:
         enabled: true
+
+teleport:
+  default-warmup-seconds: 3
+  default-cooldown-seconds: 5
+  cancel-on-damage: true
+  cancel-move-distance: 0.15
+  home:
+    warmup-seconds: 3
+    cooldown-seconds: 5
+  stored:
+    warmup-seconds: 3
+    cooldown-seconds: 5
+  back:
+    warmup-seconds: 3
+    cooldown-seconds: 5
+  tpa:
+    warmup-seconds: 3
+    cooldown-seconds: 5
+  admin:
+    warmup-seconds: 0
+    cooldown-seconds: 0
+  rtp:
+    warmup-seconds: 3
+    cooldown-seconds: 30
 
 profile:
   deaths-kept: 10

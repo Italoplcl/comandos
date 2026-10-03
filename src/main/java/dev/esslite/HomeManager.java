@@ -42,6 +42,7 @@ public final class HomeManager {
     private final EssLite plugin;
     private final File file;
     private final Object ioLock = new Object();
+    private TeleportService teleports;
     private final Map<UUID, Map<String, Home>> homes = new HashMap<>();
     private final Map<UUID, Map<String, Home>> deleted = new HashMap<>();
     private final Map<UUID, Map<String, Home>> previous = new HashMap<>();
@@ -51,6 +52,8 @@ public final class HomeManager {
         this.file = new File(plugin.getDataFolder(), "homes.yml");
         load();
     }
+
+    public void teleports(TeleportService value) { this.teleports = value; }
 
     /** @return el nombre normalizado o null si es invalido. */
     public static String normalize(String raw) {
@@ -91,8 +94,9 @@ public final class HomeManager {
             p.sendMessage(plugin.msg("home-world-missing"));
             return;
         }
-        p.teleportAsync(loc).thenAccept(ok -> p.sendMessage(
-                plugin.msg(ok ? "home-teleported" : "teleport-failed", Placeholder.unparsed("name", name))));
+        if (teleports == null) { p.sendMessage(plugin.msg("teleport-failed")); return; }
+        teleports.teleport(p, () -> home.toLocation(), TeleportService.Kind.STORED, "home",
+                () -> p.sendMessage(plugin.msg("home-teleported", Placeholder.unparsed("name", name))));
     }
 
     // ---------- persistencia ----------

@@ -30,10 +30,13 @@ public final class Rtp {
     private final EssLite plugin;
     private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final Set<UUID> searching = new HashSet<>();
+    private TeleportService teleports;
 
     public Rtp(EssLite plugin) {
         this.plugin = plugin;
     }
+
+    public void teleports(TeleportService value) { this.teleports = value; }
 
     public void start(Player p) {
         FileConfiguration cfg = plugin.getConfig();
@@ -102,17 +105,15 @@ public final class Rtp {
                 attempt(p, world, left - 1);
                 return;
             }
-            p.teleportAsync(dest).thenAccept(ok -> {
-                searching.remove(id);
-                if (ok) {
-                    cooldowns.put(id, System.currentTimeMillis());
-                    p.sendMessage(plugin.msg("rtp-success",
-                            Placeholder.unparsed("x", String.valueOf(x)),
-                            Placeholder.unparsed("y", String.valueOf(dest.getBlockY())),
-                            Placeholder.unparsed("z", String.valueOf(z))));
-                } else {
-                    p.sendMessage(plugin.msg("teleport-failed"));
-                }
+            searching.remove(id);
+            if (teleports == null) { p.sendMessage(plugin.msg("teleport-failed")); return; }
+            Location chosen = dest.clone();
+            teleports.teleport(p, () -> chosen, TeleportService.Kind.RTP, "rtp", () -> {
+                cooldowns.put(id, System.currentTimeMillis());
+                p.sendMessage(plugin.msg("rtp-success",
+                        Placeholder.unparsed("x", String.valueOf(chosen.getBlockX())),
+                        Placeholder.unparsed("y", String.valueOf(chosen.getBlockY())),
+                        Placeholder.unparsed("z", String.valueOf(chosen.getBlockZ()))));
             });
         }).exceptionally(ex -> {
             searching.remove(id);
