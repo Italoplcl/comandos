@@ -39,7 +39,7 @@ public final class HomeManager {
 
     private final MandoPlugin plugin;
     private final File file;
-    private final Object ioLock = new Object();
+    private final Object ioLock = new Object();\n    private final File historyFile;\n    private final YamlConfiguration history;
     private final Map<UUID, Map<String, Home>> homes = new HashMap<>();
 
     public HomeManager(MandoPlugin plugin) {
@@ -66,7 +66,7 @@ public final class HomeManager {
 
     public boolean remove(UUID id, String name) {
         Map<String, Home> m = homes.get(id);
-        if (m == null || m.remove(name) == null) return false;
+        if (m == null) return false;\n        Home removed=m.get(name); if(removed==null)return false;\n        archive(id,name,removed); m.remove(name);
         if (m.isEmpty()) homes.remove(id);
         saveAsync();
         return true;
@@ -82,7 +82,7 @@ public final class HomeManager {
                 plugin.msg(ok ? "home-teleported" : "teleport-failed", Placeholder.unparsed("name", name))));
     }
 
-    // ---------- persistencia ----------
+    public java.util.List<String> deleted(UUID id){return new java.util.ArrayList<>(history.getStringList(id+".deleted-order"));}\n    public Home deletedHome(UUID id,String key){return readHome(history,id+".deleted."+key+".location");}\n    public boolean restoreDeleted(UUID id,String key,String asName){Home h=deletedHome(id,key);if(h==null||homes.getOrDefault(id,Map.of()).containsKey(asName))return false;homes.computeIfAbsent(id,k->new TreeMap<>()).put(asName,h);history.set(id+".deleted."+key,null);java.util.List<String> order=new java.util.ArrayList<>(history.getStringList(id+".deleted-order"));order.remove(key);history.set(id+".deleted-order",order);saveHistory();saveAsync();return true;}\n    private void archive(UUID id,String name,Home h){String key=System.currentTimeMillis()+"-"+name;writeHome(history,id+".deleted."+key+".location",h);history.set(id+".deleted."+key+".name",name);history.set(id+".deleted."+key+".deleted-at",java.time.Instant.now().toString());java.util.List<String> order=new java.util.ArrayList<>(history.getStringList(id+".deleted-order"));order.add(0,key);int max=plugin.getConfig().getInt("homes.deleted-history",5);while(order.size()>max){String old=order.remove(order.size()-1);history.set(id+".deleted."+old,null);}history.set(id+".deleted-order",order);saveHistory();}\n    private void writeHome(YamlConfiguration y,String b,Home h){y.set(b+".world",h.world());y.set(b+".x",h.x());y.set(b+".y",h.y());y.set(b+".z",h.z());y.set(b+".yaw",h.yaw());y.set(b+".pitch",h.pitch());}\n    private Home readHome(YamlConfiguration y,String b){String w=y.getString(b+".world");if(w==null)return null;return new Home(w,y.getDouble(b+".x"),y.getDouble(b+".y"),y.getDouble(b+".z"),(float)y.getDouble(b+".yaw"),(float)y.getDouble(b+".pitch"));}\n    private synchronized void saveHistory(){try{historyFile.getParentFile().mkdirs();history.save(historyFile);}catch(IOException e){plugin.getLogger().warning("Home history: "+e.getMessage());}}\n\n    // ---------- persistencia ----------
 
     private void load() {
         if (!file.exists()) return;
