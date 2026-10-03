@@ -129,6 +129,7 @@ teleport:
   cooldown: 5
 tpa:
   expire-seconds: 30
+  anti-spam-seconds: 3
 mail:
   max-messages: 50
   max-length: 500
