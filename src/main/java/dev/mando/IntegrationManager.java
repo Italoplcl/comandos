@@ -23,9 +23,10 @@ public final class IntegrationManager{
  private boolean present(String n){Plugin p=Bukkit.getPluginManager().getPlugin(n);return p!=null&&p.isEnabled();}
  private String makeFingerprint(){StringBuilder b=new StringBuilder();KNOWN.forEach(n->{Plugin p=Bukkit.getPluginManager().getPlugin(n);if(p!=null)b.append(n).append(':').append(p.getPluginMeta().getVersion()).append(':').append(p.isEnabled()).append(';');});providers.forEach((k,v)->b.append(k).append('=').append(v.selected()).append(';'));try{byte[] d=MessageDigest.getInstance("SHA-256").digest(b.toString().getBytes(StandardCharsets.UTF_8));return HexFormat.of().formatHex(d,0,8);}catch(Exception e){return Integer.toHexString(b.toString().hashCode());}}
  public boolean changedSinceLastStart(){return !previousFingerprint.isBlank()&&!previousFingerprint.equals(fingerprint);}
+ public boolean isMandoProvider(String capability){Provider p=providers.get(capability);return p!=null&&p.state()==State.ACTIVE&&p.selected().equalsIgnoreCase("Mando");}
  public State state(String n){return states.getOrDefault(n,State.UNAVAILABLE);}public Map<String,State> states(){return Collections.unmodifiableMap(states);}public Map<String,Provider> providers(){return Collections.unmodifiableMap(providers);}public String fingerprint(){return fingerprint;}
- public String summary(){StringBuilder s=new StringBuilder("Fingerprint: ").append(fingerprint).append("
-");providers.values().forEach(v->s.append(v.capability()).append(": ").append(v.selected()).append(" · ").append(v.state()).append("
-"));states.forEach((k,v)->{if(v!=State.UNAVAILABLE)s.append(k).append(": ").append(v).append("
+ public String summary(){StringBuilder s=new StringBuilder("Fingerprint: ").append(fingerprint).append("\
+");providers.values().forEach(v->s.append(v.capability()).append(": ").append(v.selected()).append(" · ").append(v.state()).append("\
+"));states.forEach((k,v)->{if(v!=State.UNAVAILABLE)s.append(k).append(": ").append(v).append("\
 ");});return s.toString().trim();}
 }
