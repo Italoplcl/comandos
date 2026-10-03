@@ -1,58 +1,25 @@
-# EssLite — Documentación técnica
+# Mando — documentación de prueba 1.7.0-test
 
-## Filosofía
-EssLite mantiene separada la información funcional de la presentación. Un Home, Warp o Spawn nunca depende de su cartel, estandarte, partícula o futura etiqueta visual.
+## Persistencia
+Mando usa YAML. Los datos generales de jugadores se identifican por UUID en players/<UUID>.yml. Homes, historial de Homes, markers, correo, muertes, Back, Warps y configuración se mantienen separados. Los marcadores son cosméticos y nunca son la fuente de verdad.
 
-## Plataformas
-- Paper: plataforma base prevista.
-- Purpur: hereda la funcionalidad Paper y añade módulos opcionales.
-- Las opciones exclusivas de Purpur deben comprobar plataforma y módulo antes de exponerse.
+## Teletransporte
+Homes llegan con pitch 0 y conservan yaw. Warp y Spawn conservan orientación. Home, Warp, Spawn, Back y TPA usan el pipeline común configurable de warmup, cooldown y cancelación por movimiento/daño. RTP mantiene búsqueda asíncrona, world border, intentos y validación de superficie.
 
-## Módulos
-`modules.<nombre>.enabled` permite apagar funcionalidades. Las integraciones Purpur se encuentran bajo `modules.server-config.purpur`.
+## Social
+/profile abre el perfil y da acceso al correo/Homes. /mail inbox lista mensajes; /mail read <n> abre y marca leído; /mail delete <n> elimina; /mail <jugador> <texto> envía. Administradores con permiso pueden inspeccionar correo sin marcarlo leído y la acción se audita. TPA incluye expiración, anti-spam, toggle persistente y pipeline de teleport.
 
-## Marcadores
-### Home
-Después de guardar el home, EssLite intenta colocar un cartel en la cara del bloque que mira el jugador. Su contenido es: decoración / nombre del home / jugador / decoración.
+## Homes
+Límites mediante mando.homes.1/.3/.5/.10/unlimited. /delhome confirma. /renamehome renombra. Se conserva una ubicación anterior y los últimos eliminados según homes.deleted-history. /restorehome permite recuperación autorizada.
 
-### Warp
-`/setwarp <nombre>` abre una GUI con nueve colores de estandarte. Tras seleccionar uno se guarda el Warp y se intenta colocar el banner en el bloque de los pies, únicamente si está libre y existe soporte sólido debajo.
+## Integraciones
+Mando detecta Essentials, CMI, HuskHomes, BetterRTP, TAB, ChatControl, PlaceholderAPI, LuckPerms, Vault y AuthMe. La selección de providers se configura bajo providers. AuthMe bloquea comandos Mando antes de autenticar. Vault se usa solo para lectura de saldo en Profile cuando está disponible. AFK intenta primero la API disponible en Purpur y usa fallback propio.
 
-### Spawn
-`/setspawn` actualiza primero el spawn real y después intenta colocar un `LIME_BANNER` en la posición del jugador. Las partículas `HAPPY_VILLAGER` sólo se procesan cuando hay jugadores cerca.
+## Administración
+/mando status muestra plataforma, módulos, backup e integraciones. /mando backup crea backup manual. Existen backups programados y de shutdown con rotación. /mando cleanup markers limpia entradas registradas inválidas sin escanear el mundo. /mando diagnose crea un ZIP sanitizado. Las inspecciones privadas se escriben en logs/admin-actions.log.
 
-### Seguridad
-Los TileStates creados se marcan con PDC (`location_marker`, `marker_type`, `marker_name`). Romper un marcador cancela sus drops especiales, pero jamás elimina la ubicación funcional.
+## Idiomas
+languages/es.yml es el idioma por defecto y languages/en.yml el fallback. Los mensajes heredados que todavía no tengan clave externa conservan fallback desde config.yml durante esta build de prueba.
 
-## ServerConfig / Purpur
-Ruta del archivo: `./purpur.yml` (raíz del servidor).
-
-Flujo de escritura:
-1. Verificar que Purpur y el módulo estén habilitados.
-2. Crear backup en `plugins/EssLite/backups/`.
-3. Modificar `world-settings.default.mobs.<mob>.<opción>`.
-4. Guardar.
-5. Releer el archivo y comprobar el valor.
-6. Informar que se requiere reinicio.
-
-No se ejecuta `/purpur reload` automáticamente.
-
-## Dialogs
-La primera pantalla nativa es `/changelog`. Paper ofrece Dialogs desde versiones modernas y EssLite los utilizará progresivamente para sustituir entradas por chat en configuración administrativa.
-
-## Rendimiento y Spark
-Toda mecánica periódica nueva debe revisarse con Spark, comparando cuando sea posible antes/después: MSPT/TPS, CPU, tareas/listeners de EssLite y hotspots. Especial atención a partículas, marcadores, spawning, entidades y ServerConfig.
-
-## Preview Purpur modules (1.2.1 test)
-`/serverconfig` now exposes a Modules screen and, when Purpur is detected, a Purpur section.
-
-Purpur submodules:
-- Mounts (disabled by default / opt-in)
-- Mob Manager
-- Gameplay
-- Breeding
-- Raids
-
-EssLite edits only keys that are present in the server's real root `purpur.yml`. Before each Purpur write it creates a timestamped backup in `plugins/EssLite/backups/`, saves the requested value, re-reads the physical file, and verifies the result. Purpur changes are shown as requiring a server restart; EssLite does not automatically run `/purpur reload`.
-
-The first Purpur test surface intentionally exposes a conservative subset of settings. Unsupported/missing keys are not invented or written.
+## Pruebas
+Esta versión debe probarse en Purpur 26.3 con Java 25. Los fallos observados durante la prueba se corrigen después sin reducir el alcance funcional de esta build.
