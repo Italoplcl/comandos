@@ -57,7 +57,7 @@ public final class MandoPlugin extends JavaPlugin {
         for (String name : List.of("god", "heal", "rtp")) register(name, commands, commands);
         SocialCommands social=new SocialCommands(this,tpa,mail,homes,playerData,deaths,audit);
         for(String name:List.of("tpa","tpahere","tpaccept","tpdeny","tpcancel","tptoggle","mail","profile")) register(name,social,social);\n        register("afk", afk, null);\n        backups.startSchedule();
-        if (modules.enabled("homes")) for (String name : List.of("sethome", "home", "homes", "delhome")) register(name, commands, commands);
+        if (modules.enabled("homes")) for (String name : List.of("sethome", "home", "homes", "delhome", "renamehome", "restorehome")) register(name, commands, commands);
 
         warps = new WarpManager(this);
         fly = new FlyListener();
