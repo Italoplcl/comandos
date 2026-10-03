@@ -61,7 +61,7 @@ public final class MandoPlugin extends JavaPlugin {
 
         warps = new WarpManager(this);
         fly = new FlyListener();
-        back = new BackListener();
+        back = new BackListener(this);
         WarpColorMenu warpColors = new WarpColorMenu(this, warps, markers);
         getServer().getPluginManager().registerEvents(warpColors, this);
         ExtraCommands extra = new ExtraCommands(this, fly, back, warps, warpColors, markers);
