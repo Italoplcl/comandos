@@ -1,37 +1,10 @@
 package dev.mando;
-
-import io.papermc.paper.dialog.Dialog;
-import io.papermc.paper.registry.data.dialog.DialogBase;
-import io.papermc.paper.registry.data.dialog.body.DialogBody;
-import io.papermc.paper.registry.data.dialog.type.DialogType;
-import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.List;
-
-/** Primera integración visual con los Dialogs nativos modernos de Paper. */
+import io.papermc.paper.dialog.Dialog;import io.papermc.paper.registry.data.dialog.DialogBase;import io.papermc.paper.registry.data.dialog.body.DialogBody;import io.papermc.paper.registry.data.dialog.type.DialogType;
+import net.kyori.adventure.text.Component;import net.kyori.adventure.text.event.ClickEvent;import org.bukkit.command.*;import org.bukkit.entity.Player;import java.net.URI;import java.util.*;
 public final class ChangelogCommand implements CommandExecutor {
-    private final Mando plugin;
-    public ChangelogCommand(Mando plugin) { this.plugin = plugin; }
-
-    @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player p)) { sender.sendMessage(plugin.msg("only-players")); return true; }
-        String version = plugin.getConfig().getString("changelog.version", plugin.getPluginMeta().getVersion());
-        List<String> lines = plugin.getConfig().getStringList("changelog.lines");
-        Component assembledBody = Component.empty();
-        for (String line : lines) {
-            assembledBody = assembledBody.append(Component.text("• " + line + "\n"));
-        }
-        final Component body = assembledBody;
-        Dialog dialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text("Novedades del servidor · " + version))
-                        .body(List.of(DialogBody.plainMessage(body)))
-                        .build())
-                .type(DialogType.notice()));
-        p.showDialog(dialog);
-        return true;
-    }
+ private final Mando plugin;private final PlayerStorage storage;
+ public ChangelogCommand(Mando p,PlayerStorage s){plugin=p;storage=s;}
+ public boolean onCommand(CommandSender sender,Command command,String label,String[] args){if(!(sender instanceof Player p)){sender.sendMessage(plugin.msg("only-players"));return true;}List<Map<?,?>> history=plugin.getConfig().getMapList("changelog.history");if(history.isEmpty()){show(p,plugin.getConfig().getString("changelog.version",plugin.getPluginMeta().getVersion()),plugin.getConfig().getStringList("changelog.lines"),null);return true;}int page=0;if(args.length>0)try{page=Math.max(0,Integer.parseInt(args[0])-1);}catch(Exception ignored){}page=Math.min(page,history.size()-1);Map<?,?> e=history.get(page);String v=String.valueOf(e.get("version"));List<String> lines=e.get("lines") instanceof List<?> l?l.stream().map(String::valueOf).toList():List.of();String link=e.get("link")==null?null:String.valueOf(e.get("link"));show(p,v,lines,valid(link)?link:null);storage.updateNoBackup(p.getUniqueId(),y->y.set("preferences.changelog.last-read",v));return true;}
+ private void show(Player p,String v,List<String> lines,String link){Component body=Component.empty();int max=Math.min(3,lines.size());for(int i=0;i<max;i++)body=body.append(Component.text("• "+lines.get(i)+"\n"));if(lines.size()>3)body=body.append(Component.text("\n+"+(lines.size()-3)+" cambios más. Usa /changelog para el historial."));if(link!=null)body=body.append(Component.text("\n[Ver publicación]").clickEvent(ClickEvent.openUrl(link)));final Component out=body;Dialog d=Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Mando · Novedades "+v)).body(List.of(DialogBody.plainMessage(out))).build()).type(DialogType.notice()));p.showDialog(d);}
+ private boolean valid(String u){if(u==null)return false;try{URI x=URI.create(u);return ("https".equalsIgnoreCase(x.getScheme())||"http".equalsIgnoreCase(x.getScheme()))&&x.getHost()!=null;}catch(Exception e){return false;}}
 }

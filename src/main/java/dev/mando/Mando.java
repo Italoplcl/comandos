@@ -85,12 +85,17 @@ public final class Mando extends JavaPlugin {
         if (modules.enabled("tpa")) for (String name : List.of("tpa","tpaccept","tpdeny","tpatoggle")) register(name, profile, profile);
         PluginCommand profileTp = getCommand("profiletp"); if (profileTp != null) profileTp.setExecutor(new ProfileTpCommand(this, homes, deaths, teleports));
 
-        MandoAdminCommand mandoAdmin = new MandoAdminCommand(this, storage, identities, integrations);
+        AdminOperations adminOps = new AdminOperations(this, storage, modules, platform, integrations);
+        UpdateChecker updates = new UpdateChecker(this);
+        updates.check();
+        AnnouncementManager announcements = new AnnouncementManager(this);
+        getServer().getPluginManager().registerEvents(announcements, this);
+        MandoAdminCommand mandoAdmin = new MandoAdminCommand(this, storage, identities, integrations, adminOps, updates);
         register("mando", mandoAdmin, mandoAdmin);
 
         if (modules.enabled("changelog")) {
             PluginCommand changelog = getCommand("changelog");
-            if (changelog != null) changelog.setExecutor(new ChangelogCommand(this));
+            if (changelog != null) changelog.setExecutor(new ChangelogCommand(this, storage));
         }
 
         if (modules.enabled("server-config")) {

@@ -1,3 +1,25 @@
+admin:
+  debug: false
+update-checker:
+  enabled: false
+  metadata-url: ""
+announcements:
+  enabled: false
+  interval-seconds: 300
+  join:
+    enabled: false
+    delay-seconds: 3
+    message: "<aqua>Bienvenido al servidor.</aqua>"
+  items:
+    - message: "<yellow>Recuerda revisar las novedades con /changelog.</yellow>"
+      channels: [CHAT]
+      duration-seconds: 5
+      command: ""
+    - message: "<red>Reinicio del servidor</red>"
+      channels: [BOSSBAR, CHAT]
+      duration-seconds: 10
+      command: ""
+
 setup:
   completed: false
   ecosystem-signature: ""
@@ -201,7 +223,15 @@ markers:
       interval-ticks: 20
 
 changelog:
-  version: "1.2.1"
+  version: "1.7.0-test"
+  history:
+    - version: "1.7.0-test"
+      link: ""
+      lines:
+        - "Storage por jugador e integraciones modernizadas."
+        - "Setup moderno y administración del servidor."
+        - "Announcements, diagnóstico y operaciones protegidas."
+  legacy-version: "1.2.1"
   lines:
     - "Mando ahora usa Dialogs modernos de Minecraft."
     - "Nuevo sistema visual de marcadores para Homes, Warps y Spawn."

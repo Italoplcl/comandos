@@ -8,7 +8,7 @@ softdepend: [AuthMe, Essentials, CMI, Vault, TAB]
 commands:
   mando:
     description: Administración base de Mando
-    usage: /mando <backup|identity>
+    usage: /mando <status|backup|diagnose|update|debug|integrations|identity|shutdown|restart>
     permission: mando.admin
   god:
     description: Activa o desactiva el modo dios
