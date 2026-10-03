@@ -16,6 +16,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 
 import java.util.List;
 import java.util.Locale;
@@ -107,33 +115,8 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     }
 
     private void warp(Player p, String[] args) {if(!plugin.integrations().isMandoProvider("warps")){p.sendMessage(Component.text("Mando » Warps pertenece al proveedor configurado."));return;}
-        if (args.length == 0) {
-            if (warps.all().isEmpty()) {
-                p.sendMessage(plugin.msg("warps-none"));
-                return;
-            }
-            Component out = plugin.text("warps-header");
-            for (String n : warps.all().keySet()) {
-                out = out.append(Component.text("[" + n + "] ", NamedTextColor.YELLOW)
-                        .clickEvent(ClickEvent.runCommand("/warp " + n))
-                        .hoverEvent(HoverEvent.showText(plugin.text("warp-hover"))));
-            }
-            p.sendMessage(out);
-            return;
-        }
-
-        String name = HomeManager.normalize(args[0]);
-        Home h = name == null ? null : warps.get(name);
-        if (h == null) {
-            p.sendMessage(plugin.msg("warp-not-found", Placeholder.unparsed("name", args[0])));
-            return;
-        }
-        Location loc = h.toLocation();
-        if (loc == null) {
-            p.sendMessage(plugin.msg("home-world-missing"));
-            return;
-        }
-        tp(p, loc, "warp-teleported", Placeholder.unparsed("name", name));
+        if(args.length==0){WarpBrowser.open(plugin,warps,p,0,"");return;}
+        String name=HomeManager.normalize(args[0]);Home h=name==null?null:warps.get(name);if(h==null){p.sendMessage(plugin.msg("warp-not-found",Placeholder.unparsed("name",args[0])));return;}Location loc=h.toLocation();if(loc==null){p.sendMessage(plugin.msg("home-world-missing"));return;}tp(p,loc,"warp-teleported",Placeholder.unparsed("name",name));
     }
 
     private void setWarp(Player p, String[] args) {if(!plugin.integrations().isMandoProvider("warps")){p.sendMessage(Component.text("Mando » Warps pertenece al proveedor configurado."));return;}
