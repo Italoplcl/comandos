@@ -46,6 +46,8 @@ public final class Commands implements CommandExecutor, TabCompleter {
             case "home" -> home(p, args);
             case "homes" -> HomesMenu.open(plugin, homes, p);
             case "delhome" -> delHome(p, args);
+            case "edithome" -> editHome(p,args);
+            case "restorehome" -> restoreHome(p,args);
             case "rtp" -> rtp.start(p);
             default -> { }
         }
@@ -130,11 +132,30 @@ public final class Commands implements CommandExecutor, TabCompleter {
         }
     }
 
+    private void editHome(Player p,String[] args) {
+        if(args.length<2){p.sendMessage(plugin.msg("home-edit-usage"));return;}
+        String name=HomeManager.normalize(args[0]); Home h=name==null?null:homes.all(p.getUniqueId()).get(name);
+        if(h==null){p.sendMessage(plugin.msg("home-not-found",Placeholder.unparsed("name",args[0])));return;}
+        if(!args[1].equalsIgnoreCase("icon")||args.length<3){p.sendMessage(plugin.msg("home-edit-usage"));return;}
+        org.bukkit.Material mat=org.bukkit.Material.matchMaterial(args[2]);
+        if(mat==null||!mat.isItem()){p.sendMessage(plugin.msg("home-icon-invalid"));return;}
+        homes.set(p.getUniqueId(),name,h.withIcon(mat.name()));
+        p.sendMessage(plugin.msg("home-icon-set",Placeholder.unparsed("name",name),Placeholder.unparsed("icon",mat.name())));
+    }
+
+    private void restoreHome(Player p,String[] args){
+        if(args.length<2){p.sendMessage(plugin.msg("home-restore-usage"));return;}
+        String name=HomeManager.normalize(args[0]); if(name==null){p.sendMessage(plugin.msg("invalid-name"));return;}
+        boolean ok=args[1].equalsIgnoreCase("deleted")?homes.restoreDeleted(p.getUniqueId(),name):
+                args[1].equalsIgnoreCase("previous")&&homes.restorePrevious(p.getUniqueId(),name);
+        p.sendMessage(plugin.msg(ok?"home-restored":"home-restore-none",Placeholder.unparsed("name",name)));
+    }
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player p) || args.length != 1) return List.of();
         String n = cmd.getName().toLowerCase(Locale.ROOT);
-        if (!n.equals("home") && !n.equals("sethome") && !n.equals("delhome")) return List.of();
+        if (!n.equals("home") && !n.equals("sethome") && !n.equals("delhome") && !n.equals("edithome") && !n.equals("restorehome")) return List.of();
         String prefix = args[0].toLowerCase(Locale.ROOT);
         return homes.all(p.getUniqueId()).keySet().stream().filter(k -> k.startsWith(prefix)).toList();
     }

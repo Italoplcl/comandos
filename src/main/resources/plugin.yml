@@ -1,8 +1,8 @@
-name: EssLite
+name: Mando
 version: '${version}'
 main: dev.esslite.EssLite
 api-version: '26.3'
-description: Essentials ligero y modular para Paper/Purpur
+description: Mando modular para Paper/Purpur
 
 commands:
   god:
@@ -29,6 +29,14 @@ commands:
     description: Borra un home
     usage: /delhome <nombre>
     permission: esslite.delhome
+  edithome:
+    description: Edita propiedades de un home
+    usage: /edithome <nombre> icon <material>
+    permission: esslite.edithome
+  restorehome:
+    description: Recupera un home borrado o su posicion anterior
+    usage: /restorehome <nombre> <deleted|previous>
+    permission: esslite.restorehome
   rtp:
     description: Teletransporte aleatorio a un lugar seguro
     usage: /rtp
@@ -52,6 +60,10 @@ commands:
   warp:
     description: Va a un warp o lista los warps
     usage: /warp [nombre]
+    permission: esslite.warp
+  warps:
+    description: Lista los warps disponibles
+    usage: /warps
     permission: esslite.warp
   setwarp:
     description: Crea un warp en tu posicion
@@ -95,6 +107,10 @@ permissions:
   esslite.homes:
     default: true
   esslite.delhome:
+    default: true
+  esslite.edithome:
+    default: true
+  esslite.restorehome:
     default: true
   esslite.rtp:
     default: true

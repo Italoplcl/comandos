@@ -54,7 +54,7 @@ public final class WarpManager {
             ConfigurationSection h = yml.getConfigurationSection(name);
             if (h == null || h.getString("world") == null) continue;
             warps.put(name, new Home(h.getString("world"), h.getDouble("x"), h.getDouble("y"),
-                    h.getDouble("z"), (float) h.getDouble("yaw"), (float) h.getDouble("pitch")));
+                    h.getDouble("z"), (float) h.getDouble("yaw"), (float) h.getDouble("pitch"), h.getString("icon", "ENDER_PEARL")));
         }
     }
 
@@ -69,6 +69,7 @@ public final class WarpManager {
             yml.set(base + "z", v.z());
             yml.set(base + "yaw", v.yaw());
             yml.set(base + "pitch", v.pitch());
+            yml.set(base + "icon", v.icon());
         }
         return yml.saveToString();
     }

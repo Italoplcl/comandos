@@ -18,7 +18,7 @@ spawn:
 
 # Mensajes en formato MiniMessage
 messages:
-  prefix: '<dark_gray>[<aqua>EssLite</aqua>]</dark_gray> '
+  prefix: '<dark_gray>[<aqua>Mando</aqua>]</dark_gray> '
   only-players: '<red>Solo los jugadores pueden usar este comando.'
   god-on: '<green>Modo dios <bold>activado</bold>.'
   god-off: '<yellow>Modo dios <bold>desactivado</bold>.'
@@ -75,6 +75,12 @@ messages:
   tool-grindstone: '<yellow>Piedra de afilar'
   tool-enchanting: '<yellow>Mesa de encantamientos'
   tool-ender: '<light_purple>Cofre de ender'
+  home-edit-usage: '<yellow>Uso: /edithome <nombre> icon <material>.'
+  home-icon-invalid: '<red>Ese material no sirve como icono.'
+  home-icon-set: '<green>Icono de <yellow><name></yellow> cambiado a <white><icon></white>.'
+  home-restore-usage: '<yellow>Uso: /restorehome <nombre> <deleted|previous>.'
+  home-restored: '<green>Home <yellow><name></yellow> recuperado.'
+  home-restore-none: '<red>No hay una copia recuperable de <yellow><name></yellow>.'
   home-marker-failed: '<yellow>Home guardado, pero no pude colocar el cartel en la superficie indicada.'
   marker-no-space: '<yellow>La ubicación fue guardada, pero no hay espacio seguro para colocar el marcador.'
 

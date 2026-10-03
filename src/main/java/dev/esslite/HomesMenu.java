@@ -56,13 +56,11 @@ public final class HomesMenu implements InventoryHolder {
     }
 
     private static Material icon(HomeManager.Home h) {
+        Material configured = Material.matchMaterial(h.icon());
+        if (configured != null && configured.isItem()) return configured;
         World w = Bukkit.getWorld(h.world());
         if (w == null) return Material.BARRIER;
-        return switch (w.getEnvironment()) {
-            case NETHER -> Material.NETHERRACK;
-            case THE_END -> Material.END_STONE;
-            default -> Material.GRASS_BLOCK;
-        };
+        return switch (w.getEnvironment()) { case NETHER -> Material.NETHERRACK; case THE_END -> Material.END_STONE; default -> Material.GRASS_BLOCK; };
     }
 
     @Override

@@ -37,7 +37,7 @@ public final class EssLite extends JavaPlugin {
         Commands commands = new Commands(this, homes, god, rtp, markers);
 
         for (String name : List.of("god", "heal", "rtp")) register(name, commands, commands);
-        if (modules.enabled("homes")) for (String name : List.of("sethome", "home", "homes", "delhome")) register(name, commands, commands);
+        if (modules.enabled("homes")) for (String name : List.of("sethome", "home", "homes", "delhome", "edithome", "restorehome")) register(name, commands, commands);
 
         warps = new WarpManager(this);
         fly = new FlyListener();
@@ -47,7 +47,7 @@ public final class EssLite extends JavaPlugin {
         ExtraCommands extra = new ExtraCommands(this, fly, back, warps, warpColors, markers);
         for (String name : List.of("fly", "back", "tools", "ender")) register(name, extra, extra);
         if (modules.enabled("spawn")) for (String name : List.of("spawn", "setspawn")) register(name, extra, extra);
-        if (modules.enabled("warps")) for (String name : List.of("warp", "setwarp", "delwarp")) register(name, extra, extra);
+        if (modules.enabled("warps")) for (String name : List.of("warp", "warps", "setwarp", "delwarp")) register(name, extra, extra);
 
         getServer().getPluginManager().registerEvents(god, this);
         getServer().getPluginManager().registerEvents(fly, this);

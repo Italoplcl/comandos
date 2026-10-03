@@ -51,6 +51,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
             case "spawn" -> spawn(p);
             case "setspawn" -> setSpawn(p);
             case "warp" -> warp(p, args);
+            case "warps" -> warp(p, new String[0]);
             case "setwarp" -> setWarp(p, args);
             case "delwarp" -> delWarp(p, args);
             case "tools" -> ToolsMenu.open(plugin, p);
@@ -185,7 +186,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (args.length != 1) return List.of();
         String n = cmd.getName().toLowerCase(Locale.ROOT);
-        if (!n.equals("warp") && !n.equals("setwarp") && !n.equals("delwarp")) return List.of();
+        if (!n.equals("warp") && !n.equals("warps") && !n.equals("setwarp") && !n.equals("delwarp")) return List.of();
         String prefix = args[0].toLowerCase(Locale.ROOT);
         return warps.all().keySet().stream().filter(k -> k.startsWith(prefix)).toList();
     }
