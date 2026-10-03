@@ -31,7 +31,7 @@ public final class HomeManager {
         }
 
         static Home of(Location l) {
-            return new Home(l.getWorld().getName(), l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+            return new Home(l.getWorld().getName(), l.getX(), l.getY(), l.getZ(), l.getYaw(), 0.0f);
         }
     }
 
