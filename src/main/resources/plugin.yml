@@ -5,6 +5,10 @@ api-version: '26.3'
 description: Mando modular para Paper/Purpur
 
 commands:
+  mando:
+    description: Administración base de Mando
+    usage: /mando <backup|identity>
+    permission: mando.admin
   god:
     description: Activa o desactiva el modo dios
     usage: /god
@@ -120,6 +124,9 @@ commands:
     permission: mando.serverconfig
 
 permissions:
+  mando.admin:
+    description: Administración base, backups e identidades
+    default: op
   mando.god:
     default: op
   mando.heal:

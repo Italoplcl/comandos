@@ -15,8 +15,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public final class ProfileCommand implements CommandExecutor,TabCompleter {
- private final Mando plugin;private final HomeManager homes;private final MailManager mail;private final TpaManager tpa;private final DeathHistory deaths;private final TeleportService teleports;
- public ProfileCommand(Mando p,HomeManager h,MailManager m,TpaManager t,DeathHistory d,TeleportService ts){plugin=p;homes=h;mail=m;tpa=t;deaths=d;teleports=ts;}
+ private final Mando plugin;private final HomeManager homes;private final MailManager mail;private final TpaManager tpa;private final DeathHistory deaths;private final TeleportService teleports;private final PlayerIdentityService identities;
+ public ProfileCommand(Mando p,HomeManager h,MailManager m,TpaManager t,DeathHistory d,TeleportService ts,PlayerIdentityService i){plugin=p;homes=h;mail=m;tpa=t;deaths=d;teleports=ts;identities=i;}
  @Override public boolean onCommand(CommandSender s,Command c,String l,String[] a){
   if(!(s instanceof Player p)){s.sendMessage(plugin.msg("only-players"));return true;}
   switch(c.getName().toLowerCase(Locale.ROOT)){
@@ -29,7 +29,7 @@ public final class ProfileCommand implements CommandExecutor,TabCompleter {
   } return true;
  }
  private void profile(Player p,String[] a){
-  if(a.length>0&&p.hasPermission("mando.profile.admin")){OfflinePlayer target=Bukkit.getOfflinePlayer(a[0]);showAdmin(p,target);return;}
+  if(a.length>0&&p.hasPermission("mando.profile.admin")){var id=identities.resolve(a[0]);if(id==null){p.sendMessage(plugin.msg("player-not-found"));return;}OfflinePlayer target=Bukkit.getOfflinePlayer(id.uuid());showAdmin(p,target);return;}
   Component body=Component.text("Homes: "+homes.all(p.getUniqueId()).size()+"\nMail sin leer: "+mail.unread(p.getUniqueId())+"\nTPA: "+(tpa.enabled(p.getUniqueId())?"ON":"OFF")+"\n\n")
    .append(Component.text("[Homes]").clickEvent(ClickEvent.runCommand("/homes"))).append(Component.text("  "))
    .append(Component.text("[Mail]").clickEvent(ClickEvent.runCommand("/mail"))).append(Component.text("  "))
@@ -44,10 +44,10 @@ public final class ProfileCommand implements CommandExecutor,TabCompleter {
  }
  private void mail(Player p,String[] a){
   if(a.length==0){Component b=Component.text("Sin leer: "+mail.unread(p.getUniqueId())+"\n\n");List<Mail> ms=mail.inbox(p.getUniqueId());for(int i=ms.size()-1;i>=0&&i>=ms.size()-20;i--){Mail m=ms.get(i);b=b.append(Component.text((m.read()?"":"● ")+m.fromName()+" · "+new SimpleDateFormat("dd/MM HH:mm").format(new Date(m.sentAt()))).clickEvent(ClickEvent.runCommand("/mail read "+m.id()))).append(Component.newline());}show(p,"Mailbox",b);return;}
-  if(a[0].equalsIgnoreCase("send")&&a.length>=3){OfflinePlayer to=Bukkit.getOfflinePlayer(a[1]);String body=String.join(" ",Arrays.copyOfRange(a,2,a.length));String r=mail.send(p.getUniqueId(),p.getName(),to.getUniqueId(),body);p.sendMessage(plugin.msg(r.equals("blocked")?"mail-blocked":"mail-sent"));return;}
+  if(a[0].equalsIgnoreCase("send")&&a.length>=3){var rid=identities.resolve(a[1]);if(rid==null){p.sendMessage(plugin.msg("player-not-found"));return;}OfflinePlayer to=Bukkit.getOfflinePlayer(rid.uuid());String body=String.join(" ",Arrays.copyOfRange(a,2,a.length));String r=mail.send(p.getUniqueId(),p.getName(),to.getUniqueId(),body);p.sendMessage(plugin.msg(r.equals("blocked")?"mail-blocked":"mail-sent"));return;}
   if(a[0].equalsIgnoreCase("read")&&a.length>=2){Mail m=mail.get(p.getUniqueId(),a[1]);if(m==null){p.sendMessage(plugin.msg("mail-none"));return;}mail.markRead(p.getUniqueId(),m.id());Component b=Component.text(m.body()+"\n\n").append(Component.text("[Responder]").clickEvent(ClickEvent.suggestCommand("/mail send "+m.fromName()+" "))).append(Component.text("  [Borrar]").clickEvent(ClickEvent.runCommand("/mail delete "+m.id()))).append(Component.text("  [Bloquear]").clickEvent(ClickEvent.runCommand("/mail block "+m.fromName())));show(p,"Mail de "+m.fromName(),b);return;}
   if(a[0].equalsIgnoreCase("delete")&&a.length>=2){p.sendMessage(plugin.msg(mail.delete(p.getUniqueId(),a[1])?"mail-deleted":"mail-none"));return;}
-  if(a[0].equalsIgnoreCase("block")&&a.length>=2){OfflinePlayer t=Bukkit.getOfflinePlayer(a[1]);boolean on=mail.toggleBlock(p.getUniqueId(),t.getUniqueId());p.sendMessage(plugin.msg(on?"mail-block-on":"mail-block-off"));return;}
+  if(a[0].equalsIgnoreCase("block")&&a.length>=2){var rid=identities.resolve(a[1]);if(rid==null){p.sendMessage(plugin.msg("player-not-found"));return;}OfflinePlayer t=Bukkit.getOfflinePlayer(rid.uuid());boolean on=mail.toggleBlock(p.getUniqueId(),t.getUniqueId());p.sendMessage(plugin.msg(on?"mail-block-on":"mail-block-off"));return;}
   p.sendMessage(plugin.msg("mail-usage"));
  }
  private void request(Player p,String[] a){if(a.length==0){p.sendMessage(plugin.msg("tpa-usage"));return;}Player to=Bukkit.getPlayerExact(a[0]);if(to==null||to.equals(p)){p.sendMessage(plugin.msg("player-not-found"));return;}String r=tpa.request(p,to);if(r.equals("disabled")){p.sendMessage(plugin.msg("tpa-disabled-target"));return;}p.sendMessage(plugin.msg("tpa-sent"));to.sendMessage(plugin.msg("tpa-received")); }

@@ -1,0 +1,15 @@
+package dev.mando;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import java.io.File;
+import java.nio.file.*;
+import java.util.*;
+public final class LegacyDataMigrator {
+ private final Mando plugin; private final PlayerStorage storage;
+ public LegacyDataMigrator(Mando p,PlayerStorage s){plugin=p;storage=s;}
+ public void run(){int moved=0;moved+=homes();moved+=mail();moved+=deaths();if(moved>0){storage.backupAll("post-migration");plugin.getLogger().info("Storage A: "+moved+" registros migrados a players/<UUID>.yml.");}}
+ private int homes(){File f=new File(plugin.getDataFolder(),"homes.yml");if(!f.exists())return 0;YamlConfiguration y=YamlConfiguration.loadConfiguration(f);int n=0;for(String u:y.getKeys(false))try{UUID id=UUID.fromString(u);ConfigurationSection s=y.getConfigurationSection(u);if(s==null)continue;for(String name:s.getKeys(false)){ConfigurationSection h=s.getConfigurationSection(name);if(h==null)continue;String b="homes.current."+name;storage.updateNoBackup(id,d->{if(!d.contains(b))for(String k:h.getKeys(false))d.set(b+"."+k,h.get(k));});n++;}}catch(Exception ignored){}archive(f);return n;}
+ private int mail(){File f=new File(plugin.getDataFolder(),"mail.yml");if(!f.exists())return 0;YamlConfiguration y=YamlConfiguration.loadConfiguration(f);int n=0;ConfigurationSection boxes=y.getConfigurationSection("boxes");if(boxes!=null)for(String u:boxes.getKeys(false))try{UUID id=UUID.fromString(u);ConfigurationSection s=boxes.getConfigurationSection(u);if(s==null)continue;for(String mid:s.getKeys(false)){ConfigurationSection m=s.getConfigurationSection(mid);if(m==null)continue;String b="mail.messages."+mid;storage.updateNoBackup(id,d->{if(!d.contains(b)){d.set(b+".from",m.getString("from"));d.set(b+".from-name",m.getString("fromName","?"));d.set(b+".sent-at",m.getLong("sentAt"));d.set(b+".body",m.getString("body",""));d.set(b+".read",m.getBoolean("read"));}});n++;}}catch(Exception ignored){}ConfigurationSection bl=y.getConfigurationSection("blocks");if(bl!=null)for(String u:bl.getKeys(false))try{UUID id=UUID.fromString(u);storage.updateNoBackup(id,d->{if(!d.contains("preferences.mail.blocked"))d.set("preferences.mail.blocked",bl.getStringList(u));});}catch(Exception ignored){}archive(f);return n;}
+ private int deaths(){File f=new File(plugin.getDataFolder(),"deaths.yml");if(!f.exists())return 0;YamlConfiguration y=YamlConfiguration.loadConfiguration(f);int n=0;for(String u:y.getKeys(false))try{UUID id=UUID.fromString(u);List<Map<?,?>> list=y.getMapList(u);storage.updateNoBackup(id,d->{if(!d.contains("history.deaths"))d.set("history.deaths",list);});n+=list.size();}catch(Exception ignored){}archive(f);return n;}
+ private void archive(File f){try{Files.move(f.toPath(),Path.of(f.getPath()+".migrated"),StandardCopyOption.REPLACE_EXISTING);}catch(Exception e){plugin.getLogger().warning("No se pudo archivar "+f.getName()+": "+e.getMessage());}}
+}

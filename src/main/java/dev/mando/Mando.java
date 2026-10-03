@@ -23,6 +23,8 @@ public final class Mando extends JavaPlugin {
     private LocationMarkerManager markers;
     private MailManager mail;
     private DeathHistory deaths;
+    private PlayerStorage storage;
+    private PlayerIdentityService identities;
 
     @Override
     public void onEnable() {
@@ -30,13 +32,17 @@ public final class Mando extends JavaPlugin {
         modules = new ModuleManager(this);
         platform = new PlatformDetector();
         getLogger().info("Plataforma detectada: " + platform.platform());
+        storage = new PlayerStorage(this);
+        new LegacyDataMigrator(this, storage).run();
+        identities = new PlayerIdentityService(this, storage);
+        getServer().getPluginManager().registerEvents(identities, this);
         markers = new LocationMarkerManager(this);
         getServer().getPluginManager().registerEvents(markers, this);
 
-        homes = new HomeManager(this);
-        mail = new MailManager(this);
-        deaths = new DeathHistory(this);
-        TpaManager tpa = new TpaManager(this);
+        homes = new HomeManager(this, storage);
+        mail = new MailManager(this, storage);
+        deaths = new DeathHistory(this, storage);
+        TpaManager tpa = new TpaManager(this, storage);
         getServer().getPluginManager().registerEvents(deaths, this);
         god = new GodListener();
         Rtp rtp = new Rtp(this);
@@ -64,11 +70,14 @@ public final class Mando extends JavaPlugin {
         getServer().getPluginManager().registerEvents(back, this);
         getServer().getPluginManager().registerEvents(new ToolsMenu.Events(this), this);
         getServer().getPluginManager().registerEvents(new HomesMenu.Events(this, homes), this);
-        ProfileCommand profile = new ProfileCommand(this, homes, mail, tpa, deaths, teleports);
+        ProfileCommand profile = new ProfileCommand(this, homes, mail, tpa, deaths, teleports, identities);
         if (modules.enabled("profile")) register("profile", profile, profile);
         if (modules.enabled("mail")) register("mail", profile, profile);
         if (modules.enabled("tpa")) for (String name : List.of("tpa","tpaccept","tpdeny","tpatoggle")) register(name, profile, profile);
         PluginCommand profileTp = getCommand("profiletp"); if (profileTp != null) profileTp.setExecutor(new ProfileTpCommand(this, homes, deaths, teleports));
+
+        MandoAdminCommand mandoAdmin = new MandoAdminCommand(this, storage, identities);
+        register("mando", mandoAdmin, mandoAdmin);
 
         if (modules.enabled("changelog")) {
             PluginCommand changelog = getCommand("changelog");
@@ -95,6 +104,7 @@ public final class Mando extends JavaPlugin {
         if (warps != null) warps.saveNow();
         if (mail != null) mail.save();
         if (deaths != null) deaths.save();
+        if (storage != null) { storage.flushAll(); storage.backupAll("shutdown"); }
     }
 
     /** Mensaje sin prefijo. */
