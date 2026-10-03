@@ -23,3 +23,7 @@ languages/es.yml es el idioma por defecto y languages/en.yml el fallback. Los me
 
 ## Pruebas
 Esta versión debe probarse en Purpur 26.3 con Java 25. Los fallos observados durante la prueba se corrigen después sin reducir el alcance funcional de esta build.
+
+
+## Setup y configuración (Lote F)
+En la primera instalación, un administrador recibe el Setup moderno de Mando. `/serverconfig setup` permite reabrirlo y `/serverconfig setup defaults` aplica una base segura sin borrar valores ya configurados. El Setup cubre idioma, Homes, markers, teletransporte/Back/seguridad, RTP, Mail, AFK, Vault e integraciones. `/serverconfig commands` muestra el estado real de los módulos y comandos; `/serverconfig integrations` abre la selección de proveedores. Vault permanece sólo lectura. Mando guarda una firma del ecosistema detectado y muestra un Dialog a administradores cuando Paper/Purpur o las integraciones cambian entre arranques. Las opciones Purpur continúan bajo `/serverconfig purpur` y sólo se ofrecen cuando Purpur está disponible.

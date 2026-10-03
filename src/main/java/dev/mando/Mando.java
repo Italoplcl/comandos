@@ -36,6 +36,10 @@ public final class Mando extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new AuthMeGate(integrations), this);
         getServer().getScheduler().runTaskTimer(this, integrations::tick, 20L, 20L);
         platform = new PlatformDetector();
+        SetupManager setup = new SetupManager(this, platform, integrations);
+        getServer().getPluginManager().registerEvents(setup, this);
+        String previousEcosystem=getConfig().getString("setup.ecosystem-signature");
+        setup.ecosystemChanged(previousEcosystem, setup.signature());
         getLogger().info("Plataforma detectada: " + platform.platform());
         storage = new PlayerStorage(this);
         new LegacyDataMigrator(this, storage).run();
@@ -90,7 +94,7 @@ public final class Mando extends JavaPlugin {
         }
 
         if (modules.enabled("server-config")) {
-            ServerConfigMenu serverConfig = new ServerConfigMenu(this, modules, platform);
+            ServerConfigMenu serverConfig = new ServerConfigMenu(this, modules, platform, setup, integrations);
             register("serverconfig", serverConfig, serverConfig);
             getServer().getPluginManager().registerEvents(serverConfig, this);
         }

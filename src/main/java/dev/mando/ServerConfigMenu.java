@@ -24,6 +24,8 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
     private final Mando plugin;
     private final ModuleManager modules;
     private final PlatformDetector platform;
+    private final SetupManager setup;
+    private final IntegrationManager integrations;
     private final Map<UUID, World> selectedWorld = new HashMap<>();
     private final Map<UUID, PendingInput> pending = new ConcurrentHashMap<>();
     private final Map<UUID,Integer> mountPage = new HashMap<>();
@@ -46,13 +48,16 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
 
     record PendingInput(String kind, String key, World world) {}
 
-    public ServerConfigMenu(Mando plugin, ModuleManager modules, PlatformDetector platform) {
-        this.plugin = plugin; this.modules = modules; this.platform = platform;
+    public ServerConfigMenu(Mando plugin, ModuleManager modules, PlatformDetector platform, SetupManager setup, IntegrationManager integrations) {
+        this.plugin = plugin; this.modules = modules; this.platform = platform; this.setup=setup; this.integrations=integrations;
     }
 
     @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player p)) { sender.sendMessage("Este comando debe usarse dentro del juego."); return true; }
         if (!p.hasPermission("mando.serverconfig")) { p.sendMessage(Component.text("No tienes permiso.")); return true; }
+        if (args.length > 0 && args[0].equalsIgnoreCase("setup")) { if(args.length>1&&args[1].equalsIgnoreCase("defaults")){setup.defaults();setup.complete(true);sender.sendMessage("Mando: configuración base aplicada.");}else setup.show(p); return true; }
+        if (args.length > 0 && args[0].equalsIgnoreCase("commands")) { openCommands(p); return true; }
+        if (args.length > 0 && args[0].equalsIgnoreCase("integrations")) { p.performCommand("mando integrations"); return true; }
         if (args.length > 0 && args[0].equalsIgnoreCase("spawn")) { openSpawn(p); return true; }
         if (args.length > 0 && args[0].equalsIgnoreCase("modules")) { openModules(p); return true; }
         if (args.length > 0 && args[0].equalsIgnoreCase("purpur")) { openPurpur(p); return true; }
@@ -61,19 +66,21 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
     }
 
     @Override public List<String> onTabComplete(CommandSender s, Command c, String a, String[] args) {
-        return args.length == 1 ? List.of("spawn", "modules", "purpur", "mounts") : List.of();
+        return args.length == 1 ? List.of("setup","commands","integrations","spawn", "modules", "purpur", "mounts") : List.of();
     }
 
     private World world(Player p) { return selectedWorld.computeIfAbsent(p.getUniqueId(), u -> p.getWorld()); }
 
     private void openMain(Player p) {
         Inventory inv = Bukkit.createInventory(null, 27, MAIN);
+        inv.setItem(4,item(Material.COMPARATOR,"§bSetup","§7Idioma, módulos, teleport, AFK e integraciones","§eClick para abrir"));
         inv.setItem(10, item(Material.ZOMBIE_HEAD, "§aSpawning", "§7Límites y frecuencia por mundo", "§eClick para abrir"));
         inv.setItem(12, item(Material.REPEATER, "§dModules", "§7Activa/desactiva funciones de Mando", "§eClick para abrir"));
         if (platform.isPurpur() && modules.purpurEnabled())
             inv.setItem(13, item(Material.AMETHYST_SHARD, "§5Purpur", "§aDetectado", "§7Configura funciones exclusivas", "§eClick para abrir"));
         else inv.setItem(13, item(Material.GRAY_DYE, "§7Purpur", platform.isPurpur()?"§cMódulo desactivado":"§cNo detectado"));
         inv.setItem(14, item(Material.GRASS_BLOCK, "§bMundo: §f" + world(p).getName(), "§7Click para cambiar de mundo"));
+        inv.setItem(15,item(Material.COMMAND_BLOCK,"§eComandos","§7Estado real de módulos y comandos","§eClick para abrir"));
         inv.setItem(16, item(Material.REDSTONE_TORCH, "§cCompatibilidad", "§7Plataforma: §f"+platform.platform(), "§7Cambios Purpur: backup + verificación", "§7Reinicio recomendado tras editar Purpur"));
         p.openInventory(inv);
     }
@@ -168,7 +175,8 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
 
     @EventHandler public void click(InventoryClickEvent e){
         if(!(e.getWhoClicked() instanceof Player p))return;String title=e.getView().getTitle();if(!title.startsWith("§8Mando •"))return;e.setCancelled(true);int s=e.getRawSlot();if(s<0)return;
-        if(title.equals(MAIN)){if(s==10)openSpawn(p);else if(s==12)openModules(p);else if(s==13&&platform.isPurpur()&&modules.purpurEnabled())openPurpur(p);else if(s==14)cycleWorld(p);return;}
+        if(title.equals(MAIN)){if(s==4)setup.show(p);else if(s==15)openCommands(p);else if(s==10)openSpawn(p);else if(s==12)openModules(p);else if(s==13&&platform.isPurpur()&&modules.purpurEnabled())openPurpur(p);else if(s==14)cycleWorld(p);return;}
+        if(title.equals("§8Mando • Comandos")){if(s==49)openMain(p);return;}
         if(title.equals(MODULES)){if(s==10)toggleModule(p,"modules.server-config.purpur.mounts.enabled",false);else if(s==11)toggleModule(p,"modules.server-config.purpur.mobs.enabled",true);else if(s==12)toggleModule(p,"modules.server-config.purpur.gameplay.enabled",true);else if(s==13)toggleModule(p,"modules.server-config.purpur.breeding.enabled",true);else if(s==14)toggleModule(p,"modules.server-config.purpur.raids.enabled",true);else if(s==22)openMain(p);return;}
         if(title.equals(PURPUR)){if(s==10&&modules.mountsEnabled())openMounts(p,0);else if(s==11&&modules.mobsEnabled())openMobManager(p,0);else if(s==12&&modules.gameplayEnabled())openGameplay(p);else if(s==13&&modules.breedingEnabled())openBreeding(p);else if(s==14&&modules.raidsEnabled())openRaids(p);else if(s==22)openMain(p);return;}
         if(title.equals(SPAWN)){if(s>=9&&s<9+CATS.size())askSpawn(p,CATS.get(s-9),e.isRightClick());else if(s==22)openMain(p);return;}
@@ -189,6 +197,17 @@ public final class ServerConfigMenu implements Listener, CommandExecutor, TabCom
         });
     }
     private void reopenPending(Player p,String kind){if(kind.equals("breeding"))openBreeding(p);else if(kind.equals("raids"))openRaids(p);else openSpawn(p);}
+
+
+    private void openCommands(Player p){
+        Inventory inv=Bukkit.createInventory(null,54,"§8Mando • Comandos");
+        String[][] groups={{"Homes","homes","/sethome /home /homes /delhome /edithome /restorehome"},{"Warps","warps","/warp /warps /setwarp /delwarp"},{"Spawn","spawn","/spawn /setspawn"},{"Profile","profile","/profile"},{"Mail","mail","/mail"},{"TPA","tpa","/tpa /tpaccept /tpdeny /tpatoggle"},{"Changelog","changelog","/changelog"},{"Server Config","server-config","/serverconfig"}};
+        int slot=10;for(String[] g:groups){boolean on=modules.enabled(g[1]);inv.setItem(slot++,item(on?Material.LIME_DYE:Material.GRAY_DYE,"§f"+g[0],"§7Módulo: "+(on?"§aACTIVO":"§cINACTIVO"),"§7"+g[2]));if(slot==17)slot=19;}
+        inv.setItem(40,item(Material.ENDER_PEARL,"§bTeleport","§7Warmup: §f"+plugin.getConfig().getInt("teleport.default-warmup-seconds")+"s","§7Cooldown: §f"+plugin.getConfig().getInt("teleport.default-cooldown-seconds")+"s","§7Daño cancela: §f"+plugin.getConfig().getBoolean("teleport.cancel-on-damage")));
+        inv.setItem(41,item(Material.CLOCK,"§bAFK","§7Proveedor: §f"+integrations.afkProvider()));
+        inv.setItem(42,item(Material.EMERALD,"§bVault","§7Sólo lectura: §aSí","§7Disponible: §f"+integrations.has("Vault")));
+        inv.setItem(49,item(Material.ARROW,"§fVolver"));p.openInventory(inv);
+    }
 
     private ItemStack item(Material m,String name,String... lore){ItemStack it=new ItemStack(m);ItemMeta meta=it.getItemMeta();meta.setDisplayName(name);meta.setLore(Arrays.asList(lore));it.setItemMeta(meta);return it;}
     private String pretty(String s){String[] a=s.toLowerCase(Locale.ROOT).split("_");StringBuilder b=new StringBuilder();for(String x:a){if(x.isEmpty())continue;if(!b.isEmpty())b.append(' ');b.append(Character.toUpperCase(x.charAt(0))).append(x.substring(1));}return b.toString();}
