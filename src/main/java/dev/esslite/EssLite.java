@@ -48,9 +48,13 @@ public final class EssLite extends JavaPlugin {
         warps = new WarpManager(this);
         fly = new FlyListener();
         back = new BackListener();
+        TeleportService teleports = new TeleportService(this, back);
+        homes.teleports(teleports);
+        rtp.teleports(teleports);
+        getServer().getPluginManager().registerEvents(teleports, this);
         WarpColorMenu warpColors = new WarpColorMenu(this, warps, markers);
         getServer().getPluginManager().registerEvents(warpColors, this);
-        ExtraCommands extra = new ExtraCommands(this, fly, back, warps, warpColors, markers);
+        ExtraCommands extra = new ExtraCommands(this, fly, back, warps, warpColors, markers, teleports);
         for (String name : List.of("fly", "back", "tools", "ender")) register(name, extra, extra);
         if (modules.enabled("spawn")) for (String name : List.of("spawn", "setspawn")) register(name, extra, extra);
         if (modules.enabled("warps")) for (String name : List.of("warp", "warps", "setwarp", "delwarp")) register(name, extra, extra);
@@ -60,11 +64,11 @@ public final class EssLite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(back, this);
         getServer().getPluginManager().registerEvents(new ToolsMenu.Events(this), this);
         getServer().getPluginManager().registerEvents(new HomesMenu.Events(this, homes), this);
-        ProfileCommand profile = new ProfileCommand(this, homes, mail, tpa, deaths);
+        ProfileCommand profile = new ProfileCommand(this, homes, mail, tpa, deaths, teleports);
         if (modules.enabled("profile")) register("profile", profile, profile);
         if (modules.enabled("mail")) register("mail", profile, profile);
         if (modules.enabled("tpa")) for (String name : List.of("tpa","tpaccept","tpdeny","tpatoggle")) register(name, profile, profile);
-        PluginCommand profileTp = getCommand("profiletp"); if (profileTp != null) profileTp.setExecutor(new ProfileTpCommand(this, homes, deaths));
+        PluginCommand profileTp = getCommand("profiletp"); if (profileTp != null) profileTp.setExecutor(new ProfileTpCommand(this, homes, deaths, teleports));
 
         if (modules.enabled("changelog")) {
             PluginCommand changelog = getCommand("changelog");
