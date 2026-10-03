@@ -63,8 +63,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     // ---------- helpers ----------
 
     private void tp(Player p, Location loc, String okKey, TagResolver... resolvers) {
-        p.teleportAsync(loc).thenAccept(ok ->
-                p.sendMessage(plugin.msg(ok ? okKey : "teleport-failed", resolvers)));
+        plugin.teleports().teleport(p, loc, "mando.teleport.bypass-warmup", () -> p.sendMessage(plugin.msg(okKey, resolvers)));
     }
 
     private World spawnWorld() {
@@ -89,22 +88,14 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
             p.sendMessage(plugin.msg("back-none"));
             return;
         }
-        Location here = p.getLocation().clone();
-        p.teleportAsync(target).thenAccept(ok -> {
-            if (ok) {
-                back.set(p.getUniqueId(), here); // asi /back vuelve a alternar entre ambos puntos
-                p.sendMessage(plugin.msg("back-teleported"));
-            } else {
-                p.sendMessage(plugin.msg("teleport-failed"));
-            }
-        });
+        tp(p, target, "back-teleported");
     }
 
     private void spawn(Player p) {
         World w = spawnWorld();
         Location s = w.getSpawnLocation();
         Location dest = new Location(w, s.getBlockX() + 0.5, s.getY(), s.getBlockZ() + 0.5,
-                p.getLocation().getYaw(), p.getLocation().getPitch());
+                s.getYaw(), s.getPitch());
         tp(p, dest, "spawn-teleported");
     }
 
