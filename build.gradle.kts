@@ -2,8 +2,8 @@ plugins {
     java
 }
 
-group = "dev.esslite"
-version = "1.2.1"
+group = "dev.mando"
+version = "1.7.0-test"
 
 repositories {
     mavenCentral()
@@ -31,5 +31,5 @@ tasks.processResources {
 }
 
 tasks.jar {
-    archiveBaseName.set("EssLite")
+    archiveBaseName.set("Mando")
 }
