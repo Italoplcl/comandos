@@ -84,21 +84,11 @@ public final class LocationMarkerManager implements Listener {
 
     public boolean createSpawnBanner(Player p) {
         if (!plugin.getConfig().getBoolean("markers.spawn.enabled", true)) return true;
-        Block feet = p.getLocation().getBlock();
-        if (!feet.isEmpty() || !feet.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
-        BlockData candidate = Material.LIME_BANNER.createBlockData();
-        if (candidate instanceof Rotatable rotatable) rotatable.setRotation(cardinal(p.getLocation().getYaw()+180f));
-        if (!candidate.isSupported(feet)) return false;
-        feet.setBlockData(candidate, false);
-        if (!(feet.getState() instanceof Banner banner)) { feet.setType(Material.AIR, false); return false; }
-        mark(banner, "spawn", p.getWorld().getName(), UUID.randomUUID().toString());
-        banner.update(true, false);
-        plugin.getConfig().set("markers.spawn.location.world", feet.getWorld().getName());
-        plugin.getConfig().set("markers.spawn.location.x", feet.getX());
-        plugin.getConfig().set("markers.spawn.location.y", feet.getY());
-        plugin.getConfig().set("markers.spawn.location.z", feet.getZ());
-        plugin.saveConfig();
-        return true;
+        removeRegistered("spawn","global");
+        Block feet=p.getLocation().getBlock();String markerId=UUID.randomUUID().toString();boolean placed=false;
+        if(feet.isEmpty()&&feet.getRelative(BlockFace.DOWN).getType().isSolid()){BlockData candidate=Material.LIME_BANNER.createBlockData();if(candidate instanceof Rotatable rotatable)rotatable.setRotation(cardinal(p.getLocation().getYaw()+180f));if(candidate.isSupported(feet)){feet.setBlockData(candidate,false);if(feet.getState() instanceof Banner banner){mark(banner,"spawn","global",markerId);banner.update(true,false);record("spawn","global",feet,markerId);placed=true;}else feet.setType(Material.AIR,false);}}
+        if(!placed&&plugin.getConfig().getBoolean("markers.spawn.fallback-text-display",true)){Location at=p.getLocation().clone().add(0,2.2,0);TextDisplay td=p.getWorld().spawn(at,TextDisplay.class,t->{t.text(net.kyori.adventure.text.Component.text("Spawn"));t.setBillboard(org.bukkit.entity.Display.Billboard.CENTER);t.setPersistent(true);t.getPersistentDataContainer().set(markerKey,PersistentDataType.BYTE,(byte)1);t.getPersistentDataContainer().set(typeKey,PersistentDataType.STRING,"spawn");t.getPersistentDataContainer().set(nameKey,PersistentDataType.STRING,"global");t.getPersistentDataContainer().set(idKey,PersistentDataType.STRING,markerId);});String path="spawn.global";registry.set(path+".marker-id",markerId);registry.set(path+".entity",td.getUniqueId().toString());registry.set(path+".world",p.getWorld().getName());registry.set(path+".x",td.getLocation().getBlockX());registry.set(path+".y",td.getLocation().getBlockY());registry.set(path+".z",td.getLocation().getBlockZ());saveRegistry();placed=true;}
+        plugin.getConfig().set("markers.spawn.location.world",p.getWorld().getName());plugin.getConfig().set("markers.spawn.location.x",feet.getX());plugin.getConfig().set("markers.spawn.location.y",feet.getY());plugin.getConfig().set("markers.spawn.location.z",feet.getZ());plugin.saveConfig();return placed;
     }
 
     private void mark(TileState state, String type, String name, String markerId) {
