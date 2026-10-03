@@ -20,7 +20,7 @@ public final class MandoCommand implements CommandExecutor, TabCompleter {
  public void showMain(Player p){
   ActionButton config=button("Configurar servidor","Abrir ServerConfig",pl->pl.performCommand("serverconfig"));
   ActionButton news=button("Novedades","Ver esta build",pl->pl.performCommand("changelog"));
-  p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Mando · Administración del servidor")).body(List.of(DialogBody.plainMessage(Component.text("Servidor: "+Bukkit.getName()+" "+Bukkit.getMinecraftVersion()+"\n\nMando centraliza configuración y herramientas administrativas. En Purpur, prioriza las funciones nativas en vez de recrearlas.\n\nBuild de prueba 1.4.0-test.")))).build()).type(DialogType.confirmation(config,news))));
+  p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("Mando · Administración del servidor")).body(List.of(DialogBody.plainMessage(Component.text("Servidor: "+Bukkit.getName()+" "+Bukkit.getMinecraftVersion()+"\n\nMando centraliza configuración y herramientas administrativas. En Purpur, prioriza las funciones nativas en vez de recrearlas.\n\nBuild de prueba 1.5.0-test.")))).build()).type(DialogType.confirmation(config,news))));
  }
  public void showSetup(Player p,boolean first){
   ActionButton now=button("Configurar ahora","Abrir configuración inicial",pl->{plugin.getConfig().set("setup.completed",true);plugin.saveConfig();pl.performCommand("serverconfig");});
