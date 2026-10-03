@@ -54,7 +54,7 @@ permissions:
   mando.rtp: {default: true}
   mando.rtp.bypass: {default: op}
   mando.fly: {default: op}
-  mando.back: {default: true}
+  mando.back: {default: true}\n  mando.back.bypass: {default: op}
   mando.spawn: {default: true}
   mando.setspawn: {default: op}
   mando.warp: {default: true}
