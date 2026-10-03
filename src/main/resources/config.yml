@@ -122,6 +122,11 @@ changelog:
 updates:
   enabled: true
   channel: STABLE
+
+back:
+  cooldown-seconds: 10
+  persistent: true
+
 teleport:
   warmup: 3
   cancel-on-move: true
