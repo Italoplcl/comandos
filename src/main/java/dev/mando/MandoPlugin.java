@@ -24,12 +24,12 @@ public final class MandoPlugin extends JavaPlugin {
     private BackupManager backups;
     private SetupProtectionListener setupProtection;
     private TpaManager tpa;
-    private MailManager mail;\n    private PlayerDataManager playerData;\n    private TeleportManager teleports;\n    private DeathManager deaths;\n    private IntegrationManager integrations;\n    private AuditLogger audit;\n    private AuthGuardListener authGuard;\n    private AfkManager afk;
+    private MailManager mail;\n    private PlayerDataManager playerData;\n    private TeleportManager teleports;\n    private DeathManager deaths;\n    private IntegrationManager integrations;\n    private AuditLogger audit;\n    private AuthGuardListener authGuard;\n    private AfkManager afk;\n    private LanguageManager languages;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        modules = new ModuleManager(this);
+        languages = new LanguageManager(this);\n        modules = new ModuleManager(this);
         backups = new BackupManager(this);
         setupProtection = new SetupProtectionListener(this);
         tpa = new TpaManager(this);
@@ -108,19 +108,19 @@ public final class MandoPlugin extends JavaPlugin {
 
     /** Mensaje sin prefijo. */
     public Component text(String key, TagResolver... resolvers) {
-        String raw = getConfig().getString("messages." + key, "<red>Falta el mensaje: " + key);
+        String raw = languages.get("messages." + key, getConfig().getString("messages." + key, "<red>Falta el mensaje: " + key));
         return MM.deserialize(raw, resolvers);
     }
 
     /** Mensaje con prefijo. */
     public Component msg(String key, TagResolver... resolvers) {
-        Component prefix = MM.deserialize(getConfig().getString("messages.prefix", ""));
+        Component prefix = MM.deserialize(languages.get("messages.prefix", getConfig().getString("messages.prefix", "")));
         return prefix.append(text(key, resolvers));
     }
 
     public List<Component> list(String key, TagResolver... resolvers) {
         List<Component> out = new ArrayList<>();
-        for (String line : getConfig().getStringList("messages." + key)) {
+        List<String> source=languages.list("messages."+key); if(source.isEmpty())source=getConfig().getStringList("messages."+key);\n        for (String line : source) {
             out.add(MM.deserialize(line, resolvers));
         }
         return out;
