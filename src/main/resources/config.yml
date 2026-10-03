@@ -1,6 +1,6 @@
 homes:
   max: 3              # homes por jugador (mando.homes.unlimited lo ignora, tope 54)
-  default-name: home  # nombre usado por /sethome y /home sin argumentos
+  default-name: home  # nombre usado por /sethome y /home sin argumentos\n  deleted-history: 5
 
 heal:
   restore-health: false   # true = /heal tambien rellena la vida
@@ -141,4 +141,4 @@ changelog:
     - "Banners de Warp y Spawn orientados según la mirada."
     - "Carteles Home escritos en ambas caras."
 # Mensajes adicionales 1.2.0 (se leen desde messages.*)
-\nupdates:\n  enabled: true\n
+\nupdates:\n  enabled: true\n\nteleport:\n  warmup: 3\n  cancel-on-move: true\n  cancel-on-damage: true\n  cooldown: 5\n\ntpa:\n  expire-seconds: 30\n\nmail:\n  max-messages: 50\n  max-length: 500\n  cooldown-seconds: 10\n\ndeaths:\n  history-size: 5\n\nproviders:\n  homes: Mando\n  warps: Mando\n  spawn: Mando\n  back: Mando\n  rtp: Mando\n  afk: Purpur\n\nbackups:\n  scheduled:\n    enabled: true\n    interval-minutes: 360\n  shutdown:\n    enabled: true\n  rotation:\n    scheduled: 7\n    shutdown: 3\n\njoin-notifications:\n  mail:\n    enabled: true\n  changelog:\n    enabled: true\n
