@@ -76,6 +76,7 @@ messages:
   home-marker-failed: '<yellow>Home guardado, pero no pude colocar su marcador.'
   marker-no-space: '<yellow>Ubicacion guardada, pero no hay espacio seguro para el marcador.'
 modules:
+  rtp: {enabled: true}
   homes: {enabled: true}
   warps: {enabled: true}
   spawn: {enabled: true}
@@ -92,6 +93,7 @@ modules:
 markers:
   homes:
     enabled: true
+    mode: SIGN_FALLBACK_HOLOGRAM
     max-distance: 5
     cleanup-radius: 6
     glowing: true
@@ -143,6 +145,7 @@ tpa:
   expire-seconds: 30
   anti-spam-seconds: 3
 mail:
+  enabled: true
   max-messages: 50
   max-length: 500
   cooldown-seconds: 10
