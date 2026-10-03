@@ -177,6 +177,10 @@ announcements:
   interval-seconds: 300
   bossbar-seconds: 10
   bossbar-finish-command: ""
+  join:
+    enabled: false
+    delay-ticks: 40
+    message: ""
   messages: []
 
 shutdown:
