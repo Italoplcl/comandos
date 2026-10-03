@@ -1,1 +1,11 @@
-# Mando\n\nAdministración moderna para servidores Paper y Purpur.\n\n## 1.6.0-test\nImplementado: identidad Mando completa; Homes/Warps/Spawn/Back/RTP; ServerConfig Paper/Purpur; /mando status y backup; update checker asíncrono; protección durante setup; TPA; Mail offline básico; Profile visual.\n\nEn pruebas: persistencia y UX de markers, TPA, Mail/Profile, backup, update checker y ServerConfig.\n\nPlanificado y NO implementado aún: provider completo EssentialsX/CMI/HuskHomes; AuthMe profundo; Vault; historial persistente de muertes; recuperación/rename de Homes; marker registry redundante; idiomas externos completos; diagnóstico ZIP/debug; backups programados; changelog leído por UUID; teleport común con warmup/cooldown.\n\nRequisitos: Java 25 y Paper/Purpur 26.3.\n
+# Mando
+
+Plugin moderno de administración para Paper/Purpur 26.3, Java 25.
+
+## 1.7.0-test — integración completa de prueba
+
+Esta rama integra los sistemas diseñados para la fase de prueba: Homes privados con límites por permisos, rename, ubicación anterior e historial de eliminados; Warps y Spawn; teletransporte común con warmup/cooldown y cancelación; Back persistente; RTP seguro asíncrono; TPA persistente; Mail con bandeja, lectura y borrado; Profile personal/administrativo; historial de muertes; AFK Purpur-first; AuthMe opcional; Vault opcional de solo lectura; detección de integraciones; datos por UUID; idiomas externos ES/EN; registro de markers; backups manuales/programados/shutdown; auditoría y diagnóstico; update checker; ServerConfig y módulos Paper/Purpur.
+
+Comandos principales: /mando, /profile, /mail, /sethome, /home, /homes, /renamehome, /restorehome, /warp, /spawn, /back, /rtp, /tpa, /tpahere, /afk, /serverconfig.
+
+Esta es una build de prueba: el siguiente paso es probarla en servidor real y corregir errores, incompatibilidades y UX observada.
