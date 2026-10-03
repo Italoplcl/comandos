@@ -111,6 +111,7 @@ setup:
   show-to-op: true
   completed: false
 changelog:
+  mode: SUGGEST
   version: "1.7.0-test"
   date: "2026-10-03"
   lines:
