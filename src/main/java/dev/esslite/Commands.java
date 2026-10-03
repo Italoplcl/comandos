@@ -9,6 +9,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import io.papermc.paper.dialog.Dialog;
+import io.papermc.paper.registry.data.dialog.ActionButton;
+import io.papermc.paper.registry.data.dialog.DialogBase;
+import io.papermc.paper.registry.data.dialog.action.DialogAction;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.type.DialogType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickCallback;
 
 import java.util.List;
 import java.util.Locale;
@@ -80,11 +88,12 @@ public final class Commands implements CommandExecutor, TabCompleter {
             return;
         }
 
-        homes.set(id, name, Home.of(p.getLocation()));
-        boolean markerOk = markers.createHomeSign(p, name);
-        p.sendMessage(plugin.msg("home-set", Placeholder.unparsed("name", name)));
-        if (!markerOk) p.sendMessage(plugin.msg("home-marker-failed"));
+        Home next=Home.of(p.getLocation());
+        if(all.containsKey(name)){Home previous=all.get(name);ActionButton confirm=ActionButton.builder(Component.text("Actualizar ubicación")).tooltip(Component.text("Conserva el Home y reemplaza su marcador")).action(DialogAction.customClick((r,a)->{if(a instanceof Player pl)applyHome(pl,name,next);},ClickCallback.Options.builder().uses(1).build())).build();ActionButton cancel=ActionButton.builder(Component.text("Cancelar")).build();p.showDialog(Dialog.create(b->b.empty().base(DialogBase.builder(Component.text("El Home \""+name+"\" ya existe")).body(List.of(DialogBody.plainMessage(Component.text("¿Quieres actualizar su ubicación?\n\nActual: "+coords(previous)+"\nNueva: "+coords(next)+"\n\nAl volver mirarás al horizonte.")))).build()).type(DialogType.confirmation(confirm,cancel))));return;}applyHome(p,name,next);
     }
+
+    private void applyHome(Player p,String name,Home home){homes.set(p.getUniqueId(),name,home);boolean markerOk=markers.createHomeSign(p,name);p.sendMessage(plugin.msg("home-set",Placeholder.unparsed("name",name)));if(!markerOk)p.sendMessage(plugin.msg("home-marker-failed"));}
+    private static String coords(Home h){return String.format(Locale.ROOT,"%.1f / %.1f / %.1f",h.x(),h.y(),h.z());}
 
     private void home(Player p, String[] args) {
         Map<String, Home> all = homes.all(p.getUniqueId());
