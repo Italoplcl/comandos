@@ -34,38 +34,13 @@ public final class LocationMarkerManager implements Listener {
         }
     }
 
-    public boolean createHomeSign(Player p, String homeName) {
-        if (!plugin.getConfig().getBoolean("markers.homes.enabled", true)) return true;
-        int distance = plugin.getConfig().getInt("markers.homes.max-distance", 5);
-        Block target = p.getTargetBlockExact(distance);
-        BlockFace face = p.getTargetBlockFace(distance);
-        if (target == null || face == null) return false;
-        Block place = target.getRelative(face);
-        if (!place.isEmpty()) return false;
-        Material mat = face == BlockFace.DOWN ? Material.OAK_HANGING_SIGN : (face == BlockFace.UP ? Material.OAK_SIGN : Material.OAK_WALL_SIGN);
-        BlockData candidate = mat.createBlockData();
-        if (candidate instanceof Directional d && face != BlockFace.UP && face != BlockFace.DOWN) {
-            d.setFacing(face);
-        } else if (candidate instanceof Rotatable r) {
-            r.setRotation(cardinal(p.getLocation().getYaw()));
-        }
-        // Pregunta a la propia API si el cartel sobreviviría en esta posición.
-        // Evita carteles flotando sobre nieve, alfombras y geometrías parciales sin mantener listas manuales.
-        if (!candidate.isSupported(place)) return false;
-        place.setBlockData(candidate, false);
-        if (!(place.getState() instanceof Sign sign)) { place.setType(Material.AIR, false); return false; }
-        String deco = plugin.getConfig().getString("markers.homes.decoration", "--------");
-        for (Side signFace : Side.values()) {
-            SignSide side = sign.getSide(signFace);
-            side.line(0, net.kyori.adventure.text.Component.text(deco));
-            side.line(1, net.kyori.adventure.text.Component.text(homeName));
-            side.line(2, net.kyori.adventure.text.Component.text(p.getName()));
-            side.line(3, net.kyori.adventure.text.Component.text(deco));
-            side.setGlowingText(plugin.getConfig().getBoolean("markers.homes.glowing", true));
-        }
-        mark(sign, "home", p.getUniqueId() + ":" + homeName);
-        sign.update(true, false);
-        return true;
+    public void removeHomeMarker(Player p, String homeName) {
+        String key=p.getUniqueId()+":"+homeName; int radius=Math.max(2,plugin.getConfig().getInt("markers.homes.cleanup-radius",6)); Location center=p.getLocation();
+        for(int x=-radius;x<=radius;x++)for(int y=-2;y<=2;y++)for(int z=-radius;z<=radius;z++){Block b=center.clone().add(x,y,z).getBlock();if(!(b.getState() instanceof TileState state))continue;PersistentDataContainer pdc=state.getPersistentDataContainer();if(pdc.has(markerKey,PersistentDataType.BYTE)&&"home".equals(pdc.get(typeKey,PersistentDataType.STRING))&&key.equals(pdc.get(nameKey,PersistentDataType.STRING)))b.setType(Material.AIR,false);}
+    }
+    public boolean createHomeSign(Player p,String homeName){
+        if(!plugin.getConfig().getBoolean("markers.homes.enabled",true))return true;removeHomeMarker(p,homeName);Block origin=p.getLocation().getBlock();String key=p.getUniqueId()+":"+homeName;
+        for(int r=1;r<=2;r++)for(int dy=0;dy<=2;dy++)for(BlockFace wall:new BlockFace[]{BlockFace.NORTH,BlockFace.EAST,BlockFace.SOUTH,BlockFace.WEST}){Block solid=origin.getRelative(wall,r).getRelative(BlockFace.UP,dy);if(!solid.getType().isSolid())continue;Block place=solid.getRelative(wall.getOppositeFace());if(!place.isEmpty())continue;BlockData candidate=Material.OAK_WALL_SIGN.createBlockData();if(candidate instanceof Directional d)d.setFacing(wall.getOppositeFace());if(!candidate.isSupported(place))continue;place.setBlockData(candidate,false);if(!(place.getState() instanceof Sign sign)){place.setType(Material.AIR,false);continue;}String deco=plugin.getConfig().getString("markers.homes.decoration","--------");for(Side signFace:Side.values()){SignSide side=sign.getSide(signFace);side.line(0,net.kyori.adventure.text.Component.text(deco));side.line(1,net.kyori.adventure.text.Component.text(homeName));side.line(2,net.kyori.adventure.text.Component.text(p.getName()));side.line(3,net.kyori.adventure.text.Component.text(deco));side.setGlowingText(plugin.getConfig().getBoolean("markers.homes.glowing",true));}mark(sign,"home",key);sign.update(true,false);return true;}return false;
     }
 
     public boolean createWarpBanner(Player p, String warpName, DyeColor color) {
