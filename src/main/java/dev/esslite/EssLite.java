@@ -27,7 +27,11 @@ public final class EssLite extends JavaPlugin {
         saveDefaultConfig();
         modules = new ModuleManager(this);
         platform = new PlatformDetector();
-        getLogger().info("Mando 1.4.0-test iniciando en " + platform.platform());
+        boolean firstSetup=!getConfig().getBoolean("setup.completed",false);
+        getLogger().info("Mando "+getPluginMeta().getVersion()+" iniciando en "+platform.platform());
+        getLogger().info("Minecraft "+getServer().getMinecraftVersion()+" | Java "+System.getProperty("java.version"));
+        if(firstSetup)getLogger().warning("Primera configuración pendiente. Entra como OP para abrir el asistente de Mando.");
+        else getLogger().info("Configuración inicial: completada.");
         MandoCommand mando = new MandoCommand(this);
         register("mando", mando, mando);
         getServer().getPluginManager().registerEvents(new MandoJoinListener(this, mando), this);
