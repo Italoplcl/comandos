@@ -98,6 +98,7 @@ public final class Rtp {
             return;
         }
 
+        if(plugin.getConfig().getBoolean("rtp.generated-chunks-only",false)&&!world.isChunkGenerated(x>>4,z>>4)){attempt(p,world,left-1);return;}
         world.getChunkAtAsync(x >> 4, z >> 4).thenAccept(chunk -> {
             Location dest = findSafe(world, x, z, p.getLocation());
             if (dest == null) {
