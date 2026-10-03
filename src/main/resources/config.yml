@@ -46,7 +46,6 @@ rtp:
   min-radius: 500
   max-radius: 5000
   max-attempts: 15
-  cooldown-seconds: 30
   center-on-player: false # false = centro en el spawn del mundo
 
 spawn:
@@ -72,7 +71,6 @@ messages:
   rtp-searching: '<gray>Buscando una ubicacion segura...'
   rtp-success: '<green>Teletransportado a <yellow><x>, <y>, <z></yellow>.'
   rtp-fail: '<red>No se encontro una ubicacion segura. Intenta de nuevo.'
-  rtp-cooldown: '<red>Espera <yellow><seconds>s</yellow> para volver a usar /rtp.'
   rtp-busy: '<red>Ya estamos buscando una ubicacion para ti.'
   rtp-world: '<red>/rtp no esta disponible en este mundo.'
   menu-title: '<dark_aqua>Tus homes'

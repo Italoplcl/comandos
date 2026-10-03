@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitTask;
 import java.util.*;
 import java.util.function.Supplier;
@@ -19,7 +20,7 @@ public final class TeleportService implements Listener {
  private final Mando plugin;private final BackListener back;private final Map<UUID,Pending> pending=new HashMap<>();private final Map<UUID,Map<String,Long>> cooldowns=new HashMap<>();
  public TeleportService(Mando p,BackListener b){plugin=p;back=b;}
  public void teleport(Player p,Supplier<Location> target,Kind kind,String channel,Runnable success){
-  cancel(p,false);long left=cooldownLeft(p,channel);if(left>0){p.sendMessage(plugin.msg("teleport-cooldown",Placeholder.unparsed("seconds",String.valueOf(left))));return;}
+  if(pending.containsKey(p.getUniqueId())){p.sendMessage(plugin.msg("teleport-cancelled"));return;}long left=cooldownLeft(p,channel);if(left>0){p.sendMessage(plugin.msg("teleport-cooldown",Placeholder.unparsed("seconds",String.valueOf(left))));return;}
   int warm=p.hasPermission("mando.teleport.bypass-warmup")?0:plugin.getConfig().getInt("teleport."+channel+".warmup-seconds",plugin.getConfig().getInt("teleport.default-warmup-seconds",0));
   Location origin=p.getLocation().clone();Runnable run=()->execute(p,origin,target,kind,channel,success);
   if(warm<=0){run.run();return;}p.sendMessage(plugin.msg("teleport-warmup",Placeholder.unparsed("seconds",String.valueOf(warm))));
@@ -35,6 +36,7 @@ public final class TeleportService implements Listener {
  private boolean free(Block b){return b.isPassable()&&!b.isLiquid()&&!HAZARDS.contains(b.getType());}
  private long cooldownLeft(Player p,String channel){if(p.hasPermission("mando.teleport.bypass-cooldown"))return 0;int sec=plugin.getConfig().getInt("teleport."+channel+".cooldown-seconds",plugin.getConfig().getInt("teleport.default-cooldown-seconds",0));Long last=cooldowns.getOrDefault(p.getUniqueId(),Map.of()).get(channel);if(last==null)return 0;return Math.max(0,sec-(System.currentTimeMillis()-last)/1000);}
  private void cancel(Player p,boolean tell){Pending x=pending.remove(p.getUniqueId());if(x!=null){x.task().cancel();if(tell)p.sendMessage(plugin.msg("teleport-cancelled"));}}
- @EventHandler(ignoreCancelled=true) public void move(PlayerMoveEvent e){Pending x=pending.get(e.getPlayer().getUniqueId());if(x==null||e.getTo()==null)return;double max=plugin.getConfig().getDouble("teleport.cancel-move-distance",0.15);if(!e.getFrom().getWorld().equals(e.getTo().getWorld())||e.getFrom().distanceSquared(e.getTo())>max*max)cancel(e.getPlayer(),true);}
+ @EventHandler(ignoreCancelled=true) public void move(PlayerMoveEvent e){Pending x=pending.get(e.getPlayer().getUniqueId());if(x==null||e.getTo()==null)return;double max=plugin.getConfig().getDouble("teleport.cancel-move-distance",0.15);if(!x.origin().getWorld().equals(e.getTo().getWorld())||x.origin().distanceSquared(e.getTo())>max*max)cancel(e.getPlayer(),true);}
+ @EventHandler public void quit(PlayerQuitEvent e){cancel(e.getPlayer(),false);cooldowns.remove(e.getPlayer().getUniqueId());}
  @EventHandler(ignoreCancelled=true) public void damage(EntityDamageEvent e){if(e.getEntity() instanceof Player p&&plugin.getConfig().getBoolean("teleport.cancel-on-damage",true))cancel(p,true);}
 }

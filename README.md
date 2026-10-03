@@ -2,10 +2,14 @@
 
 Plugin moderno de administración para Paper/Purpur 26.3, Java 25.
 
-## 1.7.0-test — integración en desarrollo
+## 1.7.0-test — cierre funcional
 
-Esta rama está cerrando la integración de los sistemas diseñados para la fase de prueba: Homes privados con límites por permisos, rename, ubicación anterior e historial de eliminados; Warps y Spawn; teletransporte común con warmup/cooldown y cancelación; Back persistente; RTP seguro asíncrono; TPA persistente; Mail con bandeja, lectura y borrado; Profile personal/administrativo; historial de muertes; AFK Purpur-first; AuthMe opcional; Vault opcional de solo lectura; detección de integraciones; datos por UUID; idiomas externos ES/EN; registro de markers; backups manuales/programados/shutdown; auditoría y diagnóstico; update checker; ServerConfig y módulos Paper/Purpur.
+Mando incluye almacenamiento por UUID en `players/<UUID>.yml`, Homes, Warps, Spawn, Back, RTP, TPA, Mail, Profile, historial de muertes, teletransporte común con warmup/cooldown/seguridad, Setup moderno, selección AFK (Purpur/EssentialsX/CMI/Mando), gate opcional AuthMe, lectura opcional Vault, Changelog, Announcements, Update Checker configurable, backups, diagnóstico y administración Paper/Purpur.
 
-Comandos principales: /mando, /profile, /mail, /sethome, /home, /homes, /renamehome, /restorehome, /warp, /spawn, /back, /rtp, /tpa, /tpahere, /afk, /serverconfig.
+Comandos principales: `/mando`, `/profile`, `/mail`, `/sethome`, `/home`, `/homes`, `/edithome`, `/restorehome`, `/warp`, `/warps`, `/spawn`, `/back`, `/rtp`, `/tpa`, `/tpaccept`, `/tpdeny`, `/tpatoggle`, `/changelog` y `/serverconfig`.
 
-Esta rama sigue en cierre funcional. Una build verde confirma compilación, no que todos los requisitos estén terminados ni validados en servidor. La prueba real en Purpur 26.3 comienza cuando el checklist funcional quede cerrado.
+Integraciones externas son soft-dependencies. TAB y ChatControl conservan ownership de presentación/chat; Mando no modifica scoreboards ni nametags. Vault es sólo lectura. AuthMe bloquea los comandos de Mando antes de autenticar cuando su API está disponible.
+
+Los textos de jugador usan `languages/es.yml` con fallback `languages/en.yml`; `config.yml/messages` se conserva como fallback legado durante 1.7.0-test.
+
+Una build verde valida compilación. La validación final de comportamiento y rendimiento requiere prueba real en Purpur 26.3; Spark debe ejecutarse allí para TPS/MSPT/CPU.

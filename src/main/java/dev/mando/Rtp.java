@@ -28,7 +28,6 @@ public final class Rtp {
             Material.ICE, Material.PACKED_ICE, Material.BLUE_ICE);
 
     private final Mando plugin;
-    private final Map<UUID, Long> cooldowns = new HashMap<>();
     private final Set<UUID> searching = new HashSet<>();
     private TeleportService teleports;
 
@@ -51,16 +50,6 @@ public final class Rtp {
         if (searching.contains(id)) {
             p.sendMessage(plugin.msg("rtp-busy"));
             return;
-        }
-
-        int cd = cfg.getInt("rtp.cooldown-seconds", 30);
-        Long last = cooldowns.get(id);
-        if (cd > 0 && last != null && !p.hasPermission("mando.rtp.bypass")) {
-            long left = cd - (System.currentTimeMillis() - last) / 1000L;
-            if (left > 0) {
-                p.sendMessage(plugin.msg("rtp-cooldown", Placeholder.unparsed("seconds", String.valueOf(left))));
-                return;
-            }
         }
 
         searching.add(id);
@@ -109,7 +98,6 @@ public final class Rtp {
             if (teleports == null) { p.sendMessage(plugin.msg("teleport-failed")); return; }
             Location chosen = dest.clone();
             teleports.teleport(p, () -> chosen, TeleportService.Kind.RTP, "rtp", () -> {
-                cooldowns.put(id, System.currentTimeMillis());
                 p.sendMessage(plugin.msg("rtp-success",
                         Placeholder.unparsed("x", String.valueOf(chosen.getBlockX())),
                         Placeholder.unparsed("y", String.valueOf(chosen.getBlockY())),

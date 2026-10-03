@@ -26,10 +26,12 @@ public final class Mando extends JavaPlugin {
     private PlayerStorage storage;
     private PlayerIdentityService identities;
     private IntegrationManager integrations;
+    private LanguageManager languages;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        languages = new LanguageManager(this);
         modules = new ModuleManager(this);
         integrations = new IntegrationManager(this);
         getServer().getPluginManager().registerEvents(integrations, this);
@@ -41,6 +43,7 @@ public final class Mando extends JavaPlugin {
         String previousEcosystem=getConfig().getString("setup.ecosystem-signature");
         setup.ecosystemChanged(previousEcosystem, setup.signature());
         getLogger().info("Plataforma detectada: " + platform.platform());
+        new CompatibilityAudit(this).run();
         storage = new PlayerStorage(this);
         new LegacyDataMigrator(this, storage).run();
         identities = new PlayerIdentityService(this, storage);
@@ -121,23 +124,9 @@ public final class Mando extends JavaPlugin {
         if (storage != null) { storage.flushAll(); storage.backupAll("shutdown"); }
     }
 
-    /** Mensaje sin prefijo. */
-    public Component text(String key, TagResolver... resolvers) {
-        String raw = getConfig().getString("messages." + key, "<red>Falta el mensaje: " + key);
-        return MM.deserialize(raw, resolvers);
-    }
-
-    /** Mensaje con prefijo. */
-    public Component msg(String key, TagResolver... resolvers) {
-        Component prefix = MM.deserialize(getConfig().getString("messages.prefix", ""));
-        return prefix.append(text(key, resolvers));
-    }
-
-    public List<Component> list(String key, TagResolver... resolvers) {
-        List<Component> out = new ArrayList<>();
-        for (String line : getConfig().getStringList("messages." + key)) {
-            out.add(MM.deserialize(line, resolvers));
-        }
-        return out;
-    }
+    /** Texto localizado con fallback EN -> config legado. */
+    public Component text(String key, TagResolver... resolvers) { return languages.text(key,resolvers); }
+    /** Mensaje localizado con prefijo. */
+    public Component msg(String key, TagResolver... resolvers) { return languages.msg(key,resolvers); }
+    public List<Component> list(String key, TagResolver... resolvers) { return languages.list(key,resolvers); }
 }
