@@ -88,7 +88,9 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
             p.sendMessage(plugin.msg("back-none"));
             return;
         }
-        tp(p, target, "back-teleported");
+        long cooldown=back.cooldown(p);if(cooldown>0){p.sendMessage(Component.text("Mando » Espera "+cooldown+"s para volver a usar /back."));return;}
+        target=back.safe(target);if(target==null){p.sendMessage(Component.text("Mando » El destino de /back no es seguro."));return;}
+        Location finalTarget=target;plugin.teleports().teleport(p,finalTarget,"mando.teleport.bypass-warmup",()->{back.markUsed(p.getUniqueId());p.sendMessage(plugin.msg("back-teleported"));});
     }
 
     private void spawn(Player p) {
