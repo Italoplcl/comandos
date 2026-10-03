@@ -94,20 +94,13 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
     }
 
     private void spawn(Player p) {
-        World w = spawnWorld();
-        Location s = w.getSpawnLocation();
-        Location dest = new Location(w, s.getBlockX() + 0.5, s.getY(), s.getBlockZ() + 0.5,
-                s.getYaw(), s.getPitch());
+        Location dest = plugin.spawn().effective(p);
         tp(p, dest, "spawn-teleported");
     }
 
     private void setSpawn(Player p) {
-        World w = spawnWorld();
-        if (!p.getWorld().equals(w)) {
-            p.sendMessage(plugin.msg("spawn-wrong-world", Placeholder.unparsed("world", w.getName())));
-            return;
-        }
-        w.setSpawnLocation(p.getLocation());
+        Location here=p.getLocation().clone();
+        if(!plugin.spawn().set(here)){p.sendMessage(plugin.msg("teleport-failed"));return;}
         boolean markerOk = markers.createSpawnBanner(p);
         p.sendMessage(plugin.msg("spawn-set"));
         if (!markerOk) p.sendMessage(plugin.msg("marker-no-space"));
