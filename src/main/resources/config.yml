@@ -11,8 +11,10 @@ rtp:
   max-attempts: 15
   cooldown-seconds: 30
   center-on-player: false
+  generated-chunks-only: false
 spawn:
-  world: ""
+  first-join: true
+  use-for-respawn: true
 messages:
   prefix: '<dark_gray>[<aqua>Mando</aqua>]</dark_gray> '
   only-players: '<red>Solo los jugadores pueden usar este comando.'
@@ -126,6 +128,11 @@ updates:
 back:
   cooldown-seconds: 10
   persistent: true
+  admin-teleport-creates-back: true
+  hazards:
+    lava-fire-magma: ALLOW
+    suffocation: SAFE_NEARBY
+    void-border: DENY
 
 teleport:
   warmup: 3
