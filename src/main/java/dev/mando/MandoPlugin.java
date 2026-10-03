@@ -21,11 +21,16 @@ public final class MandoPlugin extends JavaPlugin {
     private ModuleManager modules;
     private PlatformDetector platform;
     private LocationMarkerManager markers;
+    private BackupManager backups;
+    private SetupProtectionListener setupProtection;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         modules = new ModuleManager(this);
+        backups = new BackupManager(this);
+        setupProtection = new SetupProtectionListener(this);
+        getServer().getPluginManager().registerEvents(setupProtection, this);
         platform = new PlatformDetector();
         boolean firstSetup=!getConfig().getBoolean("setup.completed",false);
         getLogger().info("Mando "+getPluginMeta().getVersion()+" iniciando en "+platform.platform());
@@ -33,6 +38,7 @@ public final class MandoPlugin extends JavaPlugin {
         if(firstSetup)getLogger().warning("Primera configuración pendiente. Entra como OP para abrir el asistente de Mando.");
         else getLogger().info("Configuración inicial: completada.");
         MandoCommand mando = new MandoCommand(this);
+        new UpdateChecker(this).checkAsync();
         register("mando", mando, mando);
         getServer().getPluginManager().registerEvents(new MandoJoinListener(this, mando), this);
         markers = new LocationMarkerManager(this);
@@ -73,6 +79,11 @@ public final class MandoPlugin extends JavaPlugin {
             getServer().getPluginManager().registerEvents(serverConfig, this);
         }
     }
+
+    public BackupManager backups(){ return backups; }
+    public SetupProtectionListener setupProtection(){ return setupProtection; }
+    public ModuleManager modules(){ return modules; }
+    public PlatformDetector platform(){ return platform; }
 
     private void register(String name, org.bukkit.command.CommandExecutor executor, org.bukkit.command.TabCompleter completer) {
         PluginCommand cmd = getCommand(name);

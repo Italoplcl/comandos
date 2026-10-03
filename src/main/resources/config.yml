@@ -141,3 +141,4 @@ changelog:
     - "Banners de Warp y Spawn orientados según la mirada."
     - "Carteles Home escritos en ambas caras."
 # Mensajes adicionales 1.2.0 (se leen desde messages.*)
+\nupdates:\n  enabled: true\n
