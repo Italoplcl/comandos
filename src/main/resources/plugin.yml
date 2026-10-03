@@ -4,13 +4,15 @@ main: dev.mando.MandoPlugin
 api-version: '26.3'
 description: Administración moderna y modular para servidores Paper y Purpur
 commands:
-  mando: {description: "Panel principal de Mando", usage: "/mando [setup|config|status|backup|changelog]", permission: mando.admin}
+  mando: {description: "Panel principal de Mando", usage: "/mando [setup|config|status|backup|cleanup|diagnose|changelog]", permission: mando.admin}
   god: {description: "Modo dios", usage: /god, permission: mando.god}
   heal: {description: "Rellena hambre y saturacion", usage: /heal, permission: mando.heal}
   sethome: {description: "Guarda un home", usage: "/sethome [nombre]", permission: mando.sethome}
   home: {description: "Teletransporte a home", usage: "/home [nombre]", permission: mando.home}
   homes: {description: "Menu de homes", usage: /homes, permission: mando.homes}
-  delhome: {description: "Borra un home", usage: "/delhome <nombre>", permission: mando.delhome}\n  renamehome: {description: "Renombra un home", usage: "/renamehome <actual> <nuevo>", permission: mando.sethome}\n  restorehome: {description: "Restaura un home eliminado", usage: "/restorehome <id> <nombre>", permission: mando.homes.restore}
+  delhome: {description: "Borra un home", usage: "/delhome <nombre>", permission: mando.delhome}
+  renamehome: {description: "Renombra un home", usage: "/renamehome <actual> <nuevo>", permission: mando.sethome}
+  restorehome: {description: "Restaura un home eliminado", usage: "/restorehome <id> <nombre>", permission: mando.homes.restore}
   rtp: {description: "Teletransporte aleatorio", usage: /rtp, permission: mando.rtp}
   fly: {description: "Vuelo", usage: /fly, permission: mando.fly}
   back: {description: "Ubicacion anterior", usage: /back, permission: mando.back}
@@ -26,11 +28,15 @@ commands:
   tpaccept: {description: "Acepta TPA", usage: /tpaccept, permission: mando.tpa}
   tpdeny: {description: "Rechaza TPA", usage: /tpdeny, permission: mando.tpa}
   tpcancel: {description: "Cancela TPA", usage: /tpcancel, permission: mando.tpa}
-  tptoggle: {description: "Toggle TPA", usage: /tptoggle, permission: mando.tpa}
-  mail: {description: "Correo offline", usage: "/mail <jugador> <mensaje>", permission: mando.mail}
-  profile: {description: "Perfil", usage: "/profile [jugador]", permission: mando.profile}\n  afk: {description: "Alterna estado AFK", usage: /afk, permission: mando.afk}\n  tp: {description: "TP administrativo", usage: "/tp <jugador> [destino]", permission: mando.tp}\n  tphere: {description: "Trae un jugador", usage: "/tphere <jugador>", permission: mando.tphere}\n  tppos: {description: "TP a coordenadas", usage: "/tppos <x> <y> <z> [mundo]", permission: mando.tppos}
+  tptoggle: {description: "Activa o desactiva TPA", usage: /tptoggle, permission: mando.tpa}
+  mail: {description: "Correo offline", usage: "/mail [inbox|read|delete|inspect|jugador]", permission: mando.mail}
+  profile: {description: "Perfil", usage: "/profile [jugador]", permission: mando.profile}
+  afk: {description: "Alterna estado AFK", usage: /afk, permission: mando.afk}
+  tp: {description: "TP administrativo", usage: "/tp <jugador> [destino]", permission: mando.tp}
+  tphere: {description: "Trae un jugador", usage: "/tphere <jugador>", permission: mando.tphere}
+  tppos: {description: "TP a coordenadas", usage: "/tppos <x> <y> <z> [mundo]", permission: mando.tppos}
   changelog: {description: "Novedades de Mando", usage: /changelog, permission: mando.changelog}
-  serverconfig: {description: "Administrador grafico Paper/Purpur", usage: "/serverconfig [spawn|modules|purpur|mounts]", aliases: [scfg, purpurgui], permission: mando.serverconfig}
+  serverconfig: {description: "Administrador grafico Paper/Purpur", usage: "/serverconfig", aliases: [scfg, purpurgui], permission: mando.serverconfig}
 permissions:
   mando.admin: {default: op}
   mando.god: {default: op}
@@ -39,8 +45,13 @@ permissions:
   mando.home: {default: true}
   mando.homes: {default: true}
   mando.delhome: {default: true}
+  mando.homes.1: {default: true}
+  mando.homes.3: {default: true}
+  mando.homes.5: {default: op}
+  mando.homes.10: {default: op}
+  mando.homes.unlimited: {default: op}
+  mando.homes.restore: {default: op}
   mando.rtp: {default: true}
-  mando.homes.1: {default: true}\n  mando.homes.3: {default: true}\n  mando.homes.5: {default: op}\n  mando.homes.10: {default: op}\n  mando.homes.unlimited: {default: op}\n  mando.homes.restore: {default: op}
   mando.rtp.bypass: {default: op}
   mando.fly: {default: op}
   mando.back: {default: true}
@@ -52,8 +63,15 @@ permissions:
   mando.tools: {default: true}
   mando.ender: {default: true}
   mando.tpa: {default: true}
+  mando.tpa.bypass: {default: op}
   mando.mail: {default: true}
+  mando.mail.inspect: {default: op}
   mando.profile: {default: true}
-  mando.profile.others: {default: op}\n  mando.mail.inspect: {default: op}\n  mando.afk: {default: true}\n  mando.tpa.bypass: {default: op}\n  mando.teleport.bypass-warmup: {default: op}
+  mando.profile.others: {default: op}
+  mando.afk: {default: true}
+  mando.teleport.bypass-warmup: {default: op}
   mando.changelog: {default: true}
-  mando.serverconfig: {default: op}\n  mando.tp: {default: op}\n  mando.tphere: {default: op}\n  mando.tppos: {default: op}
+  mando.serverconfig: {default: op}
+  mando.tp: {default: op}
+  mando.tphere: {default: op}
+  mando.tppos: {default: op}
