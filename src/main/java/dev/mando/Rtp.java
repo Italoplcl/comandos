@@ -99,20 +99,17 @@ public final class Rtp {
         }
 
         if(plugin.getConfig().getBoolean("rtp.generated-chunks-only",false)&&!world.isChunkGenerated(x>>4,z>>4)){attempt(p,world,left-1);return;}
-        world.getChunkAtAsync(x >> 4, z >> 4).thenAccept(chunk -> {
+        world.getChunkAtAsync(x >> 4, z >> 4).thenAccept(chunk -> Bukkit.getScheduler().runTask(plugin, () -> {
+            if(!p.isOnline()||!p.getWorld().equals(world)){searching.remove(id);return;}
             Location dest = findSafe(world, x, z, p.getLocation());
-            if (dest == null) {
-                attempt(p, world, left - 1);
-                return;
-            }
+            if (dest == null) {attempt(p, world, left - 1);return;}
             searching.remove(id);
             plugin.teleports().teleport(p,dest,"mando.rtp.bypass",()->{
                 cooldowns.put(id,System.currentTimeMillis());
                 p.sendMessage(plugin.msg("rtp-success",Placeholder.unparsed("x",String.valueOf(x)),Placeholder.unparsed("y",String.valueOf(dest.getBlockY())),Placeholder.unparsed("z",String.valueOf(z))));
             });
-        }).exceptionally(ex -> {
-            searching.remove(id);
-            p.sendMessage(plugin.msg("rtp-fail"));
+        })).exceptionally(ex -> {
+            Bukkit.getScheduler().runTask(plugin,()->{searching.remove(id);p.sendMessage(plugin.msg("rtp-fail"));});
             return null;
         });
     }
