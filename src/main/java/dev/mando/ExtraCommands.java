@@ -82,7 +82,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
         p.sendMessage(plugin.msg(fly.toggle(p) ? "fly-on" : "fly-off"));
     }
 
-    private void back(Player p) {
+    private void back(Player p) {if(!plugin.integrations().isMandoProvider("back")){p.sendMessage(Component.text("Mando » Back pertenece al proveedor configurado."));return;}
         Location target = back.get(p.getUniqueId());
         if (target == null || target.getWorld() == null) {
             p.sendMessage(plugin.msg("back-none"));
@@ -93,12 +93,12 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
         Location finalTarget=target;plugin.teleports().teleport(p,finalTarget,"mando.teleport.bypass-warmup",()->{back.markUsed(p.getUniqueId());p.sendMessage(plugin.msg("back-teleported"));});
     }
 
-    private void spawn(Player p) {
+    private void spawn(Player p) {if(!plugin.integrations().isMandoProvider("spawn")){p.sendMessage(Component.text("Mando » Spawn pertenece al proveedor configurado."));return;}
         Location dest = plugin.spawn().effective(p);
         tp(p, dest, "spawn-teleported");
     }
 
-    private void setSpawn(Player p) {
+    private void setSpawn(Player p) {if(!plugin.integrations().isMandoProvider("spawn")){p.sendMessage(Component.text("Mando » Spawn pertenece al proveedor configurado."));return;}
         Location here=p.getLocation().clone();
         if(!plugin.spawn().set(here)){p.sendMessage(plugin.msg("teleport-failed"));return;}
         boolean markerOk = markers.createSpawnBanner(p);
@@ -106,7 +106,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
         if (!markerOk) p.sendMessage(plugin.msg("marker-no-space"));
     }
 
-    private void warp(Player p, String[] args) {
+    private void warp(Player p, String[] args) {if(!plugin.integrations().isMandoProvider("warps")){p.sendMessage(Component.text("Mando » Warps pertenece al proveedor configurado."));return;}
         if (args.length == 0) {
             if (warps.all().isEmpty()) {
                 p.sendMessage(plugin.msg("warps-none"));
@@ -136,7 +136,7 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
         tp(p, loc, "warp-teleported", Placeholder.unparsed("name", name));
     }
 
-    private void setWarp(Player p, String[] args) {
+    private void setWarp(Player p, String[] args) {if(!plugin.integrations().isMandoProvider("warps")){p.sendMessage(Component.text("Mando » Warps pertenece al proveedor configurado."));return;}
         if (args.length == 0) {
             p.sendMessage(plugin.msg("warp-name-required"));
             return;
@@ -154,13 +154,13 @@ public final class ExtraCommands implements CommandExecutor, TabCompleter {
         p.sendMessage(plugin.msg("warp-set", Placeholder.unparsed("name", name)));
     }
 
-    private void delWarp(Player p, String[] args) {
+    private void delWarp(Player p, String[] args) {if(!plugin.integrations().isMandoProvider("warps")){p.sendMessage(Component.text("Mando » Warps pertenece al proveedor configurado."));return;}
         if (args.length == 0) {
             p.sendMessage(plugin.msg("warp-name-required"));
             return;
         }
         String name = HomeManager.normalize(args[0]);
-        if (name != null && warps.remove(name)) {
+        if (name != null && warps.get(name)!=null && markers.removeWarpMarker(name) && warps.remove(name)) {
             p.sendMessage(plugin.msg("warp-deleted", Placeholder.unparsed("name", name)));
         } else {
             p.sendMessage(plugin.msg("warp-not-found", Placeholder.unparsed("name", args[0])));
