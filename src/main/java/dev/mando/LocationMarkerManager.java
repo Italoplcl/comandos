@@ -48,7 +48,7 @@ public final class LocationMarkerManager implements Listener {
         if(worldName==null)return true;World w=Bukkit.getWorld(worldName);if(w==null)return false;
         int x=registry.getInt(path+".x"),y=registry.getInt(path+".y"),z=registry.getInt(path+".z");
         if(!w.isChunkLoaded(x>>4,z>>4))return false;
-        Block b=w.getBlockAt(x,y,z);if(b.getState() instanceof TileState state){PersistentDataContainer pdc=state.getPersistentDataContainer();String type=pdc.get(typeKey,PersistentDataType.STRING),name=pdc.get(nameKey,PersistentDataType.STRING);if(pdc.has(markerKey,PersistentDataType.BYTE)&&"home".equals(type)&&key.equals(name))b.setType(Material.AIR,false);}
+        Block b=w.getBlockAt(x,y,z);if(b.getState() instanceof TileState state){PersistentDataContainer pdc=state.getPersistentDataContainer();String type=pdc.get(typeKey,PersistentDataType.STRING),name=pdc.get(nameKey,PersistentDataType.STRING);String markerId=pdc.get(idKey,PersistentDataType.STRING),expected=registry.getString(path+".marker-id");if(pdc.has(markerKey,PersistentDataType.BYTE)&&"home".equals(type)&&key.equals(name)&&(expected==null||expected.equals(markerId)))b.setType(Material.AIR,false);}
         registry.set(path,null);saveRegistry();return true;
     }
     public boolean createHomeSign(Player p,String homeName,String homeId){
