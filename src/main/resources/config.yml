@@ -114,6 +114,7 @@ changelog:
   mode: SUGGEST
   version: "1.7.0-test"
   date: "2026-10-03"
+  history: []
   lines:
     - "Profile interactivo con acceso a correo y Homes."
     - "Mail con bandeja, lectura, borrado e inspeccion administrativa auditada."
