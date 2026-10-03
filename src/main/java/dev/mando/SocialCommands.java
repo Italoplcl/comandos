@@ -1,7 +1,7 @@
 package dev.mando;
 import io.papermc.paper.dialog.Dialog;import io.papermc.paper.registry.data.dialog.*;import io.papermc.paper.registry.data.dialog.action.DialogAction;import io.papermc.paper.registry.data.dialog.body.DialogBody;import io.papermc.paper.registry.data.dialog.type.DialogType;import net.kyori.adventure.text.Component;import net.kyori.adventure.text.event.ClickCallback;import org.bukkit.*;import org.bukkit.command.*;import org.bukkit.entity.Player;import java.util.*;
 public final class SocialCommands implements CommandExecutor,TabCompleter{
- private final MandoPlugin plugin;private final TpaManager tpa;private final MailManager mail;private final HomeManager homes;private final PlayerDataManager players;private final DeathManager deaths;private final AuditLogger audit;
+ private final MandoPlugin plugin;private final TpaManager tpa;private final MailManager mail;private final HomeManager homes;private final PlayerDataManager players;private final DeathManager deaths;private final AuditLogger audit;private final EconomyBridge economy=new EconomyBridge();
  public SocialCommands(MandoPlugin p,TpaManager t,MailManager m,HomeManager h,PlayerDataManager pd,DeathManager d,AuditLogger a){plugin=p;tpa=t;mail=m;homes=h;players=pd;deaths=d;audit=a;}
  public boolean onCommand(CommandSender s,Command c,String l,String[] a){if(!(s instanceof Player p))return true;String n=c.getName().toLowerCase(Locale.ROOT);
   if(n.equals("tptoggle")){p.sendMessage("§6Mando §8» "+(tpa.toggle(p)?"§aTPA activado":"§cTPA desactivado"));return true;}
